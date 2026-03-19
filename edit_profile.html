@@ -127,16 +127,27 @@
             color: #fff;
         }
 
-        .auth-status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        .edit-heading {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .edit-heading h2 {
+            margin: 0;
+        }
+
+        .auth-status {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
             gap: 10px;
             font-weight: 600;
             color: white;
             font-style: italic;
+            margin-top: 10px;
         }
 
         .auth-status button {
@@ -149,17 +160,67 @@
             font-size: 0.9rem;
             font-weight: bold;
         }
+
+        @media (max-width: 760px) {
+            .edit-section {
+                max-width: 100%;
+            }
+
+            .edit-panel {
+                padding: 14px;
+            }
+
+            .edit-panel fieldset {
+                padding: 12px;
+            }
+
+            .edit-panel label {
+                display: block;
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 6px;
+            }
+
+            .edit-panel input {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                font-size: 16px;
+            }
+
+            .edit-panel input[type="file"] {
+                width: 100%;
+            }
+
+            .edit-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .auth-status {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                width: 100%;
+                text-align: center;
+            }
+
+            header {
+                padding: 1rem 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1 class="site-title">TAB Fantasy Football League</h1>
-            <div id="auth-status" class="auth-status"></div>
         </header>
 
         <main>
-            <h2>Edit Profile</h2>
+            <section class="edit-heading">
+                <h2>Edit Profile</h2>
+                <div id="auth-status" class="auth-status"></div>
+            </section>
 
             <section class="edit-section" id="edit-section" hidden>
                 <div class="edit-panel">

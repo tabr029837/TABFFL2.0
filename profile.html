@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Profiles</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+        body { padding-bottom: 180px; }
+        .site-footer .footer-nav { padding: 8px 12px; justify-content: space-around; }
+
+        header {
+            position: relative;
+        }
+
+        .login-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .login-btn {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            color: navy;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .auth-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .auth-status button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background: #dc2626;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .auth-section {
+            display: grid;
+            gap: 20px;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .auth-panel {
+            display: grid;
+            gap: 18px;
+            padding: 18px;
+            border: 1px solid #bbb;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 8px;
+        }
+
+        .auth-form label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .auth-form input {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .auth-form button,
+        #logout-btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #1d4ed8;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .auth-message {
+            margin: 0;
+            font-size: 0.9rem;
+            min-height: 1.25rem;
+        }
+
+        .auth-message.error {
+            color: #b91c1c;
+        }
+
+        .auth-message.success {
+            color: #047857;
+        }
+
+        #profiles-list {
+            margin-top: 20px;
+            padding-bottom: 32px;
+        }
+
+        .profiles-summary {
+            margin: 0 0 16px;
+            color: #334155;
+            font-size: 0.95rem;
+        }
+
+        .profiles-actions {
+            margin-bottom: 18px;
+        }
+
+        .toggle-all-btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #1d4ed8;
+            color: white;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .toggle-all-btn:hover,
+        .toggle-all-btn:focus {
+            background: #1e40af;
+            outline: none;
+        }
+
+        .league-section {
+            margin-bottom: 28px;
+        }
+
+        .league-toggle {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 0 0 8px;
+            margin-bottom: 14px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            text-align: left;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .league-toggle:hover,
+        .league-toggle:focus {
+            border-bottom-color: #94a3b8;
+            outline: none;
+        }
+
+        .league-title {
+            margin: 0;
+            color: navy;
+            font-size: 1.35rem;
+        }
+
+        .league-count {
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .league-toggle[aria-expanded="true"] .league-count::after {
+            content: " - Hide";
+            font-weight: 500;
+        }
+
+        .league-toggle[aria-expanded="false"] .league-count::after {
+            content: " - Show";
+            font-weight: 500;
+        }
+
+        .league-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .league-grid[hidden] {
+            display: none;
+        }
+
+        .profile-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            min-width: 0;
+        }
+
+        .profile-card h4 {
+            margin-top: 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .profile-card h5 {
+            margin-bottom: 5px;
+            color: navy;
+            font-size: 1.1em;
+        }
+
+        .profile-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        header {
+            position: relative;
+        }
+
+        .auth-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .auth-status button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background: #dc2626;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div id="login-buttons" class="login-buttons">
+                <a href="login.html?mode=signup" class="login-btn">Sign Up</a>
+                <a href="login.html?mode=login" class="login-btn">Log In</a>
+            </div>
+            <h1 class="site-title">TAB Fantasy Football League</h1>
+            <div id="auth-status" class="auth-status"></div>
+        </header>
+
+        <main>
+            <h2>Profiles</h2>
+
+            <section id="profiles-list"></section>
+        </main>
+
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="profile.html">Profiles</a>
+                <a href="leagues.html">League Standings</a>
+                <a href="power-rankings.html">Power Rankings</a>
+                <a href="awards.html">Awards</a>
+                <a href="top-performers.html">Top Performers</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, getDocs, collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJPx-MqMGr8zH1bX_qSQ7E0UGi-rSSN0I",
+            authDomain: "tabfflwebsite.firebaseapp.com",
+            projectId: "tabfflwebsite",
+            storageBucket: "tabfflwebsite.firebasestorage.app",
+            messagingSenderId: "229042475467",
+            appId: "1:229042475467:web:ad2cccbb8cb89d5ad2e64e",
+            measurementId: "G-QJT28FTXNK",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const profilesList = document.getElementById('profiles-list');
+        const leagueDisplayOrder = ['Summit', 'Glacier', 'Meadow', 'Desert', 'Trench', 'Canyon', 'Unassigned League'];
+
+        function normalizeLeagueName(leagueName) {
+            const trimmedLeague = (leagueName || '').trim();
+            if (!trimmedLeague) {
+                return 'Unassigned League';
+            }
+
+            const matchedLeague = leagueDisplayOrder.find((knownLeague) => (
+                knownLeague !== 'Unassigned League' &&
+                knownLeague.toLowerCase() === trimmedLeague.toLowerCase()
+            ));
+
+            return matchedLeague || trimmedLeague;
+        }
+
+        async function loadProfiles() {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'users'));
+                const statsPromises = querySnapshot.docs.map(async (userDoc) => {
+                    const userData = userDoc.data();
+                    const statsDoc = await getDoc(doc(db, 'statistics', userDoc.id));
+                    const stats = statsDoc.exists() ? statsDoc.data() : {};
+                    return { userData, stats };
+                });
+
+                const profiles = await Promise.all(statsPromises);
+                const groupedProfiles = profiles.reduce((groups, profile) => {
+                    const leagueName = normalizeLeagueName(profile.stats.league);
+                    if (!groups[leagueName]) {
+                        groups[leagueName] = [];
+                    }
+                    groups[leagueName].push(profile);
+                    return groups;
+                }, {});
+
+                const orderedKnownLeagues = leagueDisplayOrder.filter((leagueName) => groupedProfiles[leagueName]);
+                const extraLeagues = Object.keys(groupedProfiles)
+                    .filter((leagueName) => !leagueDisplayOrder.includes(leagueName))
+                    .sort((a, b) => a.localeCompare(b));
+                const leagueNames = [...orderedKnownLeagues, ...extraLeagues];
+
+                const sectionsHtml = leagueNames.map((leagueName) => {
+                    const leagueProfiles = groupedProfiles[leagueName].sort((a, b) => {
+                        const aFirstName = (a.userData.firstName || '').trim() || 'Anonymous';
+                        const bFirstName = (b.userData.firstName || '').trim() || 'Anonymous';
+                        const firstNameComparison = aFirstName.localeCompare(bFirstName);
+
+                        if (firstNameComparison !== 0) {
+                            return firstNameComparison;
+                        }
+
+                        const aLastName = (a.userData.lastName || '').trim();
+                        const bLastName = (b.userData.lastName || '').trim();
+                        return aLastName.localeCompare(bLastName);
+                    });
+
+                    const cardsHtml = leagueProfiles.map(({ userData, stats }) => {
+                        const fullName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'Anonymous';
+                        const imgHtml = userData.profilePic ? `<img src="${userData.profilePic}" alt="${fullName} profile picture" style="max-width: 150px; height: auto; margin-bottom: 10px;">` : '';
+                        return `
+                            <div class="profile-card">
+                                ${imgHtml}
+                                <h4>${fullName}</h4>
+                                <div class="qa-section">
+                                    <p><strong>What is your hometown?</strong><br>${userData.hometown || 'No Answer'}</p>
+                                    <p><strong>What is your game day snack?</strong><br>${userData.gameDaySnack || 'No Answer'}</p>
+                                    <p><strong>What is your walk-up song?</strong><br>${userData.walkUpSong || 'No Answer'}</p>
+                                    <p><strong>What is your team's mascot?</strong><br>${userData.teamsMascot || 'No Answer'}</p>
+                                    <p><strong>What is your favorite movie/TV show?</strong><br>${userData.favoriteMovieTV || 'No Answer'}</p>
+                                    <p><strong>What is your favorite fast food?</strong><br>${userData.favoriteFastFood || 'No Answer'}</p>
+                                    <p><strong>What is your team motto?</strong><br>${userData.teamMotto || 'No Answer'}</p>
+                                    <h5>Team Statistics</h5>
+                                    <p><strong>What is your current league?</strong><br>${stats.league || 'Waiting on Admin...'}</p>
+                                    <p><strong>How many years have you played?</strong><br>${stats.years || 'Waiting on Admin...'}</p>
+                                    <p><strong>How many championships have you won?</strong><br>${stats.champs || 'Waiting on Admin...'}</p>
+                                    <p><strong>What is your season record?</strong><br>${stats['overall record'] || stats.overallRecord || 'Waiting on Admin...'}</p>
+                                    <p><strong>What is your playoff record?</strong><br>${stats['playoff record'] || stats.playoffRecord || 'Waiting on Admin...'}</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    const playerLabel = leagueProfiles.length === 1 ? 'player' : 'players';
+                    const sectionId = `league-${leagueName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+                    return `
+                        <section class="league-section">
+                            <button class="league-toggle" type="button" aria-expanded="false" aria-controls="${sectionId}">
+                                <h3 class="league-title">${leagueName}</h3>
+                                <span class="league-count">${leagueProfiles.length} ${playerLabel}</span>
+                            </button>
+                            <div class="league-grid" id="${sectionId}" hidden>
+                                ${cardsHtml}
+                            </div>
+                        </section>
+                    `;
+                }).join('');
+
+                profilesList.innerHTML = `
+                    <h3>Profiles By League</h3>
+                    <p class="profiles-summary">Browse each team owner grouped by their current league.</p>
+                    <div class="profiles-actions">
+                        <button id="toggle-all-leagues" class="toggle-all-btn" type="button">Show All Leagues</button>
+                    </div>
+                    ${sectionsHtml}
+                `;
+
+                const toggleAllLeaguesBtn = document.getElementById('toggle-all-leagues');
+                const leagueToggles = profilesList.querySelectorAll('.league-toggle');
+
+                function updateToggleAllButton() {
+                    const allExpanded = Array.from(leagueToggles).every((toggle) => toggle.getAttribute('aria-expanded') === 'true');
+                    toggleAllLeaguesBtn.textContent = allExpanded ? 'Hide All Leagues' : 'Show All Leagues';
+                }
+
+                leagueToggles.forEach((toggle) => {
+                    toggle.addEventListener('click', () => {
+                        const controlledSection = document.getElementById(toggle.getAttribute('aria-controls'));
+                        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+
+                        leagueToggles.forEach((otherToggle) => {
+                            const otherSection = document.getElementById(otherToggle.getAttribute('aria-controls'));
+                            otherToggle.setAttribute('aria-expanded', 'false');
+                            if (otherSection) {
+                                otherSection.hidden = true;
+                            }
+                        });
+
+                        if (!isExpanded && controlledSection) {
+                            toggle.setAttribute('aria-expanded', 'true');
+                            controlledSection.hidden = false;
+                        }
+
+                        updateToggleAllButton();
+                    });
+                });
+
+                toggleAllLeaguesBtn.addEventListener('click', () => {
+                    const shouldExpandAll = toggleAllLeaguesBtn.textContent === 'Show All Leagues';
+
+                    leagueToggles.forEach((toggle) => {
+                        const controlledSection = document.getElementById(toggle.getAttribute('aria-controls'));
+                        toggle.setAttribute('aria-expanded', shouldExpandAll ? 'true' : 'false');
+                        if (controlledSection) {
+                            controlledSection.hidden = !shouldExpandAll;
+                        }
+                    });
+
+                    updateToggleAllButton();
+                });
+
+                updateToggleAllButton();
+            } catch (err) {
+                profilesList.innerHTML = '<p>Unable to load profiles.</p>';
+            }
+        }
+
+        loadProfiles();
+    </script>
+</body>
+</html>

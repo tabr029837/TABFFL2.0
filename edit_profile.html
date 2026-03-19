@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+        body { padding-bottom: 84px; }
+        .site-footer .footer-nav { padding: 8px 12px; justify-content: space-around; }
+
+        .edit-section {
+            display: grid;
+            gap: 20px;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .edit-panel {
+            padding: 18px;
+            border: 1px solid #bbb;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .edit-panel h3 {
+            margin-top: 0;
+        }
+
+        .edit-panel form {
+            display: block;
+        }
+
+        .edit-panel fieldset {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .edit-panel legend {
+            font-weight: bold;
+            color: navy;
+        }
+
+        .edit-panel label {
+            display: inline-block;
+            width: 300px;
+            font-weight: bold;
+            vertical-align: top;
+            margin-right: 10px;
+        }
+
+        .edit-panel input {
+            display: inline-block;
+            width: calc(100% - 320px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .edit-panel label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .edit-panel input[type="file"] {
+            padding: 5px;
+        }
+
+        .edit-panel button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #1d4ed8;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .edit-message {
+            margin: 0;
+            font-size: 0.9rem;
+            min-height: 1.25rem;
+        }
+
+        .edit-message.error {
+            color: #b91c1c;
+        }
+
+        .edit-message.success {
+            color: #047857;
+        }
+
+        .team-stats {
+            color: #999;
+            font-style: italic;
+        }
+
+        header {
+            position: relative;
+            background: #001f3f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        h1.site-title {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .auth-status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: white;
+            font-style: italic;
+        }
+
+        .auth-status button {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+            color: navy;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="site-title">TAB Fantasy Football League</h1>
+            <div id="auth-status" class="auth-status"></div>
+        </header>
+
+        <main>
+            <h2>Edit Profile</h2>
+
+            <section class="edit-section" id="edit-section" hidden>
+                <div class="edit-panel">
+                    <h3>Edit Your Profile</h3>
+                    <form id="edit-form">
+                        <fieldset>
+                            <legend>Personal Information</legend>
+                            <label for="first-name">What is your first name?</label>
+                            <input id="first-name" type="text" placeholder="Your first name" required>
+
+                            <label for="last-name">What is your last name?</label>
+                            <input id="last-name" type="text" placeholder="Your last name" required>
+
+                            <label for="hometown">What is your hometown?</label>
+                            <input id="hometown" type="text" placeholder="Your hometown">
+
+                            <label for="game-day-snack">What is your game day snack?</label>
+                            <input id="game-day-snack" type="text" placeholder="e.g., Hot Dogs">
+
+                            <label for="walk-up-song">What is your walk-up song?</label>
+                            <input id="walk-up-song" type="text" placeholder="e.g., Eye of the Tiger">
+
+                            <label for="teams-mascot">What is your team's mascot?</label>
+                            <input id="teams-mascot" type="text" placeholder="e.g., Patriot">
+
+                            <label for="favorite-movie-tv">What is your favorite movie/TV show?</label>
+                            <input id="favorite-movie-tv" type="text" placeholder="e.g., The Office">
+
+                            <label for="favorite-fast-food">What is your favorite fast food?</label>
+                            <input id="favorite-fast-food" type="text" placeholder="e.g., McDonald's">
+
+                            <label for="team-motto">What is your team motto?</label>
+                            <input id="team-motto" type="text" placeholder="e.g., Win or Lose, We Booze">
+
+                            <label for="profile-pic">Upload your profile picture</label>
+                            <input id="profile-pic" type="file" accept="image/*">
+                            <div id="cropper-container" style="display:none; margin-top: 10px;">
+                                <img id="cropper-image" style="max-width: 100%;">
+                            </div>
+                            <button id="crop-btn" type="button" style="display:none; margin-top: 10px;">Crop and Upload</button>
+                            <img id="current-pic" src="" alt="Current Profile Picture" style="max-width: 100px; margin-top: 10px; display: none;">
+                        </fieldset>
+
+                        <button type="submit">Save Profile</button>
+                        <p class="edit-message" id="edit-message" aria-live="polite"></p>
+
+                        <fieldset class="team-stats">
+                            <legend>Team Statistics</legend>
+                            <p><strong>What is your current league?</strong><br><span id="display-current-league">Loading...</span></p>
+                            <p><strong>How many years have you played?</strong><br><span id="display-years-played">Loading...</span></p>
+                            <p><strong>How many championships have you won?</strong><br><span id="display-championships-won">Loading...</span></p>
+                            <p><strong>What is your overall record?</strong><br><span id="display-overall-record">Loading...</span></p>
+                            <p><strong>What is your playoff record?</strong><br><span id="display-playoff-record">Loading...</span></p>
+                        </fieldset>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="profile.html">Profiles</a>
+                <a href="leagues.html">League Standings</a>
+                <a href="power-rankings.html">Power Rankings</a>
+                <a href="awards.html">Awards</a>
+                <a href="top-performers.html">Top Performers</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJPx-MqMGr8zH1bX_qSQ7E0UGi-rSSN0I",
+            authDomain: "tabfflwebsite.firebaseapp.com",
+            projectId: "tabfflwebsite",
+            storageBucket: "tabfflwebsite.firebasestorage.app",
+            messagingSenderId: "229042475467",
+            appId: "1:229042475467:web:ad2cccbb8cb89d5ad2e64e",
+            measurementId: "G-QJT28FTXNK",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let cropper = null;
+
+        const elements = {
+            editSection: document.getElementById("edit-section"),
+            authStatus: document.getElementById("auth-status"),
+            firstName: document.getElementById("first-name"),
+            lastName: document.getElementById("last-name"),
+            hometown: document.getElementById("hometown"),
+            gameDaySnack: document.getElementById("game-day-snack"),
+            walkUpSong: document.getElementById("walk-up-song"),
+            teamsMascot: document.getElementById("teams-mascot"),
+            favoriteMovieTV: document.getElementById("favorite-movie-tv"),
+            favoriteFastFood: document.getElementById("favorite-fast-food"),
+            teamMotto: document.getElementById("team-motto"),
+            profilePic: document.getElementById("profile-pic"),
+            currentPic: document.getElementById("current-pic"),
+            cropperContainer: document.getElementById("cropper-container"),
+            cropperImage: document.getElementById("cropper-image"),
+            cropBtn: document.getElementById("crop-btn"),
+            displayCurrentLeague: document.getElementById("display-current-league"),
+            displayYearsPlayed: document.getElementById("display-years-played"),
+            displayChampionshipsWon: document.getElementById("display-championships-won"),
+            displayOverallRecord: document.getElementById("display-overall-record"),
+            displayPlayoffRecord: document.getElementById("display-playoff-record"),
+            editForm: document.getElementById("edit-form"),
+            editMessage: document.getElementById("edit-message"),
+        };
+
+        function showMessage(el, message, type = "error") {
+            if (!el) return;
+            el.textContent = message;
+            el.classList.toggle("error", type === "error");
+            el.classList.toggle("success", type === "success");
+        }
+
+        // Handle file selection for cropping
+        elements.profilePic.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith("image/")) {
+                const url = URL.createObjectURL(file);
+                elements.cropperImage.src = url;
+                elements.cropperContainer.style.display = "block";
+                elements.cropBtn.style.display = "block";
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(elements.cropperImage, {
+                    aspectRatio: 1, // Square crop
+                    viewMode: 1,
+                    responsive: true,
+                    restore: false,
+                    checkCrossOrigin: false,
+                    checkOrientation: false,
+                    modal: true,
+                    guides: true,
+                    center: true,
+                    highlight: false,
+                    background: false,
+                    autoCrop: true,
+                    autoCropArea: 0.8,
+                });
+            }
+        });
+
+        // Handle crop and upload
+        elements.cropBtn.addEventListener("click", async () => {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 200,
+                    height: 200,
+                });
+                canvas.toBlob(async (blob) => {
+                    // Now upload the blob
+                    const formData = new FormData();
+                    formData.append("file", blob);
+                    formData.append("upload_preset", "profile_pics");
+                    formData.append("cloud_name", "dyzqfynpd");
+                    try {
+                        const res = await fetch(
+                            "https://api.cloudinary.com/v1_1/dyzqfynpd/image/upload",
+                            {
+                                method: "POST",
+                                body: formData,
+                            }
+                        );
+                        if (!res.ok) {
+                            throw new Error("Failed to upload to Cloudinary");
+                        }
+                        const data = await res.json();
+                        const profilePicUrl = data.secure_url;
+                        // Save to Firestore
+                        await setDoc(doc(db, 'users', currentUser.uid), {
+                            profilePic: profilePicUrl,
+                        }, { merge: true });
+                        showMessage(elements.editMessage, "Profile picture updated!", "success");
+                        // Hide cropper
+                        elements.cropperContainer.style.display = "none";
+                        elements.cropBtn.style.display = "none";
+                        cropper.destroy();
+                        cropper = null;
+                        // Update current pic
+                        elements.currentPic.src = profilePicUrl;
+                        elements.currentPic.style.display = "block";
+                        // Clear file input
+                        elements.profilePic.value = "";
+                    } catch (err) {
+                        showMessage(elements.editMessage, err.message || "Upload failed.", "error");
+                    }
+                }, "image/jpeg");
+            }
+        });
+
+        async function loadProfile(user) {
+            const docRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                elements.firstName.value = data.firstName || '';
+                elements.lastName.value = data.lastName || '';
+                elements.hometown.value = data.hometown || '';
+                elements.gameDaySnack.value = data.gameDaySnack || '';
+                elements.walkUpSong.value = data.walkUpSong || '';
+                elements.teamsMascot.value = data.teamsMascot || '';
+                elements.favoriteMovieTV.value = data.favoriteMovieTV || '';
+                elements.favoriteFastFood.value = data.favoriteFastFood || '';
+                elements.teamMotto.value = data.teamMotto || '';
+                if (data.profilePic) {
+                    elements.currentPic.src = data.profilePic;
+                    elements.currentPic.style.display = 'block';
+                } else {
+                    elements.currentPic.style.display = 'none';
+                }
+            }
+        }
+
+        async function loadTeamStats(userId) {
+            // Load stats from the `statistics` collection by the user's UID.
+            const docRef = doc(db, 'statistics', userId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                elements.displayCurrentLeague.textContent = data.league || 'N/A';
+                elements.displayYearsPlayed.textContent = data.years || 'N/A';
+                elements.displayChampionshipsWon.textContent = data.champs || 'N/A';
+                elements.displayOverallRecord.textContent = data['overall record'] || data.overallRecord || 'N/A';
+                elements.displayPlayoffRecord.textContent = data['playoff record'] || data.playoffRecord || 'N/A';
+            } else {
+                elements.displayCurrentLeague.textContent = 'N/A';
+                elements.displayYearsPlayed.textContent = 'N/A';
+                elements.displayChampionshipsWon.textContent = 'N/A';
+                elements.displayOverallRecord.textContent = 'N/A';
+                elements.displayPlayoffRecord.textContent = 'N/A';
+            }
+        }
+
+        function setSignedIn(user) {
+            if (user) {
+                elements.editSection.hidden = false;
+                loadProfile(user);
+                loadTeamStats(user.uid);
+                elements.authStatus.innerHTML = `<button id="all-profiles-btn">All Profiles</button> <button id="logout-btn">Logout</button>`;
+                const allProfilesBtn = document.getElementById("all-profiles-btn");
+                allProfilesBtn.addEventListener("click", () => {
+                    window.location.href = 'profile.html';
+                });
+                const logoutBtn = document.getElementById("logout-btn");
+                logoutBtn.addEventListener("click", async () => {
+                    await signOut(auth);
+                });
+                // Load profile data if any
+            } else {
+                window.location.href = 'profile.html';
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            setSignedIn(user);
+        });
+
+        elements.editForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            showMessage(elements.editMessage, "Saving…", "success");
+            console.log("Starting save...");
+            try {
+                console.log("Saving doc...");
+                await setDoc(doc(db, 'users', currentUser.uid), {
+                    firstName: elements.firstName.value.trim(),
+                    lastName: elements.lastName.value.trim(),
+                    hometown: elements.hometown.value.trim(),
+                    gameDaySnack: elements.gameDaySnack.value.trim(),
+                    walkUpSong: elements.walkUpSong.value.trim(),
+                    teamsMascot: elements.teamsMascot.value.trim(),
+                    favoriteMovieTV: elements.favoriteMovieTV.value.trim(),
+                    favoriteFastFood: elements.favoriteFastFood.value.trim(),
+                    teamMotto: elements.teamMotto.value.trim(),
+                }, { merge: true });
+                console.log("Doc saved successfully");
+                showMessage(elements.editMessage, "Profile updated!", "success");
+                // Reload to show new pic
+                loadProfile(currentUser);
+            } catch (err) {
+                console.error("Save error:", err);
+                showMessage(elements.editMessage, err.message || "Unable to save.", "error");
+            }
+        });
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+</body>
+</html>

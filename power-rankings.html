@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0f2747">
+    <title>Power Rankings</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+
+        body {
+            padding-bottom: 84px;
+        }
+
+        .site-footer .footer-nav {
+            padding: 8px 12px;
+            justify-content: space-around;
+        }
+
+        .page-intro {
+            margin-bottom: 24px;
+            padding: 24px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(226, 232, 240, 0.9));
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .page-intro h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .page-intro p {
+            margin: 0;
+            line-height: 1.65;
+            color: #334155;
+        }
+
+        .footer-spacer {
+            width: 100%;
+            height: 150px;
+            flex-shrink: 0;
+        }
+
+        .rankings-shell {
+            display: grid;
+            gap: 12px;
+            padding-bottom: 48px;
+        }
+
+        #rankings-status {
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid #dbe2ea;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .rankings-board {
+            display: grid;
+            gap: 8px;
+        }
+
+        .league-divider {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 8px 0 2px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(0, 31, 63, 0.08);
+            border: 1px solid rgba(0, 31, 63, 0.12);
+        }
+
+        .league-divider-name {
+            color: #001f3f;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .league-divider-range {
+            color: #475569;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .ranking-card {
+            display: grid;
+            grid-template-columns: 56px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid #dbe2ea;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.05);
+        }
+
+        .ranking-position {
+            display: grid;
+            place-items: center;
+            min-height: 48px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #001f3f, #1d4ed8);
+            color: white;
+            text-align: center;
+        }
+
+        .ranking-position .label {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.82;
+        }
+
+        .ranking-position .value {
+            display: block;
+            font-size: 1.9rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+
+        .ranking-team {
+            margin: 0 0 2px;
+            color: #0f172a;
+            font-size: 1.35rem;
+            line-height: 1.1;
+        }
+
+        .ranking-notes {
+            margin: 0;
+            line-height: 1.2;
+            font-size: 0.88rem;
+            color: #475569;
+            white-space: pre-line;
+        }
+
+        .ranking-notes strong {
+            color: #0f172a;
+        }
+
+        .ranking-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            margin-top: 6px;
+            color: #475569;
+            font-size: 0.82rem;
+            line-height: 1.25;
+        }
+
+        .ranking-metrics span {
+            white-space: nowrap;
+        }
+
+        .ranking-source {
+            margin-top: 8px;
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+
+        @media (max-width: 640px) {
+            .ranking-card {
+                grid-template-columns: 1fr;
+            }
+
+            .ranking-position {
+                min-height: 48px;
+            }
+
+            .ranking-metrics {
+                gap: 8px;
+            }
+
+            .ranking-metrics span {
+                white-space: normal;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="site-title">TAB Fantasy Football League</h1>
+        </header>
+
+        <main>
+            <section class="page-intro">
+                <h2>Power Rankings</h2>
+                <p>Track the latest movement across TABFFL through this in-site Power Rankings board. Each spot is pulled from the league spreadsheet and presented here as a full rankings list. <strong>Remember, at the end of the regular season, this will become the official league placement for next season.</strong></p>
+            </section>
+
+            <section class="rankings-shell">
+                <div id="rankings-status">Loading power rankings...</div>
+                <div id="rankings-board" class="rankings-board" hidden></div>
+            </section>
+        </main>
+
+        <div class="footer-spacer" aria-hidden="true"></div>
+
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="/">Home</a>
+                <a href="/profiles">Profiles</a>
+                <a href="/leagues">League Standings</a>
+                <a href="/power-rankings" aria-current="page">Power Rankings</a>
+                <a href="/awards">Awards</a>
+                <a href="/top-performers">Top Performers</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        const POWER_RANKINGS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePowerRankingsResponse&gid=650942190&range=A2:C65";
+        const POWER_RANKINGS_DETAILS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePowerRankingsDetailsResponse&gid=650942190&range=E2:J63";
+        const LEAGUE_GROUPS = [
+            { name: "Summit", start: 1, end: 10 },
+            { name: "Glacier", start: 11, end: 20 },
+            { name: "Meadow", start: 21, end: 30 },
+            { name: "Desert", start: 31, end: 40 },
+            { name: "Trench", start: 41, end: 50 },
+            { name: "Canyon", start: 51, end: 60 }
+        ];
+
+        const rankingsStatus = document.getElementById("rankings-status");
+        const rankingsBoard = document.getElementById("rankings-board");
+        let summaryRows = null;
+        let detailsByName = null;
+
+        function createRankingCard([rank, team, powerIndex], details = {}) {
+            const card = document.createElement("article");
+            card.className = "ranking-card";
+            const metrics = [
+                `Total Points Rank: ${details.totalPointsRank || "N/A"}`,
+                `Wins Rank: ${details.winsRank || "N/A"}`,
+                `SOS Rank: ${details.sosRank || "N/A"}`,
+                `True Performance Rank: ${details.truePerformanceRank || "N/A"}`
+            ];
+
+            card.innerHTML = `
+                <div class="ranking-position">
+                    <span class="label">Rank</span>
+                    <span class="value">${rank || "-"}</span>
+                </div>
+                <div class="ranking-copy">
+                    <h3 class="ranking-team">${team || "Unnamed Team"}</h3>
+                    <p class="ranking-notes"><strong>Power Index: ${powerIndex || "N/A"}</strong></p>
+                    <div class="ranking-metrics">${metrics.map((metric) => `<span>${metric}</span>`).join("<span>|</span>")}</div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function createLeagueDivider({ name, start, end }) {
+            const divider = document.createElement("div");
+            divider.className = "league-divider";
+            divider.innerHTML = `
+                <span class="league-divider-name">${name}</span>
+                <span class="league-divider-range">Ranks ${start}-${end}</span>
+            `;
+            return divider;
+        }
+
+        function renderRankings(rows) {
+            rankingsBoard.innerHTML = "";
+            rows.forEach((row, index) => {
+                const leagueGroup = LEAGUE_GROUPS.find((group) => group.start === index + 1);
+                if (leagueGroup) {
+                    rankingsBoard.appendChild(createLeagueDivider(leagueGroup));
+                }
+                const details = detailsByName ? detailsByName[row[1]] : null;
+                rankingsBoard.appendChild(createRankingCard(row, details));
+            });
+            rankingsBoard.hidden = false;
+            rankingsStatus.hidden = true;
+        }
+
+        function showRankingsError() {
+            rankingsStatus.hidden = false;
+            rankingsStatus.innerHTML = `
+                <div class="ranking-source">Power rankings are not available yet. The public spreadsheet feed did not load successfully.</div>
+            `;
+        }
+
+        function maybeRenderRankings() {
+            if (!summaryRows || !detailsByName) {
+                return;
+            }
+            renderRankings(summaryRows);
+        }
+
+        function loadFeed(src) {
+            const script = document.createElement("script");
+            script.src = src;
+            script.async = true;
+            script.onerror = showRankingsError;
+            document.body.appendChild(script);
+        }
+
+        function loadRankings() {
+            loadFeed(POWER_RANKINGS_FEED_URL);
+            loadFeed(POWER_RANKINGS_DETAILS_FEED_URL);
+        }
+
+        window.handlePowerRankingsResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                showRankingsError();
+                return;
+            }
+
+            summaryRows = response.table.rows
+                .map((row) => {
+                    const cells = row.c || [];
+                    const rankCell = cells[0];
+                    const nameCell = cells[1];
+                    const powerIndexCell = cells[2];
+
+                    if (!rankCell || !nameCell || !powerIndexCell) {
+                        return null;
+                    }
+
+                    return [
+                        rankCell.f || String(rankCell.v || ""),
+                        nameCell.f || String(nameCell.v || ""),
+                        powerIndexCell.f || String(powerIndexCell.v || "")
+                    ];
+                })
+                .filter(Boolean);
+
+            if (!summaryRows.length) {
+                showRankingsError();
+                return;
+            }
+
+            maybeRenderRankings();
+        };
+
+        window.handlePowerRankingsDetailsResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                showRankingsError();
+                return;
+            }
+
+            detailsByName = response.table.rows.reduce((acc, row) => {
+                const cells = row.c || [];
+                const nameCell = cells[0];
+                if (!nameCell || !nameCell.v) {
+                    return acc;
+                }
+
+                const name = nameCell.f || String(nameCell.v || "");
+                acc[name] = {
+                    avgRank: cells[1] ? (cells[1].f || String(cells[1].v || "")) : "",
+                    totalPointsRank: cells[2] ? (cells[2].f || String(cells[2].v || "")) : "",
+                    winsRank: cells[3] ? (cells[3].f || String(cells[3].v || "")) : "",
+                    sosRank: cells[4] ? (cells[4].f || String(cells[4].v || "")) : "",
+                    truePerformanceRank: cells[5] ? (cells[5].f || String(cells[5].v || "")) : ""
+                };
+                return acc;
+            }, {});
+
+            maybeRenderRankings();
+        };
+
+        loadRankings();
+    </script>
+</body>
+</html>

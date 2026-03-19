@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>League Standings</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+
+        body {
+            padding-bottom: 84px;
+        }
+
+        .site-footer .footer-nav {
+            padding: 8px 12px;
+            justify-content: space-around;
+        }
+
+        .page-intro {
+            margin-bottom: 24px;
+            padding: 24px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(226, 232, 240, 0.9));
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .page-intro h2 {
+            margin: 0 0 12px;
+        }
+
+        .page-intro p {
+            margin: 0;
+            line-height: 1.65;
+            color: #334155;
+        }
+
+        .standings-shell {
+            display: grid;
+            gap: 22px;
+        }
+
+        .conference-block {
+            display: grid;
+            gap: 14px;
+        }
+
+        .conference-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        .conference-header.heights {
+            border-bottom-color: #166534;
+        }
+
+        .conference-header.plains {
+            border-bottom-color: #a16207;
+        }
+
+        .conference-header.depths {
+            border-bottom-color: #991b1b;
+        }
+
+        .conference-title {
+            margin: 0;
+            color: #001f3f;
+            font-size: 1.35rem;
+        }
+
+        .conference-header.heights .conference-title,
+        .conference-header.heights .conference-subtitle {
+            color: #166534;
+        }
+
+        .conference-header.plains .conference-title,
+        .conference-header.plains .conference-subtitle {
+            color: #a16207;
+        }
+
+        .conference-header.depths .conference-title,
+        .conference-header.depths .conference-subtitle {
+            color: #991b1b;
+        }
+
+        .conference-subtitle {
+            color: #64748b;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .division-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 16px;
+        }
+
+        .division-card {
+            display: grid;
+            gap: 14px;
+            padding: 16px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .division-card.summit,
+        .division-card.summit {
+            border-top: 4px solid #166534;
+        }
+
+        .division-card.glacier {
+            border-top: 4px solid #38bdf8;
+        }
+
+        .division-card.meadow,
+        .division-card.meadow {
+            border-top: 4px solid #eab308;
+        }
+
+        .division-card.desert {
+            border-top: 4px solid #f97316;
+        }
+
+        .division-card.trench,
+        .division-card.trench {
+            border-top: 4px solid #dc2626;
+        }
+
+        .division-card.canyon {
+            border-top: 4px solid #ec4899;
+        }
+
+        .division-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .division-name {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.2rem;
+        }
+
+        .division-meta {
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sector-block {
+            display: grid;
+            gap: 8px;
+        }
+
+        .sector-title {
+            margin: 0;
+            color: #334155;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .standings-list {
+            display: grid;
+            gap: 6px;
+        }
+
+        .standing-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 12px;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .standing-row.leader {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .standing-manager {
+            margin: 0 0 2px;
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .standing-record {
+            margin: 0;
+            color: #475569;
+            font-size: 0.84rem;
+        }
+
+        .standing-points {
+            color: #001f3f;
+            font-size: 1rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .standings-status {
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #dbe2ea;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .footer-spacer {
+            width: 100%;
+            height: 160px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 640px) {
+            .division-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="site-title">TAB Fantasy Football League</h1>
+        </header>
+
+        <main>
+            <section class="page-intro">
+                <h2>League Standings</h2>
+                <p>Follow every division in a cleaner standings board built right into the site. Each conference is broken into divisions, and every division shows both sectors with records and total points at a glance.</p>
+            </section>
+
+            <section class="standings-shell">
+                <div id="standings-status" class="standings-status">Loading standings...</div>
+                <div id="standings-board" hidden></div>
+            </section>
+        </main>
+
+        <div class="footer-spacer" aria-hidden="true"></div>
+
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="profile.html">Profiles</a>
+                <a href="leagues.html" aria-current="page">League Standings</a>
+                <a href="power-rankings.html">Power Rankings</a>
+                <a href="awards.html">Awards</a>
+                <a href="top-performers.html">Top Performers</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        const STANDINGS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleStandingsResponse&gid=1843094305&range=A1:AP14";
+        const DIVISIONS = [
+            { key: "summit", name: "Summit", conference: "Heights", sector: "West", baseIndex: 1 },
+            { key: "glacier", name: "Glacier", conference: "Heights", sector: "West", baseIndex: 7 },
+            { key: "meadow", name: "Meadow", conference: "Plains", sector: "West", baseIndex: 13 },
+            { key: "desert", name: "Desert", conference: "Plains", sector: "West", baseIndex: 19 },
+            { key: "trench", name: "Trench", conference: "Depths", sector: "West", baseIndex: 25 },
+            { key: "canyon", name: "Canyon", conference: "Depths", sector: "West", baseIndex: 31 }
+        ];
+        const CONFERENCE_ORDER = ["Heights", "Plains", "Depths"];
+
+        const standingsStatus = document.getElementById("standings-status");
+        const standingsBoard = document.getElementById("standings-board");
+
+        function formatPoints(value) {
+            const numericValue = Number(value);
+            if (Number.isNaN(numericValue)) {
+                return value || "0.00";
+            }
+            return numericValue.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function createStandingRow(entry, isLeader) {
+            return `
+                <div class="standing-row${isLeader ? " leader" : ""}">
+                    <div>
+                        <p class="standing-manager">${entry.name}</p>
+                        <p class="standing-record">${entry.wins}-${entry.losses}</p>
+                    </div>
+                    <div class="standing-points">${formatPoints(entry.points)} PT</div>
+                </div>
+            `;
+        }
+
+        function createSectorBlock(title, entries) {
+            return `
+                <section class="sector-block">
+                    <h4 class="sector-title">${title}</h4>
+                    <div class="standings-list">
+                        ${entries.map((entry, index) => createStandingRow(entry, index === 0)).join("")}
+                    </div>
+                </section>
+            `;
+        }
+
+        function createDivisionCard(division) {
+            return `
+                <article class="division-card ${division.key}">
+                    <div class="division-header">
+                        <h3 class="division-name">${division.name}</h3>
+                        <span class="division-meta">Division</span>
+                    </div>
+                    ${createSectorBlock("West Sector", division.westEntries)}
+                    ${createSectorBlock("East Sector", division.eastEntries)}
+                </article>
+            `;
+        }
+
+        function renderStandings(divisionData) {
+            const conferences = CONFERENCE_ORDER.map((conference) => {
+                const divisions = divisionData.filter((division) => division.conference === conference);
+                const conferenceClass = conference.toLowerCase();
+                return `
+                    <section class="conference-block">
+                        <div class="conference-header ${conferenceClass}">
+                            <h3 class="conference-title">${conference} Conference</h3>
+                            <span class="conference-subtitle">${divisions.length} divisions</span>
+                        </div>
+                        <div class="division-grid">
+                            ${divisions.map(createDivisionCard).join("")}
+                        </div>
+                    </section>
+                `;
+            }).join("");
+
+            standingsBoard.innerHTML = conferences;
+            standingsBoard.hidden = false;
+            standingsStatus.hidden = true;
+        }
+
+        function showStandingsError() {
+            standingsStatus.hidden = false;
+            standingsStatus.textContent = "League standings are not available right now.";
+        }
+
+        function parseDivisionEntries(rows, baseIndex) {
+            const westRows = rows.slice(0, 5);
+            const eastRows = rows.slice(6, 11);
+
+            const mapEntry = (row) => {
+                const cells = row.c || [];
+                const nameCell = cells[baseIndex];
+                const winsCell = cells[baseIndex + 1];
+                const lossesCell = cells[baseIndex + 2];
+                const pointsCell = cells[baseIndex + 4];
+
+                if (!nameCell || !nameCell.v) {
+                    return null;
+                }
+
+                return {
+                    name: nameCell.f || String(nameCell.v || ""),
+                    wins: winsCell ? (winsCell.f || String(winsCell.v || 0)) : "0",
+                    losses: lossesCell ? (lossesCell.f || String(lossesCell.v || 0)) : "0",
+                    points: pointsCell ? (pointsCell.f || String(pointsCell.v || 0)) : "0.00"
+                };
+            };
+
+            return {
+                westEntries: westRows.map(mapEntry).filter(Boolean),
+                eastEntries: eastRows.map(mapEntry).filter(Boolean)
+            };
+        }
+
+        function loadStandings() {
+            const script = document.createElement("script");
+            script.src = STANDINGS_FEED_URL;
+            script.async = true;
+            script.onerror = showStandingsError;
+            document.body.appendChild(script);
+        }
+
+        window.handleStandingsResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                showStandingsError();
+                return;
+            }
+
+            const rows = response.table.rows;
+            const divisionData = DIVISIONS.map((division) => {
+                const parsedEntries = parseDivisionEntries(rows, division.baseIndex);
+                return {
+                    ...division,
+                    ...parsedEntries
+                };
+            });
+
+            renderStandings(divisionData);
+        };
+
+        loadStandings();
+    </script>
+</body>
+</html>

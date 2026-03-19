@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+        body { padding-bottom: 84px; }
+        .site-footer .footer-nav { padding: 8px 12px; justify-content: space-around; }
+
+        .auth-section {
+            display: grid;
+            gap: 20px;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .auth-panel {
+            display: grid;
+            gap: 18px;
+            padding: 18px;
+            border: 1px solid #bbb;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 8px;
+        }
+
+        .auth-form label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .auth-form input {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .auth-form button {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            background: #1d4ed8;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .auth-message {
+            margin: 0;
+            font-size: 0.9rem;
+            min-height: 1.25rem;
+        }
+
+        .auth-message.error {
+            color: #b91c1c;
+        }
+
+        .auth-message.success {
+            color: #047857;
+        }
+
+        #auth-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #auth-link a {
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+        #auth-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="site-title">TAB Fantasy Football League</h1>
+        </header>
+
+        <main>
+            <h2>Login</h2>
+
+            <section class="auth-section">
+                <div class="auth-panel">
+                    <div class="auth-form" id="signup-form">
+                        <h3>Sign Up</h3>
+                        <label for="signup-email">Email</label>
+                        <input id="signup-email" type="email" placeholder="you@example.com" required>
+
+                        <label for="signup-password">Password</label>
+                        <input id="signup-password" type="password" placeholder="••••••••" required>
+
+                        <button id="signup-btn" type="button">Create account</button>
+                        <p class="auth-message" id="signup-message" aria-live="polite"></p>
+                    </div>
+
+                    <div class="auth-form" id="login-form">
+                        <h3>Log in</h3>
+                        <label for="login-email">Email</label>
+                        <input id="login-email" type="email" placeholder="you@example.com" required>
+
+                        <label for="login-password">Password</label>
+                        <input id="login-password" type="password" placeholder="••••••••" required>
+
+                        <button id="login-btn" type="button">Log in</button>
+                        <p class="auth-message" id="login-message" aria-live="polite"></p>
+                    </div>
+                </div>
+
+                <div id="auth-link"></div>
+            </section>
+        </main>
+
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="index.html">Home</a>
+                <a href="profile.html">Profiles</a>
+                <a href="leagues.html">League Standings</a>
+                <a href="power-rankings.html">Power Rankings</a>
+                <a href="awards.html">Awards</a>
+                <a href="top-performers.html">Top Performers</a>
+            </nav>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+        } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCJPx-MqMGr8zH1bX_qSQ7E0UGi-rSSN0I",
+            authDomain: "tabfflwebsite.firebaseapp.com",
+            projectId: "tabfflwebsite",
+            storageBucket: "tabfflwebsite.firebasestorage.app",
+            messagingSenderId: "229042475467",
+            appId: "1:229042475467:web:ad2cccbb8cb89d5ad2e64e",
+            measurementId: "G-QJT28FTXNK",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const elements = {
+            signupForm: document.getElementById("signup-form"),
+            loginForm: document.getElementById("login-form"),
+            signupEmail: document.getElementById("signup-email"),
+            signupPassword: document.getElementById("signup-password"),
+            signupBtn: document.getElementById("signup-btn"),
+            signupMessage: document.getElementById("signup-message"),
+            loginEmail: document.getElementById("login-email"),
+            loginPassword: document.getElementById("login-password"),
+            loginBtn: document.getElementById("login-btn"),
+            loginMessage: document.getElementById("login-message"),
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        const h2 = document.querySelector('h2');
+        const authLink = document.getElementById('auth-link');
+        if (mode === 'signup') {
+            h2.textContent = 'Sign Up';
+            elements.loginForm.style.display = 'none';
+            authLink.innerHTML = '<p>Already have an account? <a href="login.html?mode=login">Log in</a></p>';
+        } else if (mode === 'login') {
+            h2.textContent = 'Log In';
+            elements.signupForm.style.display = 'none';
+            authLink.innerHTML = '<p>Don\'t have an account? <a href="login.html?mode=signup">Sign up</a></p>';
+        } else {
+            h2.textContent = 'Login';
+            authLink.innerHTML = '';
+            // show both
+        }
+
+        function showMessage(el, message, type = "error") {
+            if (!el) return;
+            el.textContent = message;
+            el.classList.toggle("error", type === "error");
+            el.classList.toggle("success", type === "success");
+        }
+
+        function resetForms() {
+            elements.signupEmail.value = "";
+            elements.signupPassword.value = "";
+            elements.loginEmail.value = "";
+            elements.loginPassword.value = "";
+            showMessage(elements.signupMessage, "");
+            showMessage(elements.loginMessage, "");
+        }
+
+        function setSignedIn(user) {
+            if (user) {
+                window.location.href = 'edit_profile.html';
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            setSignedIn(user);
+        });
+
+        elements.signupBtn.addEventListener("click", async () => {
+            showMessage(elements.signupMessage, "Creating account…", "success");
+            try {
+                await createUserWithEmailAndPassword(
+                    auth,
+                    elements.signupEmail.value.trim(),
+                    elements.signupPassword.value.trim(),
+                );
+                showMessage(elements.signupMessage, "Account created!", "success");
+                resetForms();
+            } catch (err) {
+                showMessage(elements.signupMessage, err.message || "Unable to create account.", "error");
+            }
+        });
+
+        elements.loginBtn.addEventListener("click", async () => {
+            showMessage(elements.loginMessage, "Signing in…", "success");
+            try {
+                await signInWithEmailAndPassword(
+                    auth,
+                    elements.loginEmail.value.trim(),
+                    elements.loginPassword.value.trim(),
+                );
+                showMessage(elements.loginMessage, "Signed in!", "success");
+                resetForms();
+            } catch (err) {
+                showMessage(elements.loginMessage, err.message || "Unable to sign in.", "error");
+            }
+        });
+    </script>
+</body>
+</html></content>
+<parameter name="filePath">c:\Users\Andrew Barnes\OneDrive\Documents\TABFFL2.0\login.html

@@ -1,0 +1,41 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/styles.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profiles",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/leagues",
+      "destination": "/leagues.html"
+    },
+    {
+      "source": "/power-rankings",
+      "destination": "/power-rankings.html"
+    },
+    {
+      "source": "/awards",
+      "destination": "/awards.html"
+    },
+    {
+      "source": "/top-performers",
+      "destination": "/top-performers.html"
+    }
+  ]
+}

@@ -306,16 +306,29 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getFirestore, getDocs, collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirebaseConfig } from "/lib/firebase-config.js";
 
-        const firebaseConfig = {
-            apiKey: "",
-            authDomain: "tabfflwebsite.firebaseapp.com",
-            projectId: "tabfflwebsite",
-            storageBucket: "tabfflwebsite.firebasestorage.app",
-            messagingSenderId: "229042475467",
-            appId: "1:229042475467:web:ad2cccbb8cb89d5ad2e64e",
-            measurementId: "G-QJT28FTXNK",
-        };
+        function showSetupError(message) {
+            const main = document.querySelector("main");
+            if (!main) return;
+
+            main.innerHTML = `
+                <section class="card">
+                    <h2>Configuration Needed</h2>
+                    <p>${message}</p>
+                    <p>Set <code>FIREBASE_API_KEY</code> in Vercel, redeploy, and refresh this page.</p>
+                </section>
+            `;
+        }
+
+        let firebaseConfig;
+
+        try {
+            firebaseConfig = await getFirebaseConfig();
+        } catch (error) {
+            showSetupError(error.message);
+            throw error;
+        }
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);

@@ -18,10 +18,6 @@
       "destination": "/index.html"
     },
     {
-      "source": "/profiles",
-      "destination": "/profile.html"
-    },
-    {
       "source": "/leagues",
       "destination": "/leagues.html"
     },
@@ -36,6 +32,18 @@
     {
       "source": "/top-performers",
       "destination": "/top-performers.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/profile",
+      "destination": "/profiles",
+      "permanent": true
+    },
+    {
+      "source": "/profile.html",
+      "destination": "/profiles",
+      "permanent": true
     }
   ]
 }

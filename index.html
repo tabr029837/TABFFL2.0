@@ -52,30 +52,6 @@
             color: navy;
         }
 
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-            margin-top: 22px;
-        }
-
-        .quick-links a {
-            display: block;
-            padding: 14px 16px;
-            border: 1px solid #dbe2ea;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(15, 39, 71, 0.06), rgba(29, 78, 137, 0.12));
-            color: #0f2747;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .quick-links a:hover,
-        .quick-links a:focus-visible {
-            transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
-            outline: none;
-        }
     </style>
 </head>
 <body>
@@ -90,22 +66,29 @@
                 <p>Welcome to the TAB Fantasy Football League website, your home base for the season ahead. This is the place to follow the competition, check in on the league, and keep up with the stories, stats, and personalities that make TABFFL what it is.</p>
                 <p>Use the navigation below to explore everything the site has to offer. <strong>Profiles</strong> lets you browse each manager by league, <strong>League Standings</strong> keeps you up to date on where every division stands, <strong>Power Rankings</strong> highlights the latest movement across the league, <strong>Awards</strong> celebrates the history of the league, and <strong>Top Performers</strong> spotlights the best long-term numbers.</p>
                 <p class="nav-guide">We're excited for the season, looking forward to the competition, and can't wait to see how everything unfolds. Here's to a fun year, big matchups, and another great chapter of TABFFL.</p>
-                <div class="quick-links" aria-label="Featured pages">
-                    <a href="/profiles">Browse Profiles</a>
-                    <a href="/leagues">Open Standings</a>
-                    <a href="/power-rankings">View Power Rankings</a>
-                </div>
+                <section class="site-shortcuts" aria-label="Site shortcuts">
+                    <h3>Jump Anywhere</h3>
+                    <p>Use these quick links on any page to bounce between the main parts of the site.</p>
+                    <div class="quick-links">
+                        <a href="/profiles">Browse Profiles</a>
+                        <a href="/leagues">Open Standings</a>
+                        <a href="/power-rankings">View Power Rankings</a>
+                        <a href="/awards">See Awards</a>
+                        <a href="/top-performers">Top Performers</a>
+                        <a href="/">Return Home</a>
+                    </div>
+                </section>
             </section>
         </main>
 
         <footer class="site-footer" role="contentinfo">
             <nav class="footer-nav" role="navigation" aria-label="Main navigation">
-                <a href="/" aria-current="page">Home</a>
-                <a href="/profiles">Profiles</a>
-                <a href="/leagues">League Standings</a>
-                <a href="/power-rankings">Power Rankings</a>
-                <a href="/awards">Awards</a>
-                <a href="/top-performers">Top Performers</a>
+                <a href="/" aria-current="page" aria-label="Home"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg></span><span class="sr-only">Home</span></a>
+                <a href="/profiles" aria-label="Profiles"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg></span><span class="sr-only">Profiles</span></a>
+                <a href="/leagues" aria-label="League Standings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-4"></path></svg></span><span class="sr-only">League Standings</span></a>
+                <a href="/power-rankings" aria-label="Power Rankings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 16l5-5 4 3 7-8"></path><path d="M16 6h4v4"></path></svg></span><span class="sr-only">Power Rankings</span></a>
+                <a href="/awards" aria-label="Awards"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3a4 4 0 0 1-8 0Z"></path><path d="M6 5H4a3 3 0 0 0 3 3"></path><path d="M18 5h2a3 3 0 0 1-3 3"></path><path d="M12 11v4"></path><path d="M9 21h6"></path><path d="M10 15h4l1 3H9Z"></path></svg></span><span class="sr-only">Awards</span></a>
+                <a href="/top-performers" aria-label="Top Performers"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8 6.7 19.1l1-5.8L3.5 9.2l5.9-.9Z"></path></svg></span><span class="sr-only">Top Performers</span></a>
             </nav>
         </footer>
     </div>

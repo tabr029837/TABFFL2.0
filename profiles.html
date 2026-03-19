@@ -131,6 +131,8 @@
         }
 
         .profiles-actions {
+            display: flex;
+            justify-content: flex-end;
             margin-bottom: 18px;
         }
 
@@ -255,6 +257,28 @@
             color: white;
             cursor: pointer;
             font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            header {
+                padding-top: 3.75rem;
+            }
+
+            .login-buttons,
+            .auth-status {
+                top: 14px;
+                right: 14px;
+            }
+
+            .login-buttons {
+                gap: 8px;
+            }
+
+            .login-btn,
+            .auth-status button {
+                padding: 6px 10px;
+                font-size: 0.82rem;
+            }
         }
     </style>
 </head>

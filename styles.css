@@ -188,7 +188,7 @@ a {
 
 .quick-links {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 12px;
     margin-top: 18px;
 }
@@ -260,17 +260,55 @@ a {
     }
 
     .site-footer .footer-nav {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scroll-snap-type: x proximity;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 4px;
         padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     }
 
     .site-footer .footer-nav a {
-        flex: 0 0 auto;
-        min-width: 72px;
-        scroll-snap-align: start;
+        min-width: 0;
+        padding: 8px 4px;
+        border-radius: 16px;
+    }
+
+    .quick-links {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .quick-links a {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
+        gap: 8px;
+        padding: 12px 8px;
+    }
+
+    .quick-link-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+    }
+
+    .quick-link-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .quick-link-title {
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+
+    .footer-emblem {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+    }
+
+    .footer-emblem svg {
+        width: 15px;
+        height: 15px;
     }
 }

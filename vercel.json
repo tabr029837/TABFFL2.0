@@ -32,6 +32,10 @@
     {
       "source": "/top-performers",
       "destination": "/top-performers.html"
+    },
+    {
+      "source": "/badges",
+      "destination": "/badges.html"
     }
   ],
   "redirects": [

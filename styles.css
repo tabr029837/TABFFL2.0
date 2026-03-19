@@ -91,7 +91,7 @@ a {
 
 .site-footer .footer-nav {
     display: grid;
-    grid-template-columns: repeat(6, minmax(100px, 1fr));
+    grid-template-columns: repeat(7, minmax(72px, 1fr));
     gap: 8px;
     width: min(1100px, calc(100% - 24px));
     margin: 0 auto;
@@ -194,7 +194,10 @@ a {
 }
 
 .quick-links a {
-    display: block;
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
     padding: 14px 16px;
     border: 1px solid var(--panel-border);
     border-radius: 16px;
@@ -205,12 +208,45 @@ a {
     transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 
+.quick-link-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(15, 39, 71, 0.1);
+    color: #0f2747;
+}
+
+.quick-link-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.quick-link-copy {
+    display: block;
+}
+
+.quick-link-title {
+    font-weight: 700;
+}
+
 .quick-links a:hover,
 .quick-links a:focus-visible {
     transform: translateY(-1px);
     box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
     border-color: #bfd0e2;
     outline: none;
+}
+
+.quick-links a:hover .quick-link-icon,
+.quick-links a:focus-visible .quick-link-icon {
+    background: rgba(15, 39, 71, 0.16);
 }
 
 @media (max-width: 760px) {

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Badges</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+
+        body {
+            padding-bottom: 84px;
+        }
+
+        .site-footer .footer-nav {
+            padding: 8px 12px;
+            justify-content: space-around;
+        }
+
+        .page-intro {
+            margin-bottom: 24px;
+            padding: 24px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(226, 232, 240, 0.9));
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .page-intro h2 {
+            margin: 0 0 12px;
+        }
+
+        .page-intro p {
+            margin: 0;
+            line-height: 1.65;
+            color: #334155;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .badge-card {
+            display: grid;
+            gap: 14px;
+            padding: 20px;
+            border: 1px solid #dbe2ea;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .badge-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #0f2747, #1d4e89);
+            color: #eff6ff;
+        }
+
+        .badge-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .badge-card h3 {
+            margin: 0;
+            color: #0f2747;
+        }
+
+        .badge-card p {
+            margin: 0;
+            color: #475569;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="site-title">TAB Fantasy Football League</h1>
+        </header>
+
+        <main>
+            <section class="page-intro">
+                <h2>Badges</h2>
+                <p>This page is ready for your badge system. For now, it gives TABFFL a styled home for future achievements, milestones, league honors, and collectible emblems.</p>
+            </section>
+
+            <section class="badges-grid" aria-label="Badge categories">
+                <article class="badge-card">
+                    <span class="badge-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V7Z"></path><path d="m9.5 12 1.7 1.7 3.3-3.4"></path></svg>
+                    </span>
+                    <h3>Achievement Badges</h3>
+                    <p>Highlight major milestones like playoff appearances, division titles, and championships.</p>
+                </article>
+
+                <article class="badge-card">
+                    <span class="badge-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 4v16"></path><path d="M6 10h12"></path><circle cx="12" cy="12" r="8"></circle></svg>
+                    </span>
+                    <h3>Season Badges</h3>
+                    <p>Track year-by-year accomplishments so each manager can build a visible history over time.</p>
+                </article>
+
+                <article class="badge-card">
+                    <span class="badge-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8 6.7 19.1l1-5.8L3.5 9.2l5.9-.9Z"></path></svg>
+                    </span>
+                    <h3>Special Honors</h3>
+                    <p>Reserve space for custom awards, rare icons, and the kind of bragging rights that make the league fun.</p>
+                </article>
+            </section>
+        </main>
+
+        <footer class="site-footer" role="contentinfo">
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="/" aria-label="Home"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg></span><span class="sr-only">Home</span></a>
+                <a href="/profiles" aria-label="Profiles"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg></span><span class="sr-only">Profiles</span></a>
+                <a href="/leagues" aria-label="League Standings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-4"></path></svg></span><span class="sr-only">League Standings</span></a>
+                <a href="/power-rankings" aria-label="Power Rankings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 16l5-5 4 3 7-8"></path><path d="M16 6h4v4"></path></svg></span><span class="sr-only">Power Rankings</span></a>
+                <a href="/awards" aria-label="Awards"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3a4 4 0 0 1-8 0Z"></path><path d="M6 5H4a3 3 0 0 0 3 3"></path><path d="M18 5h2a3 3 0 0 1-3 3"></path><path d="M12 11v4"></path><path d="M9 21h6"></path><path d="M10 15h4l1 3H9Z"></path></svg></span><span class="sr-only">Awards</span></a>
+                <a href="/top-performers" aria-label="Top Performers"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8 6.7 19.1l1-5.8L3.5 9.2l5.9-.9Z"></path></svg></span><span class="sr-only">Top Performers</span></a>
+                <a href="/badges" aria-current="page" aria-label="Badges"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10v6a5 5 0 0 1-10 0Z"></path><path d="m9 14-1 7 4-2 4 2-1-7"></path></svg></span><span class="sr-only">Badges</span></a>
+            </nav>
+        </footer>
+    </div>
+</body>
+</html>

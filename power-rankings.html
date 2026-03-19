@@ -58,6 +58,65 @@
             padding-bottom: 48px;
         }
 
+        .rankings-search {
+            display: grid;
+            gap: 10px;
+            padding: 16px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .rankings-search label {
+            color: #0f2747;
+            font-weight: 700;
+        }
+
+        .rankings-search input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font: inherit;
+            color: #0f172a;
+            background: #fff;
+        }
+
+        .rankings-search input:focus {
+            outline: 2px solid rgba(29, 78, 216, 0.24);
+            outline-offset: 2px;
+            border-color: #93c5fd;
+        }
+
+        .search-help {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .search-results {
+            display: grid;
+            gap: 8px;
+        }
+
+        .search-results[hidden] {
+            display: none;
+        }
+
+        .search-results-heading {
+            margin: 2px 0 0;
+            color: #0f2747;
+            font-size: 0.98rem;
+        }
+
+        .search-results-copy {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.84rem;
+        }
+
         #rankings-status {
             padding: 14px 16px;
             border-radius: 14px;
@@ -205,20 +264,14 @@
                 <p>Track the latest movement across TABFFL through this in-site Power Rankings board. Each spot is pulled from the league spreadsheet and presented here as a full rankings list. <strong>Remember, at the end of the regular season, this will become the official league placement for next season.</strong></p>
             </section>
 
-            <section class="site-shortcuts" aria-label="Site shortcuts">
-                <h3>Quick Links</h3>
-                <p>Keep moving around the site with the same shortcut menu you see on the homepage.</p>
-                <div class="quick-links">
-                    <a href="/">Return Home</a>
-                    <a href="/profiles">Browse Profiles</a>
-                    <a href="/leagues">Open Standings</a>
-                    <a href="/power-rankings">View Power Rankings</a>
-                    <a href="/awards">See Awards</a>
-                    <a href="/top-performers">Top Performers</a>
-                </div>
-            </section>
-
             <section class="rankings-shell">
+                <section class="rankings-search" aria-label="Search power rankings">
+                    <label for="rankings-search-input">Search by team or owner name</label>
+                    <input id="rankings-search-input" type="search" placeholder="Search by name..." autocomplete="off">
+                    <p class="search-help">Start typing and matching names will appear here without changing the full rankings list below.</p>
+                    <div id="search-results" class="search-results" hidden></div>
+                </section>
+
                 <div id="rankings-status">Loading power rankings...</div>
                 <div id="rankings-board" class="rankings-board" hidden></div>
             </section>
@@ -234,6 +287,7 @@
                 <a href="/power-rankings" aria-current="page" aria-label="Power Rankings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 16l5-5 4 3 7-8"></path><path d="M16 6h4v4"></path></svg></span><span class="sr-only">Power Rankings</span></a>
                 <a href="/awards" aria-label="Awards"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3a4 4 0 0 1-8 0Z"></path><path d="M6 5H4a3 3 0 0 0 3 3"></path><path d="M18 5h2a3 3 0 0 1-3 3"></path><path d="M12 11v4"></path><path d="M9 21h6"></path><path d="M10 15h4l1 3H9Z"></path></svg></span><span class="sr-only">Awards</span></a>
                 <a href="/top-performers" aria-label="Top Performers"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8 6.7 19.1l1-5.8L3.5 9.2l5.9-.9Z"></path></svg></span><span class="sr-only">Top Performers</span></a>
+                <a href="/badges" aria-label="Badges"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10v6a5 5 0 0 1-10 0Z"></path><path d="m9 14-1 7 4-2 4 2-1-7"></path></svg></span><span class="sr-only">Badges</span></a>
             </nav>
         </footer>
     </div>
@@ -252,6 +306,8 @@
 
         const rankingsStatus = document.getElementById("rankings-status");
         const rankingsBoard = document.getElementById("rankings-board");
+        const rankingsSearchInput = document.getElementById("rankings-search-input");
+        const searchResults = document.getElementById("search-results");
         let summaryRows = null;
         let detailsByName = null;
 
@@ -278,6 +334,59 @@
             `;
 
             return card;
+        }
+
+        function getMatchingRows(query) {
+            if (!summaryRows || !query) {
+                return [];
+            }
+
+            const normalizedQuery = query.trim().toLowerCase();
+            if (!normalizedQuery) {
+                return [];
+            }
+
+            return summaryRows.filter((row) => row[1].toLowerCase().includes(normalizedQuery));
+        }
+
+        function renderSearchResults(query) {
+            const matches = getMatchingRows(query);
+            searchResults.innerHTML = "";
+
+            if (!query.trim()) {
+                searchResults.hidden = true;
+                return;
+            }
+
+            searchResults.hidden = false;
+
+            if (!summaryRows) {
+                searchResults.innerHTML = `
+                    <h3 class="search-results-heading">Searching rankings...</h3>
+                    <p class="search-results-copy">The rankings are still loading, so results will appear in a moment.</p>
+                `;
+                return;
+            }
+
+            if (!matches.length) {
+                searchResults.innerHTML = `
+                    <h3 class="search-results-heading">No matches for "${query}"</h3>
+                    <p class="search-results-copy">Try a broader spelling or a shorter piece of the name.</p>
+                `;
+                return;
+            }
+
+            const header = document.createElement("div");
+            header.innerHTML = `
+                <h3 class="search-results-heading">${matches.length} match${matches.length === 1 ? "" : "es"} for "${query}"</h3>
+                <p class="search-results-copy">Showing names that contain your search text anywhere in the ranking entry.</p>
+            `;
+            searchResults.appendChild(header);
+
+            matches.forEach((row) => {
+                const details = detailsByName ? detailsByName[row[1]] : null;
+                searchResults.appendChild(createRankingCard(row, details));
+            });
         }
 
         function createLeagueDivider({ name, start, end }) {
@@ -316,6 +425,7 @@
                 return;
             }
             renderRankings(summaryRows);
+            renderSearchResults(rankingsSearchInput.value);
         }
 
         function loadFeed(src) {
@@ -390,6 +500,10 @@
 
             maybeRenderRankings();
         };
+
+        rankingsSearchInput.addEventListener("input", (event) => {
+            renderSearchResults(event.target.value);
+        });
 
         loadRankings();
     </script>

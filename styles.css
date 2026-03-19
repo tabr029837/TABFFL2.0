@@ -29,7 +29,7 @@ body {
     background: var(--page-bg);
     color: var(--text);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px 16px calc(112px + env(safe-area-inset-bottom, 0px));
+    padding: 124px 16px calc(112px + env(safe-area-inset-bottom, 0px));
 }
 
 .container {
@@ -39,14 +39,16 @@ body {
 }
 
 header {
-    position: sticky;
+    position: fixed;
     top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1000;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.75rem;
-    width: 100%;
+    width: min(1100px, calc(100% - 32px));
     padding: 1.25rem 1rem;
     border-radius: 20px;
     background: linear-gradient(135deg, #0f2747, #1d4e89);
@@ -289,21 +291,35 @@ a {
 
 @media (max-width: 760px) {
     body {
-        padding: 14px 10px calc(108px + env(safe-area-inset-bottom, 0px));
+        padding: 126px 10px calc(108px + env(safe-area-inset-bottom, 0px));
     }
 
     header {
         border-radius: 16px;
         padding: 1rem 0.9rem;
         top: 8px;
-        grid-template-columns: auto minmax(0, 1fr);
+        width: calc(100% - 20px);
+        grid-template-columns: 1fr;
+        justify-items: start;
+        gap: 0.7rem;
     }
 
     h1.site-title {
-        text-align: right;
+        text-align: center;
         font-size: 1.18rem;
         line-height: 1.05;
         white-space: nowrap;
+        width: 100%;
+        order: 1;
+    }
+
+    .header-home {
+        min-height: 38px;
+        padding: 0 14px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        justify-self: start;
+        order: 2;
     }
 
     .header-spacer {
@@ -312,16 +328,17 @@ a {
 
     .site-footer .footer-nav {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
-        width: min(1100px, calc(100% - 4px));
-        padding: 6px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 4px;
+        width: 100%;
+        max-width: none;
+        padding: 6px 6px calc(8px + env(safe-area-inset-bottom, 0px));
     }
 
     .site-footer .footer-nav a {
         min-width: 0;
-        min-height: 40px;
-        padding: 4px;
+        min-height: 42px;
+        padding: 4px 0;
         border-radius: 10px;
     }
 
@@ -355,7 +372,7 @@ a {
     }
 
     .footer-emblem {
-        width: 34px;
+        width: min(34px, 100%);
         height: 34px;
         border-radius: 10px;
     }

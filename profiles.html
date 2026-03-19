@@ -18,14 +18,7 @@
         body { padding-bottom: 180px; }
         .site-footer .footer-nav { padding: 8px 12px; justify-content: space-around; }
 
-        header {
-            position: relative;
-        }
-
         .login-buttons {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             display: flex;
             gap: 10px;
         }
@@ -42,9 +35,6 @@
         }
 
         .auth-status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -122,6 +112,26 @@
         #profiles-list {
             margin-top: 20px;
             padding-bottom: 32px;
+        }
+
+        .profiles-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .profiles-heading h2 {
+            margin: 0;
+        }
+
+        .profiles-header-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .profiles-summary {
@@ -235,43 +245,20 @@
             font-size: 0.9em;
         }
 
-        header {
-            position: relative;
-        }
-
-        .auth-status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-        }
-
-        .auth-status button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            background: #dc2626;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
         @media (max-width: 640px) {
-            header {
-                padding-top: 3.75rem;
+            .profiles-heading {
+                align-items: flex-start;
+                flex-direction: column;
             }
 
-            .login-buttons,
-            .auth-status {
-                top: 14px;
-                right: 14px;
+            .profiles-header-actions {
+                justify-content: flex-start;
+                width: 100%;
             }
 
             .login-buttons {
                 gap: 8px;
+                flex-wrap: wrap;
             }
 
             .login-btn,
@@ -285,16 +272,20 @@
 <body>
     <div class="container">
         <header>
-            <div id="login-buttons" class="login-buttons">
-                <a href="login.html?mode=signup" class="login-btn">Sign Up</a>
-                <a href="login.html?mode=login" class="login-btn">Log In</a>
-            </div>
             <h1 class="site-title">TAB Fantasy Football League</h1>
-            <div id="auth-status" class="auth-status"></div>
         </header>
 
         <main>
-            <h2>Profiles</h2>
+            <section class="profiles-heading">
+                <h2>Profiles</h2>
+                <div class="profiles-header-actions">
+                    <div id="login-buttons" class="login-buttons">
+                        <a href="login.html?mode=signup" class="login-btn">Sign Up</a>
+                        <a href="login.html?mode=login" class="login-btn">Log In</a>
+                    </div>
+                    <div id="auth-status" class="auth-status"></div>
+                </div>
+            </section>
 
             <section id="profiles-list"></section>
         </main>

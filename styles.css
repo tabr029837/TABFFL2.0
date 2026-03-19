@@ -262,14 +262,16 @@ a {
     .site-footer .footer-nav {
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));
-        gap: 4px;
-        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        gap: 2px;
+        width: min(1100px, calc(100% - 12px));
+        padding: 6px 4px calc(8px + env(safe-area-inset-bottom, 0px));
     }
 
     .site-footer .footer-nav a {
         min-width: 0;
-        padding: 8px 4px;
-        border-radius: 16px;
+        min-height: 38px;
+        padding: 6px 2px;
+        border-radius: 12px;
     }
 
     .quick-links {
@@ -302,13 +304,13 @@ a {
     }
 
     .footer-emblem {
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
     }
 
     .footer-emblem svg {
-        width: 15px;
-        height: 15px;
+        width: 13px;
+        height: 13px;
     }
 }

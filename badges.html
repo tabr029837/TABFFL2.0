@@ -698,7 +698,7 @@
                 }))
                 .filter((person) => person.totalBadges > 0)
                 .sort((a, b) => b.totalBadges - a.totalBadges || a.name.localeCompare(b.name))
-                .slice(0, 6);
+                .slice(0, 10);
 
             if (!rankedPeople.length) {
                 leaderboardList.innerHTML = `<div class="search-copy">No badge data found for this player group.</div>`;
@@ -867,7 +867,7 @@
                 });
 
                 const groups = Array.from(groupMap.entries())
-                    .sort((a, b) => extractBadgeScore(a[0]) - extractBadgeScore(b[0]))
+                    .sort((a, b) => extractBadgeScore(b[0]) - extractBadgeScore(a[0]))
                     .map(([label, peopleWithBadge]) => ({
                         label,
                         tier: getTierNumber(label, groupMap.keys()),

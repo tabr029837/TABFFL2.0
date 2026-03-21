@@ -220,11 +220,19 @@
         @media (max-width: 700px) {
             .performer-row {
                 grid-template-columns: 48px minmax(0, 1fr);
+                gap: 10px 14px;
             }
 
             .performer-stat {
+                grid-column: 2;
+                gap: 4px;
                 justify-items: start;
                 text-align: left;
+            }
+
+            .performer-stat-value {
+                line-height: 1.35;
+                word-break: break-word;
             }
         }
     </style>

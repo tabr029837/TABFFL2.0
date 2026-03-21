@@ -138,7 +138,7 @@ a {
     box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.18);
 }
 
-.footer-group-row {
+.site-footer .footer-group-row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
@@ -156,16 +156,20 @@ a {
     padding: 10px 12px;
 }
 
-.footer-group-label {
+.site-footer .footer-group-label {
     display: flex;
     align-items: flex-start;
     justify-content: center;
     min-height: 18px;
+    width: 100%;
     padding-top: 3px;
     font-size: 0.68rem;
     font-weight: 700;
+    line-height: 1;
+    text-align: center;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
     pointer-events: none;
     border-radius: 10px 10px 0 0;
     border-top: 1px solid rgba(191, 219, 254, 0.5);
@@ -173,11 +177,11 @@ a {
     border-right: 1px solid rgba(191, 219, 254, 0.5);
 }
 
-.footer-group-label.active-season {
+.site-footer .footer-group-label.active-season {
     color: rgba(239, 246, 255, 0.92);
 }
 
-.footer-group-label.all-time {
+.site-footer .footer-group-label.all-time {
     color: #fca5a5;
     border-top-color: rgba(252, 165, 165, 0.55);
     border-left-color: rgba(252, 165, 165, 0.55);
@@ -377,7 +381,7 @@ a {
         display: none;
     }
 
-    .footer-group-row {
+    .site-footer .footer-group-row {
         width: 100%;
         max-width: none;
         gap: 4px;
@@ -393,7 +397,7 @@ a {
         padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
     }
 
-    .footer-group-label {
+    .site-footer .footer-group-label {
         height: 16px;
         padding-top: 2px;
         font-size: 0.58rem;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0f2747">
     <title>Top Performers</title>
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -15,8 +16,217 @@
             border-radius: 0;
             z-index: 999;
         }
-        body { padding-bottom: 84px; }
-        .site-footer .footer-nav { padding: 8px 12px; justify-content: space-around; }
+
+        body {
+            padding-bottom: 84px;
+        }
+
+        .site-footer .footer-nav {
+            padding: 8px 12px;
+            justify-content: space-around;
+        }
+
+        .page-intro {
+            margin-bottom: 24px;
+            padding: 24px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background:
+                radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 30%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(226, 232, 240, 0.92));
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .page-intro h2 {
+            margin: 0 0 12px;
+        }
+
+        .page-intro p {
+            margin: 0;
+            line-height: 1.65;
+            color: #334155;
+        }
+
+        .performers-shell {
+            display: grid;
+            gap: 20px;
+        }
+
+        .performers-status {
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #dbe2ea;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .performers-app {
+            display: grid;
+            gap: 20px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .hero-panel,
+        .category-panel {
+            padding: 18px;
+            border: 1px solid #dbe2ea;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .hero-panel h3,
+        .category-panel h3 {
+            margin: 0 0 10px;
+            color: #0f2747;
+        }
+
+        .hero-panel p {
+            margin: 0;
+            color: #475569;
+            line-height: 1.55;
+        }
+
+        .headline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .headline-card {
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid #dbe2ea;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+        }
+
+        .headline-label {
+            margin: 0 0 6px;
+            color: #64748b;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .headline-name {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.08rem;
+            font-weight: 700;
+        }
+
+        .headline-metric {
+            margin: 6px 0 0;
+            color: #1d4ed8;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        .categories-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .category-subtitle {
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .performer-table {
+            display: grid;
+            gap: 8px;
+        }
+
+        .performer-row {
+            display: grid;
+            grid-template-columns: 52px minmax(0, 1.1fr) minmax(120px, 0.7fr) minmax(120px, 0.7fr);
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .performer-row.top-three {
+            background: linear-gradient(135deg, rgba(219, 234, 254, 0.8), rgba(239, 246, 255, 0.96));
+            border-color: #bfdbfe;
+        }
+
+        .performer-rank {
+            display: grid;
+            place-items: center;
+            min-height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0f2747, #1d4ed8);
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .performer-name {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .performer-stat {
+            display: grid;
+            gap: 2px;
+            justify-items: end;
+            text-align: right;
+        }
+
+        .performer-stat-label {
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .performer-stat-value {
+            color: #0f172a;
+            font-size: 0.98rem;
+            font-weight: 700;
+        }
+
+        .footer-spacer {
+            width: 100%;
+            height: 160px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 700px) {
+            .performer-row {
+                grid-template-columns: 48px minmax(0, 1fr);
+            }
+
+            .performer-stat {
+                justify-items: start;
+                text-align: left;
+            }
+        }
     </style>
 </head>
 <body>
@@ -28,9 +238,29 @@
         </header>
 
         <main>
-            <h2>Top Performers</h2>
+            <section class="page-intro">
+                <h2>Top Performers</h2>
+                <p>Track the strongest long-term resumes in TABFFL through a live board pulled straight from the spreadsheet. This page groups the league's best seasonal winners, point scorers, playoff performers, and all-around powerhouses into one clean trophy wall.</p>
+            </section>
 
+            <section class="performers-shell">
+                <div id="performers-status" class="performers-status">Loading top performers...</div>
+
+                <section id="performers-app" class="performers-app" hidden>
+                    <div class="hero-grid">
+                        <section class="hero-panel" aria-label="Performance leaders">
+                            <h3>League Leaders</h3>
+                            <p>The top line from each leaderboard, so you can scan the biggest names at a glance before diving into the full rankings below.</p>
+                            <div id="headline-grid" class="headline-grid"></div>
+                        </section>
+                    </div>
+
+                    <section id="categories-grid" class="categories-grid" aria-label="Top performer categories"></section>
+                </section>
+            </section>
         </main>
+
+        <div class="footer-spacer" aria-hidden="true"></div>
 
         <footer class="site-footer" role="contentinfo">
             <nav class="footer-nav" role="navigation" aria-label="Main navigation">
@@ -43,5 +273,290 @@
             </nav>
         </footer>
     </div>
+
+    <script>
+        const TOP_PERFORMERS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleTopPerformersResponse&gid=373470926&range=A:E";
+        const performersStatus = document.getElementById("performers-status");
+        const performersApp = document.getElementById("performers-app");
+        const headlineGrid = document.getElementById("headline-grid");
+        const categoriesGrid = document.getElementById("categories-grid");
+        const CATEGORY_DISPLAY_ORDER = [
+            "Championships",
+            "Season Total Points",
+            "Season Winning Percentage",
+            "Playoff Winning Percentage",
+            "All Time Career Points and Wins",
+            "Top Percentage Finishes",
+            "Average Wins Per Season",
+            "Average Points Per Season"
+        ];
+
+        const CATEGORY_CONFIG = [
+            {
+                key: "Season Winning Percentage",
+                title: "Season Winning Percentage",
+                subtitle: "Minimum 3 seasons",
+                metricLabel: "Win %",
+                detailLabel: "Record",
+                formatter: (rank, name, valueA, valueB, valueC) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: valueB && valueC ? `${valueB}-${valueC}` : ""
+                })
+            },
+            {
+                key: "Playoff Winning Percentage",
+                title: "Playoff Winning Percentage",
+                subtitle: "Postseason success rate",
+                metricLabel: "Playoff %",
+                detailLabel: "Playoff Totals",
+                formatter: (rank, name, valueA, valueB, valueC) => ({
+                    rank,
+                    name,
+                    primary: formatThreeDecimals(valueA.raw),
+                    secondary: [valueB ? `${valueB} wins` : "", valueC ? `${valueC} pts` : ""].filter(Boolean).join(" • ")
+                })
+            },
+            {
+                key: "All Time Career Points and Wins",
+                title: "All Time Career Points and Wins",
+                subtitle: "All-time production blended with wins",
+                metricLabel: "Adj Pts",
+                detailLabel: "Wins",
+                formatter: (rank, name, valueA, valueB, valueC) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: valueC ? `${valueC} wins` : ""
+                })
+            },
+            {
+                key: "Championships",
+                title: "Championships",
+                subtitle: "Titles won",
+                metricLabel: "Titles",
+                detailLabel: "Resume",
+                formatter: (rank, name, valueA) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: "League championships"
+                })
+            },
+            {
+                key: "Season Total Points",
+                title: "Season Total Points",
+                subtitle: "Season points scored",
+                metricLabel: "Points",
+                detailLabel: "Season",
+                formatter: (rank, name, valueA) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: "Season scoring"
+                })
+            },
+            {
+                key: "Average Points Per Season",
+                title: "Average Points Per Season",
+                subtitle: "Season scoring average",
+                metricLabel: "Avg Pts",
+                detailLabel: "Season Avg",
+                formatter: (rank, name, valueA) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: "Per season average"
+                })
+            },
+            {
+                key: "Average Wins Per Season",
+                title: "Average Wins Per Season",
+                subtitle: "Lower is better",
+                metricLabel: "Avg Finish",
+                detailLabel: "Placement",
+                formatter: (rank, name, valueA) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: "Average season finish"
+                })
+            },
+            {
+                key: "Top Percentage Finishes",
+                title: "Top Percentage Finishes",
+                subtitle: "High-end weekly finishes",
+                metricLabel: "Top %",
+                detailLabel: "Finishes",
+                formatter: (rank, name, valueA) => ({
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: "Top-percentage results"
+                })
+            }
+        ];
+
+        function normalizeCell(cell) {
+            if (!cell) {
+                return { text: "", raw: "" };
+            }
+
+            const rawValue = cell.v ?? "";
+            return {
+                text: (cell.f || String(rawValue)).trim(),
+                raw: rawValue
+            };
+        }
+
+        function formatThreeDecimals(value) {
+            const numericValue = Number(value);
+            if (Number.isNaN(numericValue)) {
+                return value;
+            }
+            return numericValue.toFixed(3);
+        }
+
+        function showTopPerformersError() {
+            performersStatus.hidden = false;
+            performersStatus.textContent = "Top performers are not available right now.";
+        }
+
+        function formatCategoryRow(categoryIndex, row) {
+            const [rank, name, valueA, valueB, valueC] = row;
+            const config = CATEGORY_CONFIG[categoryIndex];
+            if (!config || typeof config.formatter !== "function") {
+                return {
+                    rank,
+                    name,
+                    primary: valueA.text,
+                    secondary: valueB || valueC || ""
+                };
+            }
+            return config.formatter(rank, name, valueA, valueB, valueC);
+        }
+
+        function renderHeadlineCards(categories) {
+            headlineGrid.innerHTML = categories.map((category) => {
+                const leader = category.entries[0];
+                return `
+                    <article class="headline-card">
+                        <p class="headline-label">${category.title}</p>
+                        <p class="headline-name">${leader ? leader.name : "N/A"}</p>
+                        <p class="headline-metric">${leader ? leader.primary : "No data"}</p>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        function renderCategories(categories) {
+            categoriesGrid.innerHTML = categories.map((category) => `
+                <section class="category-panel">
+                    <div class="category-header">
+                        <h3>${category.title}</h3>
+                        <span class="category-subtitle">${category.subtitle}</span>
+                    </div>
+                    <div class="performer-table">
+                        ${category.entries.map((entry, index) => `
+                            <article class="performer-row${index < 3 ? " top-three" : ""}">
+                                <div class="performer-rank">${entry.rank}</div>
+                                <div>
+                                    <p class="performer-name">${entry.name}</p>
+                                </div>
+                                <div class="performer-stat">
+                                    <span class="performer-stat-label">${category.metricLabel}</span>
+                                    <span class="performer-stat-value">${entry.primary}</span>
+                                </div>
+                                <div class="performer-stat">
+                                    <span class="performer-stat-label">${category.detailLabel}</span>
+                                    <span class="performer-stat-value">${entry.secondary}</span>
+                                </div>
+                            </article>
+                        `).join("")}
+                    </div>
+                </section>
+            `).join("");
+        }
+
+        function parseCategories(rows) {
+            const categories = [];
+            let currentRows = [];
+
+            rows.forEach((row) => {
+                const cells = row.c || [];
+                const normalized = [
+                    normalizeCell(cells[0]).text,
+                    normalizeCell(cells[1]).text,
+                    normalizeCell(cells[2]),
+                    normalizeCell(cells[3]).text,
+                    normalizeCell(cells[4]).text
+                ];
+
+                const isSeparator = !normalized[0] && normalized[1] === "Name";
+                if (isSeparator) {
+                    if (currentRows.length) {
+                        categories.push(currentRows);
+                        currentRows = [];
+                    }
+                    return;
+                }
+
+                if (normalized[0] && normalized[1]) {
+                    currentRows.push(normalized);
+                }
+            });
+
+            if (currentRows.length) {
+                categories.push(currentRows);
+            }
+
+            return categories;
+        }
+
+        function loadTopPerformers() {
+            const script = document.createElement("script");
+            script.src = TOP_PERFORMERS_FEED_URL;
+            script.async = true;
+            script.onerror = showTopPerformersError;
+            document.body.appendChild(script);
+        }
+
+        window.handleTopPerformersResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                showTopPerformersError();
+                return;
+            }
+
+            const categoryRows = parseCategories(response.table.rows);
+            const categories = categoryRows
+                .map((rows, index) => {
+                    const config = CATEGORY_CONFIG[index];
+                    if (!config) {
+                        return null;
+                    }
+
+                    const cleanedRows = rows.filter((row) => row[1] && row[0]);
+                    return {
+                        ...config,
+                        entries: cleanedRows.map((row) => formatCategoryRow(index, row)).filter((entry) => entry.name)
+                    };
+                })
+                .filter((category) => category && category.entries.length)
+                .sort((left, right) => CATEGORY_DISPLAY_ORDER.indexOf(left.key) - CATEGORY_DISPLAY_ORDER.indexOf(right.key));
+
+            if (!categories.length) {
+                showTopPerformersError();
+                return;
+            }
+
+            renderHeadlineCards(categories);
+            renderCategories(categories);
+            performersApp.hidden = false;
+            performersStatus.hidden = true;
+        };
+
+        loadTopPerformers();
+    </script>
 </body>
 </html>

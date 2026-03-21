@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0f2747">
     <title>Badges</title>
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -30,7 +31,9 @@
             padding: 24px;
             border: 1px solid #dbe2ea;
             border-radius: 16px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(226, 232, 240, 0.9));
+            background:
+                radial-gradient(circle at top right, rgba(245, 158, 11, 0.2), transparent 32%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(226, 232, 240, 0.92));
             box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
         }
 
@@ -44,52 +47,436 @@
             color: #334155;
         }
 
-        .badges-grid {
+        .badges-shell {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-top: 24px;
+            gap: 22px;
         }
 
-        .badge-card {
+        .view-switcher {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #dbe2ea;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            width: fit-content;
+        }
+
+        .control-stack {
             display: grid;
-            gap: 14px;
-            padding: 20px;
+            gap: 12px;
+        }
+
+        .status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
             border: 1px solid #dbe2ea;
             border-radius: 18px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.96);
             box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
         }
 
-        .badge-icon {
-            display: inline-grid;
-            place-items: center;
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #0f2747, #1d4e89);
-            color: #eff6ff;
+        .status-copy {
+            display: grid;
+            gap: 4px;
         }
 
-        .badge-icon svg {
-            width: 24px;
-            height: 24px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .status-label {
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        .badge-card h3 {
+        .status-title {
             margin: 0;
+            color: #0f172a;
+            font-size: 1.06rem;
+            font-weight: 700;
+        }
+
+        .status-subtitle {
+            margin: 0;
+            color: #475569;
+            font-size: 0.92rem;
+        }
+
+        .status-switcher {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #dbe2ea;
+            border-radius: 999px;
+            background: #f8fafc;
+        }
+
+        .view-button {
+            border: 0;
+            border-radius: 999px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: 700;
+            color: #475569;
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .view-button.active {
+            color: #0f2747;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            box-shadow: inset 0 0 0 1px rgba(202, 138, 4, 0.24);
+        }
+
+        .badges-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr);
+            gap: 18px;
+        }
+
+        .badge-view[hidden] {
+            display: none;
+        }
+
+        .search-panel,
+        .leaderboard-panel {
+            padding: 18px;
+            border: 1px solid #dbe2ea;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .search-panel h3,
+        .leaderboard-panel h3,
+        .badge-category h3 {
+            margin: 0 0 10px;
             color: #0f2747;
         }
 
-        .badge-card p {
+        .search-panel p,
+        .leaderboard-panel p {
             margin: 0;
             color: #475569;
-            line-height: 1.6;
+            line-height: 1.55;
+        }
+
+        .search-panel label {
+            display: block;
+            margin: 16px 0 8px;
+            color: #0f2747;
+            font-weight: 700;
+        }
+
+        .search-panel input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font: inherit;
+            color: #0f172a;
+            background: #fff;
+        }
+
+        .search-panel input:focus {
+            outline: 2px solid rgba(245, 158, 11, 0.24);
+            outline-offset: 2px;
+            border-color: #fbbf24;
+        }
+
+        .search-results {
+            display: grid;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .search-results[hidden] {
+            display: none;
+        }
+
+        .search-copy {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .search-copy strong {
+            color: #0f172a;
+        }
+
+        .person-card {
+            display: grid;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #fff, #f8fafc);
+        }
+
+        .person-card h4 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.15rem;
+        }
+
+        .person-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e3a8a;
+            font-size: 0.86rem;
+            line-height: 1.2;
+        }
+
+        .badge-pill .badge-label {
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .badge-pill.tier-1,
+        .badge-group.tier-1 {
+            background: linear-gradient(135deg, #f8fafc, #dbeafe);
+            border-color: #94a3b8;
+            color: #334155;
+        }
+
+        .badge-pill.tier-2,
+        .badge-group.tier-2 {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+            border-color: #b45309;
+            color: #9a3412;
+        }
+
+        .badge-pill.tier-3,
+        .badge-group.tier-3 {
+            background: linear-gradient(135deg, #f8fafc, #e5e7eb);
+            border-color: #9ca3af;
+            color: #4b5563;
+        }
+
+        .badge-pill.tier-4,
+        .badge-group.tier-4 {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-color: #ca8a04;
+            color: #854d0e;
+        }
+
+        .leaderboard-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .leaderboard-row {
+            display: grid;
+            grid-template-columns: 42px minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .leaderboard-rank {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: white;
+            font-weight: 800;
+        }
+
+        .leaderboard-name {
+            margin: 0;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .leaderboard-breakdown {
+            margin: 2px 0 0;
+            color: #64748b;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .leaderboard-total {
+            color: #475569;
+            font-size: 0.86rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .profiles-shell {
+            display: grid;
+            gap: 18px;
+        }
+
+        .profiles-panel {
+            padding: 18px;
+            border: 1px solid #dbe2ea;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .profiles-panel h3 {
+            margin: 0 0 8px;
+            color: #0f2747;
+        }
+
+        .profiles-panel p {
+            margin: 0;
+            color: #475569;
+            line-height: 1.55;
+        }
+
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .badges-status {
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #dbe2ea;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .categories-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .badge-category {
+            padding: 18px;
+            border: 1px solid #dbe2ea;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .badge-category-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .badge-category-meta {
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .badge-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .badge-group {
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        .badge-group h4 {
+            margin: 0 0 10px;
+            color: #0f172a;
+            font-size: 1rem;
+        }
+
+        .badge-group.tier-1 h4,
+        .badge-group.tier-2 h4,
+        .badge-group.tier-3 h4,
+        .badge-group.tier-4 h4 {
+            color: inherit;
+        }
+
+        .badge-group-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .badge-group-person {
+            padding: 9px 10px;
+            border-radius: 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .footer-spacer {
+            width: 100%;
+            height: 160px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 860px) {
+            .status-bar {
+                align-items: stretch;
+            }
+
+            .badges-hero {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .status-switcher,
+            .view-switcher {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .view-button {
+                flex: 1 1 0;
+            }
+
+            .profiles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .badge-groups {
+                grid-template-columns: 1fr;
+            }
+
+            .leaderboard-row {
+                grid-template-columns: 42px minmax(0, 1fr);
+            }
+
+            .leaderboard-total {
+                grid-column: 2;
+            }
         }
     </style>
 </head>
@@ -104,39 +491,69 @@
         <main>
             <section class="page-intro">
                 <h2>Badges</h2>
-                <p>This page is ready for your badge system. For now, it gives TABFFL a styled home for future achievements, milestones, league honors, and collectible emblems.</p>
+                <p>The badge vault turns your spreadsheet into a live trophy case. Browse every category, see who owns each milestone, and search any manager to pull up their full badge collection in one spot.</p>
             </section>
 
-            <section class="badges-grid" aria-label="Badge categories">
-                <article class="badge-card">
-                    <span class="badge-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V7Z"></path><path d="m9.5 12 1.7 1.7 3.3-3.4"></path></svg>
-                    </span>
-                    <h3>Achievement Badges</h3>
-                    <p>Highlight major milestones like playoff appearances, division titles, and championships.</p>
-                </article>
+            <section class="badges-shell">
+                <div id="badges-status" class="badges-status">Loading badges...</div>
 
-                <article class="badge-card">
-                    <span class="badge-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M12 4v16"></path><path d="M6 10h12"></path><circle cx="12" cy="12" r="8"></circle></svg>
-                    </span>
-                    <h3>Season Badges</h3>
-                    <p>Track year-by-year accomplishments so each manager can build a visible history over time.</p>
-                </article>
+                <section id="badges-app" hidden>
+                    <div class="control-stack">
+                        <section class="status-bar" aria-label="Player status filter">
+                            <div class="status-copy">
+                                <span class="status-label">Player Pool</span>
+                                <p id="status-title" class="status-title">All Time Players</p>
+                                <p id="status-subtitle" class="status-subtitle">Showing every manager in the badge archive.</p>
+                            </div>
+                            <div class="status-switcher" role="tablist" aria-label="Player status">
+                                <button id="all-status-button" class="view-button active" type="button" role="tab" aria-selected="true">All Time Players</button>
+                                <button id="active-status-button" class="view-button" type="button" role="tab" aria-selected="false">Active Only</button>
+                            </div>
+                        </section>
 
-                <article class="badge-card">
-                    <span class="badge-icon" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8 6.7 19.1l1-5.8L3.5 9.2l5.9-.9Z"></path></svg>
-                    </span>
-                    <h3>Special Honors</h3>
-                    <p>Reserve space for custom awards, rare icons, and the kind of bragging rights that make the league fun.</p>
-                </article>
+                        <div class="view-switcher" role="tablist" aria-label="Badge views">
+                            <button id="profile-view-button" class="view-button active" type="button" role="tab" aria-selected="true" aria-controls="profile-view">Profile View</button>
+                            <button id="tier-view-button" class="view-button" type="button" role="tab" aria-selected="false" aria-controls="tier-view">Tier View</button>
+                        </div>
+                    </div>
+
+                    <section id="profile-view" class="badge-view">
+                        <div class="badges-hero">
+                            <section class="search-panel" aria-label="Search by name">
+                                <h3>Search By Name</h3>
+                                <p>Type a manager name and this panel will show every badge they have earned so far.</p>
+                                <label for="badge-search-input">Find a manager</label>
+                                <input id="badge-search-input" type="search" placeholder="Search by name..." autocomplete="off">
+                                <div id="search-results" class="search-results" hidden></div>
+                            </section>
+
+                            <section class="leaderboard-panel" aria-label="Badge leaderboard">
+                                <h3>Most Badges</h3>
+                                <p>A quick look at the managers who have stacked the most milestones across all categories.</p>
+                                <div id="leaderboard-list" class="leaderboard-list"></div>
+                            </section>
+                        </div>
+
+                        <section class="profiles-shell">
+                            <section class="profiles-panel" aria-label="All badge profiles">
+                                <h3>All Badge Profiles</h3>
+                                <p>Browse every manager and see their full badge stack in one place.</p>
+                                <div id="profiles-grid" class="profiles-grid"></div>
+                            </section>
+                        </section>
+                    </section>
+
+                    <section id="tier-view" class="badge-view" hidden>
+                        <section id="categories-grid" class="categories-grid" aria-label="Badge categories"></section>
+                    </section>
+                </section>
             </section>
         </main>
 
+        <div class="footer-spacer" aria-hidden="true"></div>
+
         <footer class="site-footer" role="contentinfo">
             <nav class="footer-nav" role="navigation" aria-label="Main navigation">
-                <a href="/" aria-label="Home"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg></span><span class="sr-only">Home</span></a>
                 <a href="/profiles" aria-label="Profiles"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg></span><span class="sr-only">Profiles</span></a>
                 <a href="/leagues" aria-label="League Standings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-4"></path></svg></span><span class="sr-only">League Standings</span></a>
                 <a href="/power-rankings" aria-label="Power Rankings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 16l5-5 4 3 7-8"></path><path d="M16 6h4v4"></path></svg></span><span class="sr-only">Power Rankings</span></a>
@@ -146,5 +563,420 @@
             </nav>
         </footer>
     </div>
+
+    <script>
+        const BADGES_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleBadgesResponse&gid=1504575350&range=A1:I";
+        const badgesStatus = document.getElementById("badges-status");
+        const badgesApp = document.getElementById("badges-app");
+        const categoriesGrid = document.getElementById("categories-grid");
+        const leaderboardList = document.getElementById("leaderboard-list");
+        const profilesGrid = document.getElementById("profiles-grid");
+        const badgeSearchInput = document.getElementById("badge-search-input");
+        const searchResults = document.getElementById("search-results");
+        const profileView = document.getElementById("profile-view");
+        const tierView = document.getElementById("tier-view");
+        const profileViewButton = document.getElementById("profile-view-button");
+        const tierViewButton = document.getElementById("tier-view-button");
+        const allStatusButton = document.getElementById("all-status-button");
+        const activeStatusButton = document.getElementById("active-status-button");
+        const statusTitle = document.getElementById("status-title");
+        const statusSubtitle = document.getElementById("status-subtitle");
+        const BASE_TIER_LABELS = new Set([
+            "30+ Wins",
+            "5+ Years",
+            "10,000+ Points",
+            "10+ PO Wins",
+            "100+ Acquisitions",
+            "30+ Top %'s",
+            "3+ Champs"
+        ]);
+
+        let people = [];
+        let badgeHeaders = [];
+        let statusFilter = "all";
+
+        function showBadgesError() {
+            badgesStatus.hidden = false;
+            badgesStatus.textContent = "Badges are not available right now.";
+        }
+
+        function normalizeCell(cell) {
+            return cell ? (cell.f || String(cell.v || "")).trim() : "";
+        }
+
+        function normalizePlayerStatus(value) {
+            const normalizedValue = (value || "").trim().toUpperCase();
+
+            if (normalizedValue === "I") {
+                return "inactive";
+            }
+
+            return "active";
+        }
+
+        function getFilteredPeople() {
+            if (statusFilter === "all") {
+                return people;
+            }
+
+            return people.filter((person) => person.status === "active");
+        }
+
+        function getStatusCopy() {
+            if (statusFilter === "all") {
+                return {
+                    title: "All Time Players",
+                    subtitle: "Showing every manager in the badge archive."
+                };
+            }
+
+            return {
+                title: "Active Players",
+                subtitle: "Showing the current active badge board."
+            };
+        }
+
+        function getEarnedBadges(person) {
+            return person.badges.filter((badge) => badge.value && badge.value.toLowerCase() !== "none");
+        }
+
+        function getTierClass(tier) {
+            if (tier === 2) {
+                return "tier-2";
+            }
+
+            if (tier === 3) {
+                return "tier-3";
+            }
+
+            if (tier === 4) {
+                return "tier-4";
+            }
+
+            return "tier-1";
+        }
+
+        function extractBadgeScore(label) {
+            const normalizedLabel = label.toLowerCase();
+
+            if (normalizedLabel.includes("none")) {
+                return Number.NEGATIVE_INFINITY;
+            }
+
+            const numericMatch = label.match(/[\d,]+/);
+            const numericValue = numericMatch ? Number(numericMatch[0].replace(/,/g, "")) : 0;
+            const champBonus = normalizedLabel.includes("champ") ? 100000 : 0;
+            const pointBonus = normalizedLabel.includes("point") ? 10000 : 0;
+            const percentBonus = normalizedLabel.includes("top %") ? 1000 : 0;
+            const yearBonus = normalizedLabel.includes("year") ? 100 : 0;
+            const acquisitionBonus = normalizedLabel.includes("acquisition") ? 10 : 0;
+            const poBonus = normalizedLabel.includes("po") ? 1 : 0;
+
+            return numericValue + champBonus + pointBonus + percentBonus + yearBonus + acquisitionBonus + poBonus;
+        }
+
+        function getTierNumber(label, allLabels) {
+            const sortedLabels = [...allLabels].sort((a, b) => extractBadgeScore(a) - extractBadgeScore(b));
+            const index = sortedLabels.indexOf(label);
+
+            if (index === -1) {
+                return BASE_TIER_LABELS.has(label) ? 1 : 4;
+            }
+
+            return Math.min(index + 1, 4);
+        }
+
+        function renderLeaderboard() {
+            const rankedPeople = getFilteredPeople()
+                .map((person) => ({
+                    name: person.name,
+                    earnedBadges: getEarnedBadges(person)
+                }))
+                .map((person) => ({
+                    ...person,
+                    totalBadges: person.earnedBadges.length
+                }))
+                .filter((person) => person.totalBadges > 0)
+                .sort((a, b) => b.totalBadges - a.totalBadges || a.name.localeCompare(b.name))
+                .slice(0, 6);
+
+            if (!rankedPeople.length) {
+                leaderboardList.innerHTML = `<div class="search-copy">No badge data found for this player group.</div>`;
+                return;
+            }
+
+            leaderboardList.innerHTML = rankedPeople.map((person, index) => `
+                <div class="leaderboard-row">
+                    <div class="leaderboard-rank">${index + 1}</div>
+                    <div>
+                        <p class="leaderboard-name">${person.name}</p>
+                        <p class="leaderboard-breakdown">${formatTierBreakdown(person.earnedBadges)}</p>
+                    </div>
+                    <span class="leaderboard-total">${person.totalBadges} badge${person.totalBadges === 1 ? "" : "s"}</span>
+                </div>
+            `).join("");
+        }
+
+        function formatTierBreakdown(earnedBadges) {
+            const tierCounts = earnedBadges.reduce((acc, badge) => {
+                acc[badge.tier] = (acc[badge.tier] || 0) + 1;
+                return acc;
+            }, {});
+
+            const tierLabels = {
+                1: "Platinum",
+                2: "Bronze",
+                3: "Silver",
+                4: "Gold"
+            };
+
+            return Object.keys(tierLabels)
+                .map((tier) => ({
+                    tier: Number(tier),
+                    label: tierLabels[tier],
+                    count: tierCounts[tier] || 0
+                }))
+                .filter((entry) => entry.count > 0)
+                .map((entry) => `${entry.count} ${entry.label}`)
+                .join(", ");
+        }
+
+        function renderProfileDirectory() {
+            const sortedPeople = getFilteredPeople()
+                .slice()
+                .sort((a, b) => {
+                    const badgeDifference = getEarnedBadges(b).length - getEarnedBadges(a).length;
+                    if (badgeDifference !== 0) {
+                        return badgeDifference;
+                    }
+                    return a.name.localeCompare(b.name);
+                });
+
+            if (!sortedPeople.length) {
+                profilesGrid.innerHTML = `<div class="search-copy">No badge profiles found for this player group.</div>`;
+                return;
+            }
+
+            profilesGrid.innerHTML = sortedPeople.map(createPersonCard).join("");
+        }
+
+        function renderCategories() {
+            const categories = buildCategories(badgeHeaders, getFilteredPeople());
+
+            if (!categories.length) {
+                categoriesGrid.innerHTML = `<div class="search-copy">No badge categories found for this player group.</div>`;
+                return;
+            }
+
+            categoriesGrid.innerHTML = categories.map((category) => `
+                <section class="badge-category">
+                    <div class="badge-category-header">
+                        <h3>${category.name}</h3>
+                        <span class="badge-category-meta">${category.groups.length} tier${category.groups.length === 1 ? "" : "s"}</span>
+                    </div>
+                    <div class="badge-groups">
+                        ${category.groups.map((group) => `
+                            <article class="badge-group ${getTierClass(group.tier)}">
+                                <h4>${group.label}</h4>
+                                <div class="badge-group-list">
+                                    ${group.people.length
+                                        ? group.people.map((name) => `<div class="badge-group-person">${name}</div>`).join("")
+                                        : `<div class="badge-group-person">Nobody yet</div>`}
+                                </div>
+                            </article>
+                        `).join("")}
+                    </div>
+                </section>
+            `).join("");
+        }
+
+        function createPersonCard(person) {
+            const earnedBadges = getEarnedBadges(person)
+                .slice()
+                .sort((a, b) => a.tier - b.tier || a.category.localeCompare(b.category));
+            const badgeMarkup = earnedBadges.length
+                ? earnedBadges.map((badge, index) => `
+                    <span class="badge-pill ${getTierClass(badge.tier)}">
+                        <span class="badge-label">${badge.category}:</span>
+                        <span>${badge.value}</span>
+                    </span>
+                `).join("")
+                : `<span class="badge-pill"><span>No badges yet</span></span>`;
+
+            return `
+                <article class="person-card">
+                    <div>
+                        <h4>${person.name}</h4>
+                        <div class="search-copy"><strong>${earnedBadges.length}</strong> badge${earnedBadges.length === 1 ? "" : "s"} earned</div>
+                    </div>
+                    <div class="person-badges">${badgeMarkup}</div>
+                </article>
+            `;
+        }
+
+        function setActiveView(view) {
+            const showProfileView = view === "profile";
+            profileView.hidden = !showProfileView;
+            tierView.hidden = showProfileView;
+            profileViewButton.classList.toggle("active", showProfileView);
+            tierViewButton.classList.toggle("active", !showProfileView);
+            profileViewButton.setAttribute("aria-selected", showProfileView ? "true" : "false");
+            tierViewButton.setAttribute("aria-selected", showProfileView ? "false" : "true");
+        }
+
+        function renderSearchResults(query) {
+            const trimmedQuery = query.trim().toLowerCase();
+
+            if (!trimmedQuery) {
+                searchResults.hidden = true;
+                searchResults.innerHTML = "";
+                return;
+            }
+
+            const matches = getFilteredPeople().filter((person) => person.name.toLowerCase().includes(trimmedQuery));
+            searchResults.hidden = false;
+
+            if (!matches.length) {
+                searchResults.innerHTML = `
+                    <div class="search-copy">No badge profile found for <strong>${query}</strong>.</div>
+                `;
+                return;
+            }
+
+            searchResults.innerHTML = `
+                <div class="search-copy">${matches.length} match${matches.length === 1 ? "" : "es"} for <strong>${query}</strong></div>
+                ${matches.map(createPersonCard).join("")}
+            `;
+        }
+
+        function buildCategories(headers, rows) {
+            return headers.map((header, columnIndex) => {
+                const groupMap = new Map();
+
+                rows.forEach((person) => {
+                    const badge = person.badges[columnIndex];
+                    if (!badge || !badge.value || badge.value.toLowerCase() === "none") {
+                        return;
+                    }
+
+                    if (!groupMap.has(badge.value)) {
+                        groupMap.set(badge.value, []);
+                    }
+
+                    groupMap.get(badge.value).push(person.name);
+                });
+
+                const groups = Array.from(groupMap.entries())
+                    .sort((a, b) => extractBadgeScore(a[0]) - extractBadgeScore(b[0]))
+                    .map(([label, peopleWithBadge]) => ({
+                        label,
+                        tier: getTierNumber(label, groupMap.keys()),
+                        people: peopleWithBadge.sort((a, b) => a.localeCompare(b))
+                    }));
+
+                return {
+                    name: header,
+                    groups
+                };
+            });
+        }
+
+        function loadBadges() {
+            const script = document.createElement("script");
+            script.src = BADGES_FEED_URL;
+            script.async = true;
+            script.onerror = showBadgesError;
+            document.body.appendChild(script);
+        }
+
+        function renderBadgesApp() {
+            const { title, subtitle } = getStatusCopy();
+
+            statusTitle.textContent = title;
+            statusSubtitle.textContent = subtitle;
+
+            renderLeaderboard();
+            renderProfileDirectory();
+            renderCategories();
+            renderSearchResults(badgeSearchInput.value);
+        }
+
+        function setStatusFilter(nextFilter) {
+            statusFilter = nextFilter;
+            allStatusButton.classList.toggle("active", nextFilter === "all");
+            activeStatusButton.classList.toggle("active", nextFilter === "active");
+            allStatusButton.setAttribute("aria-selected", nextFilter === "all" ? "true" : "false");
+            activeStatusButton.setAttribute("aria-selected", nextFilter === "active" ? "true" : "false");
+            renderBadgesApp();
+        }
+
+        window.handleBadgesResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows) || !response.table.rows.length) {
+                showBadgesError();
+                return;
+            }
+
+            const rawRows = response.table.rows.map((row) => (row.c || []).map(normalizeCell));
+            const headers = rawRows[0];
+            badgeHeaders = headers.slice(1, -1);
+
+            people = rawRows.slice(1).map((cells) => ({
+                name: cells[0],
+                status: normalizePlayerStatus(cells[headers.length - 1]),
+                badges: badgeHeaders.map((header, index) => ({
+                    category: header,
+                    value: cells[index + 1] || ""
+                }))
+            })).filter((person) => person.name);
+
+            const allCategories = buildCategories(badgeHeaders, people);
+
+            people = people.map((person) => ({
+                ...person,
+                badges: person.badges.map((badge) => {
+                    const matchingCategory = allCategories.find((category) => category.name === badge.category);
+                    const matchingGroup = matchingCategory
+                        ? matchingCategory.groups.find((group) => group.label === badge.value)
+                        : null;
+
+                    return {
+                        ...badge,
+                        tier: matchingGroup ? matchingGroup.tier : 1
+                    };
+                })
+            }));
+
+            if (!people.length || !allCategories.length) {
+                showBadgesError();
+                return;
+            }
+
+            renderBadgesApp();
+            badgesApp.hidden = false;
+            badgesStatus.hidden = true;
+        };
+
+        badgeSearchInput.addEventListener("input", (event) => {
+            renderSearchResults(event.target.value);
+        });
+
+        profileViewButton.addEventListener("click", () => {
+            setActiveView("profile");
+        });
+
+        tierViewButton.addEventListener("click", () => {
+            setActiveView("tier");
+        });
+
+        allStatusButton.addEventListener("click", () => {
+            setStatusFilter("all");
+        });
+
+        activeStatusButton.addEventListener("click", () => {
+            setStatusFilter("active");
+        });
+
+        loadBadges();
+    </script>
 </body>
 </html>

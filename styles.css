@@ -144,7 +144,45 @@ a {
     gap: 8px;
     width: min(1100px, calc(100% - 24px));
     margin: 0 auto;
-    padding: 10px 12px;
+    padding: 38px 12px 10px;
+    position: relative;
+}
+
+.site-footer .footer-nav::before,
+.site-footer .footer-nav::after {
+    position: absolute;
+    top: -4px;
+    height: 18px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 3px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-top: 1px solid rgba(191, 219, 254, 0.5);
+    border-left: 1px solid rgba(191, 219, 254, 0.5);
+    border-right: 1px solid rgba(191, 219, 254, 0.5);
+    border-radius: 10px 10px 0 0;
+    pointer-events: none;
+}
+
+.site-footer .footer-nav::before {
+    content: "Active Season";
+    left: 12px;
+    width: calc(50% - 16px);
+    color: rgba(239, 246, 255, 0.92);
+}
+
+.site-footer .footer-nav::after {
+    content: "All-Time";
+    right: 12px;
+    width: calc(50% - 16px);
+    color: #fca5a5;
+    border-top-color: rgba(252, 165, 165, 0.55);
+    border-left-color: rgba(252, 165, 165, 0.55);
+    border-right-color: rgba(252, 165, 165, 0.55);
 }
 
 .site-footer .footer-nav a {
@@ -346,7 +384,25 @@ a {
         gap: 4px;
         width: 100%;
         max-width: none;
-        padding: 6px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+        padding: 32px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .site-footer .footer-nav::before,
+    .site-footer .footer-nav::after {
+        top: -3px;
+        height: 16px;
+        padding-top: 2px;
+        font-size: 0.58rem;
+    }
+
+    .site-footer .footer-nav::before {
+        left: 6px;
+        width: calc(50% - 8px);
+    }
+
+    .site-footer .footer-nav::after {
+        right: 6px;
+        width: calc(50% - 8px);
     }
 
     .site-footer .footer-nav a {

@@ -138,19 +138,25 @@ a {
     box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.18);
 }
 
+.footer-group-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: min(1100px, calc(100% - 24px));
+    margin: 0 auto;
+    padding: 6px 12px 0;
+}
+
 .site-footer .footer-nav {
     display: grid;
     grid-template-columns: repeat(6, minmax(72px, 1fr));
     gap: 8px;
     width: min(1100px, calc(100% - 24px));
     margin: 0 auto;
-    padding: 44px 12px 10px;
-    position: relative;
+    padding: 10px 12px;
 }
 
 .footer-group-label {
-    position: absolute;
-    top: 4px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -168,14 +174,10 @@ a {
 }
 
 .footer-group-label.active-season {
-    left: 12px;
-    width: calc(50% - 16px);
     color: rgba(239, 246, 255, 0.92);
 }
 
 .footer-group-label.all-time {
-    right: 12px;
-    width: calc(50% - 16px);
     color: #fca5a5;
     border-top-color: rgba(252, 165, 165, 0.55);
     border-left-color: rgba(252, 165, 165, 0.55);
@@ -375,30 +377,26 @@ a {
         display: none;
     }
 
+    .footer-group-row {
+        width: 100%;
+        max-width: none;
+        gap: 4px;
+        padding: 4px 6px 0;
+    }
+
     .site-footer .footer-nav {
         display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 4px;
         width: 100%;
         max-width: none;
-        padding: 38px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+        padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
     }
 
     .footer-group-label {
-        top: 4px;
         height: 16px;
         padding-top: 2px;
         font-size: 0.58rem;
-    }
-
-    .footer-group-label.active-season {
-        left: 6px;
-        width: calc(50% - 8px);
-    }
-
-    .footer-group-label.all-time {
-        right: 6px;
-        width: calc(50% - 8px);
     }
 
     .site-footer .footer-nav a {

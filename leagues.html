@@ -109,6 +109,13 @@
             text-transform: uppercase;
         }
 
+        .recap-summary {
+            margin: 4px 0 0;
+            color: #0f2747;
+            font-size: 0.84rem;
+            font-weight: 800;
+        }
+
         .recap-entry {
             display: flex;
             align-items: baseline;
@@ -353,7 +360,7 @@
 
         <main>
             <section class="page-intro">
-                <h2>League Standings + Weekly Recap</h2>
+                <h2>Weekly Recap + League Standings</h2>
                 <p>Follow every division in a cleaner standings board built right into the site, then scan the live weekly recap for the biggest swings, closest finishes, and top performances from the latest slate.</p>
             </section>
 
@@ -493,7 +500,10 @@
                 <div class="weekly-recap-grid">
                     ${recap.groups.map((group) => `
                         <article class="recap-card">
-                            <p class="recap-label">${group.label}</p>
+                            <div>
+                                <p class="recap-label">${group.label}</p>
+                                ${group.summary ? `<p class="recap-summary">${group.summary}</p>` : ""}
+                            </div>
                             ${group.entries.map((entry) => `
                                 <div class="recap-entry">
                                     <p class="recap-name">${entry.name}</p>
@@ -505,6 +515,30 @@
                 </div>
             `;
             weeklyRecap.hidden = false;
+        }
+
+        function buildRecapSummary(group) {
+            if (!group || group.entries.length < 2) {
+                return "";
+            }
+
+            const values = group.entries.map((entry) => Number(entry.value));
+            if (values.some((value) => Number.isNaN(value))) {
+                return "";
+            }
+
+            const label = group.label.toLowerCase();
+            if (label.includes("smallest margin") || label.includes("biggest blowout")) {
+                const difference = Math.abs(values[0] - values[1]);
+                return `Difference: ${formatRecapValue(difference)}`;
+            }
+
+            if (label.includes("highest matchup") || label.includes("lowest matchup")) {
+                const total = values.reduce((sum, value) => sum + value, 0);
+                return `Combined Total: ${formatRecapValue(total)}`;
+            }
+
+            return "";
         }
 
         function showStandingsError() {
@@ -616,7 +650,12 @@
                 });
             });
 
-            recap.groups = recap.groups.filter((group) => group.entries.length);
+            recap.groups = recap.groups
+                .filter((group) => group.entries.length)
+                .map((group) => ({
+                    ...group,
+                    summary: buildRecapSummary(group)
+                }));
             renderWeeklyRecap(recap);
         };
 

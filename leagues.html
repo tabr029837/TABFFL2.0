@@ -48,6 +48,95 @@
             gap: 22px;
         }
 
+        .weekly-recap {
+            display: grid;
+            gap: 16px;
+            padding: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.45);
+            border-radius: 20px;
+            background:
+                radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 32%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(239, 246, 255, 0.96));
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .weekly-recap[hidden] {
+            display: none;
+        }
+
+        .weekly-recap-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .weekly-recap-title {
+            margin: 0;
+            color: #0f2747;
+            font-size: 1.35rem;
+        }
+
+        .weekly-recap-week {
+            color: #1d4ed8;
+            font-size: 0.86rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .weekly-recap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .recap-card {
+            display: grid;
+            gap: 10px;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .recap-label {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .recap-entry {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .recap-entry:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        .recap-name {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .recap-value {
+            color: #1d4ed8;
+            font-size: 0.98rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
         .conference-block {
             display: grid;
             gap: 14px;
@@ -238,6 +327,16 @@
         }
 
         @media (max-width: 640px) {
+            .weekly-recap {
+                padding: 16px;
+            }
+
+            .weekly-recap-header,
+            .recap-entry {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
             .division-grid {
                 grid-template-columns: 1fr;
             }
@@ -254,11 +353,12 @@
 
         <main>
             <section class="page-intro">
-                <h2>League Standings</h2>
-                <p>Follow every division in a cleaner standings board built right into the site. Each conference is broken into divisions, and every division shows both sectors with records and total points at a glance.</p>
+                <h2>League Standings + Weekly Recap</h2>
+                <p>Follow every division in a cleaner standings board built right into the site, then scan the live weekly recap for the biggest swings, closest finishes, and top performances from the latest slate.</p>
             </section>
 
             <section class="standings-shell">
+                <section id="weekly-recap" class="weekly-recap" hidden></section>
                 <div id="standings-status" class="standings-status">Loading standings...</div>
                 <div id="standings-board" hidden></div>
             </section>
@@ -284,6 +384,7 @@
 
     <script>
         const STANDINGS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleStandingsResponse&gid=1843094305&range=A1:AP14";
+        const WEEKLY_RECAP_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleWeeklyRecapResponse&gid=1843094305&range=B16:C36";
         const DIVISIONS = [
             { key: "summit", name: "Summit", conference: "Heights", sector: "West", baseIndex: 1 },
             { key: "glacier", name: "Glacier", conference: "Heights", sector: "West", baseIndex: 7 },
@@ -296,6 +397,7 @@
 
         const standingsStatus = document.getElementById("standings-status");
         const standingsBoard = document.getElementById("standings-board");
+        const weeklyRecap = document.getElementById("weekly-recap");
 
         function formatPoints(value) {
             const numericValue = Number(value);
@@ -366,6 +468,45 @@
             standingsStatus.hidden = true;
         }
 
+        function formatRecapValue(value) {
+            const numericValue = Number(value);
+            if (Number.isNaN(numericValue)) {
+                return value || "";
+            }
+            return numericValue.toLocaleString("en-US", {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+            });
+        }
+
+        function renderWeeklyRecap(recap) {
+            if (!recap || !recap.groups.length) {
+                weeklyRecap.hidden = true;
+                return;
+            }
+
+            weeklyRecap.innerHTML = `
+                <div class="weekly-recap-header">
+                    <h3 class="weekly-recap-title">Weekly Recap</h3>
+                    <span class="weekly-recap-week">Week ${recap.week || "N/A"}</span>
+                </div>
+                <div class="weekly-recap-grid">
+                    ${recap.groups.map((group) => `
+                        <article class="recap-card">
+                            <p class="recap-label">${group.label}</p>
+                            ${group.entries.map((entry) => `
+                                <div class="recap-entry">
+                                    <p class="recap-name">${entry.name}</p>
+                                    <span class="recap-value">${formatRecapValue(entry.value)}</span>
+                                </div>
+                            `).join("")}
+                        </article>
+                    `).join("")}
+                </div>
+            `;
+            weeklyRecap.hidden = false;
+        }
+
         function showStandingsError() {
             standingsStatus.hidden = false;
             standingsStatus.textContent = "League standings are not available right now.";
@@ -401,11 +542,15 @@
         }
 
         function loadStandings() {
-            const script = document.createElement("script");
-            script.src = STANDINGS_FEED_URL;
-            script.async = true;
-            script.onerror = showStandingsError;
-            document.body.appendChild(script);
+            [STANDINGS_FEED_URL, WEEKLY_RECAP_FEED_URL].forEach((url) => {
+                const script = document.createElement("script");
+                script.src = url;
+                script.async = true;
+                script.onerror = url === STANDINGS_FEED_URL ? showStandingsError : () => {
+                    weeklyRecap.hidden = true;
+                };
+                document.body.appendChild(script);
+            });
         }
 
         window.handleStandingsResponse = (response) => {
@@ -424,6 +569,55 @@
             });
 
             renderStandings(divisionData);
+        };
+
+        window.handleWeeklyRecapResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                weeklyRecap.hidden = true;
+                return;
+            }
+
+            const rows = response.table.rows.map((row) => {
+                const cells = row.c || [];
+                const label = cells[0] ? (cells[0].f || String(cells[0].v || "")).trim() : "";
+                const value = cells[1] ? (cells[1].f || String(cells[1].v || "")).trim() : "";
+                return [label, value];
+            }).filter(([label]) => label);
+
+            const recap = {
+                week: "",
+                groups: []
+            };
+
+            let currentGroup = null;
+
+            rows.forEach(([label, value]) => {
+                if (label === "Week") {
+                    recap.week = value;
+                    return;
+                }
+
+                if (!value) {
+                    currentGroup = {
+                        label,
+                        entries: []
+                    };
+                    recap.groups.push(currentGroup);
+                    return;
+                }
+
+                if (!currentGroup) {
+                    return;
+                }
+
+                currentGroup.entries.push({
+                    name: label,
+                    value
+                });
+            });
+
+            recap.groups = recap.groups.filter((group) => group.entries.length);
+            renderWeeklyRecap(recap);
         };
 
         loadStandings();

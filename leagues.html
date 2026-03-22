@@ -383,10 +383,24 @@
 
         @media (max-width: 640px) {
             .page-intro-header {
-                flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+                gap: 10px;
             }
 
+            .page-intro-header h2 {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .playoff-link {
+                flex-shrink: 0;
+                padding: 6px 9px;
+                font-size: 0.68rem;
+            }
+
+            .page-intro-header {
+                flex-direction: row;
+            }
             .weekly-recap {
                 padding: 16px;
             }

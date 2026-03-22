@@ -33,14 +33,50 @@
             box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
         }
 
+        .page-intro-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
         .page-intro h2 {
-            margin: 0 0 12px;
+            margin: 0;
         }
 
         .page-intro p {
             margin: 0;
             line-height: 1.65;
             color: #334155;
+        }
+
+        .playoff-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .playoff-link:hover,
+        .playoff-link:focus-visible {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #0f3b66;
+        }
+
+        .playoff-link:focus-visible {
+            outline: 2px solid rgba(59, 130, 246, 0.22);
+            outline-offset: 2px;
         }
 
         .standings-shell {
@@ -327,6 +363,18 @@
             font-weight: 600;
         }
 
+        .page-updated-note {
+            margin: 8px 0 0;
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .page-updated-note[hidden] {
+            display: none;
+        }
+
         .footer-spacer {
             width: 100%;
             height: 160px;
@@ -334,6 +382,11 @@
         }
 
         @media (max-width: 640px) {
+            .page-intro-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
             .weekly-recap {
                 padding: 16px;
             }
@@ -360,8 +413,12 @@
 
         <main>
             <section class="page-intro">
-                <h2>Weekly Recap + League Standings</h2>
+                <div class="page-intro-header">
+                    <h2>Weekly Recap + League Standings</h2>
+                    <a class="playoff-link" href="/playoff-picture">Playoff Picture</a>
+                </div>
                 <p>Follow every division in a cleaner standings board built right into the site, then scan the live weekly recap for the biggest swings, closest finishes, and top performances from the latest slate.</p>
+                <p id="standings-updated-note" class="page-updated-note" hidden></p>
             </section>
 
             <section class="standings-shell">
@@ -392,6 +449,7 @@
     <script>
         const STANDINGS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleStandingsResponse&gid=1843094305&range=A1:AP14";
         const WEEKLY_RECAP_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleWeeklyRecapResponse&gid=1843094305&range=B16:C36";
+        const STANDINGS_UPDATED_AT_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleStandingsUpdatedAtResponse&gid=1843094305&range=AL3:AL4";
         const DIVISIONS = [
             { key: "summit", name: "Summit", conference: "Heights", sector: "West", baseIndex: 1 },
             { key: "glacier", name: "Glacier", conference: "Heights", sector: "West", baseIndex: 7 },
@@ -405,6 +463,18 @@
         const standingsStatus = document.getElementById("standings-status");
         const standingsBoard = document.getElementById("standings-board");
         const weeklyRecap = document.getElementById("weekly-recap");
+        const standingsUpdatedNote = document.getElementById("standings-updated-note");
+
+        function renderUpdatedNote(element, value) {
+            if (!value) {
+                element.hidden = true;
+                element.textContent = "";
+                return;
+            }
+
+            element.textContent = `Updated ${value}`;
+            element.hidden = false;
+        }
 
         function formatPoints(value) {
             const numericValue = Number(value);
@@ -576,12 +646,17 @@
         }
 
         function loadStandings() {
-            [STANDINGS_FEED_URL, WEEKLY_RECAP_FEED_URL].forEach((url) => {
+            [STANDINGS_FEED_URL, WEEKLY_RECAP_FEED_URL, STANDINGS_UPDATED_AT_FEED_URL].forEach((url) => {
                 const script = document.createElement("script");
                 script.src = url;
                 script.async = true;
                 script.onerror = url === STANDINGS_FEED_URL ? showStandingsError : () => {
-                    weeklyRecap.hidden = true;
+                    if (url === WEEKLY_RECAP_FEED_URL) {
+                        weeklyRecap.hidden = true;
+                        return;
+                    }
+
+                    renderUpdatedNote(standingsUpdatedNote, "");
                 };
                 document.body.appendChild(script);
             });
@@ -657,6 +732,18 @@
                     summary: buildRecapSummary(group)
                 }));
             renderWeeklyRecap(recap);
+        };
+
+        window.handleStandingsUpdatedAtResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                renderUpdatedNote(standingsUpdatedNote, "");
+                return;
+            }
+
+            const firstRow = response.table.rows[0];
+            const firstCell = firstRow && firstRow.c ? firstRow.c[0] : null;
+            const value = firstCell ? (firstCell.f || String(firstCell.v || "")).trim() : "";
+            renderUpdatedNote(standingsUpdatedNote, value);
         };
 
         loadStandings();

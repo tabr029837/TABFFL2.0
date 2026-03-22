@@ -31,7 +31,7 @@
             border: 1px solid #dbe2ea;
             border-radius: 16px;
             background:
-                radial-gradient(circle at top right, rgba(245, 158, 11, 0.2), transparent 32%),
+                radial-gradient(circle at top right, rgba(147, 197, 253, 0.28), transparent 32%),
                 linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(226, 232, 240, 0.92));
             box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
         }
@@ -65,7 +65,7 @@
 
         .control-stack {
             display: grid;
-            gap: 12px;
+            gap: 10px;
         }
 
         .status-bar {
@@ -73,22 +73,22 @@
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            padding: 14px 16px;
+            gap: 10px;
+            padding: 10px 12px;
             border: 1px solid #dbe2ea;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.96);
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            border-radius: 14px;
+            background: rgba(248, 250, 252, 0.92);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
         }
 
         .status-copy {
             display: grid;
-            gap: 4px;
+            gap: 2px;
         }
 
         .status-label {
             color: #64748b;
-            font-size: 0.76rem;
+            font-size: 0.68rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
@@ -97,32 +97,33 @@
         .status-title {
             margin: 0;
             color: #0f172a;
-            font-size: 1.06rem;
+            font-size: 0.94rem;
             font-weight: 700;
         }
 
         .status-subtitle {
             margin: 0;
             color: #475569;
-            font-size: 0.92rem;
+            font-size: 0.82rem;
         }
 
         .status-switcher {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
-            border: 1px solid #dbe2ea;
+            gap: 6px;
+            padding: 5px;
+            border: 1px solid #cbd5e1;
             border-radius: 999px;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .view-button {
             border: 0;
             border-radius: 999px;
-            padding: 10px 16px;
+            padding: 8px 14px;
             font: inherit;
             font-weight: 700;
+            font-size: 0.92rem;
             color: #475569;
             background: transparent;
             cursor: pointer;
@@ -130,9 +131,9 @@
         }
 
         .view-button.active {
-            color: #0f2747;
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            box-shadow: inset 0 0 0 1px rgba(202, 138, 4, 0.24);
+            color: #0f3b66;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
         }
 
         .badges-hero {
@@ -300,8 +301,8 @@
             width: 42px;
             height: 42px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #f59e0b, #ea580c);
-            color: white;
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            color: #0f3b66;
             font-weight: 800;
         }
 
@@ -500,7 +501,7 @@
         <main>
             <section class="page-intro">
                 <h2>Badges</h2>
-                <p>The badge vault turns your spreadsheet into a live trophy case. Browse every category, see who owns each milestone, and search any manager to pull up their full badge collection in one spot.</p>
+                <p>The badge vault turns league milestones into a live trophy case. Browse every category, see who owns each one, and search any manager to pull up their full badge collection in one spot.</p>
             </section>
 
             <section class="badges-shell">
@@ -545,7 +546,7 @@
 
                         <section class="profiles-shell">
                             <section class="profiles-panel" aria-label="All badge profiles">
-                                <h3>All Badge Profiles</h3>
+                                <h3 id="profiles-title">All Badge Profiles</h3>
                                 <p>Browse every manager and see their full badge stack in one place.</p>
                                 <div id="profiles-grid" class="profiles-grid"></div>
                             </section>
@@ -594,6 +595,7 @@
         const activeStatusButton = document.getElementById("active-status-button");
         const statusTitle = document.getElementById("status-title");
         const statusSubtitle = document.getElementById("status-subtitle");
+        const profilesTitle = document.getElementById("profiles-title");
         const BASE_TIER_LABELS = new Set([
             "30+ Wins",
             "5+ Years",
@@ -755,7 +757,8 @@
         }
 
         function renderProfileDirectory() {
-            const sortedPeople = getFilteredPeople()
+            const filteredPeople = getFilteredPeople();
+            const sortedPeople = filteredPeople
                 .slice()
                 .sort((a, b) => {
                     const badgeDifference = getEarnedBadges(b).length - getEarnedBadges(a).length;
@@ -764,6 +767,8 @@
                     }
                     return a.name.localeCompare(b.name);
                 });
+
+            profilesTitle.textContent = `All Badge Profiles (${filteredPeople.length})`;
 
             if (!sortedPeople.length) {
                 profilesGrid.innerHTML = `<div class="search-copy">No badge profiles found for this player group.</div>`;

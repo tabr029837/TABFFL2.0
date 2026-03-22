@@ -125,6 +125,18 @@
             font-weight: 600;
         }
 
+        .page-updated-note {
+            margin: 8px 0 0;
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+        .page-updated-note[hidden] {
+            display: none;
+        }
+
         .rankings-board {
             display: grid;
             gap: 8px;
@@ -202,14 +214,46 @@
 
         .ranking-notes {
             margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
             line-height: 1.2;
             font-size: 0.88rem;
             color: #475569;
-            white-space: pre-line;
         }
 
         .ranking-notes strong {
             color: #0f172a;
+        }
+
+        .ranking-movement {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            line-height: 1;
+            border: 1px solid transparent;
+        }
+
+        .ranking-movement.up {
+            background: #dcfce7;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .ranking-movement.down {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+
+        .ranking-movement.even {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #334155;
         }
 
         .ranking-metrics {
@@ -262,7 +306,8 @@
         <main>
             <section class="page-intro">
                 <h2>Power Rankings</h2>
-                <p>Track the latest movement across TABFFL through this in-site Power Rankings board. Each spot is pulled from the league spreadsheet and presented here as a full rankings list. <strong>Remember, at the end of the regular season, this will become the official league placement for next season.</strong></p>
+                <p>Track the latest movement across TABFFL through this in-site Power Rankings board. Follow the full rankings list in one place and see how teams stack up across the league. <strong>Remember, at the end of the regular season, this will become the official league placement for next season.</strong></p>
+                <p id="rankings-updated-note" class="page-updated-note" hidden></p>
             </section>
 
             <section class="rankings-shell">
@@ -299,6 +344,9 @@
     <script>
         const POWER_RANKINGS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePowerRankingsResponse&gid=650942190&range=A2:C65";
         const POWER_RANKINGS_DETAILS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePowerRankingsDetailsResponse&gid=650942190&range=E2:J63";
+        const POWER_RANKINGS_CURRENT_WEEK_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePowerRankingsWeekResponse&gid=1843094305&range=B16:C16";
+        const POWER_RANKINGS_MOVEMENT_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePowerRankingsMovementResponse&gid=1226699939&range=A1:AO64";
+        const RANKINGS_UPDATED_AT_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleRankingsUpdatedAtResponse&gid=1843094305&range=AL3:AL4";
         const LEAGUE_GROUPS = [
             { name: "Summit", start: 1, end: 10 },
             { name: "Glacier", start: 11, end: 20 },
@@ -312,8 +360,32 @@
         const rankingsBoard = document.getElementById("rankings-board");
         const rankingsSearchInput = document.getElementById("rankings-search-input");
         const searchResults = document.getElementById("search-results");
+        const rankingsUpdatedNote = document.getElementById("rankings-updated-note");
         let summaryRows = null;
         let detailsByName = null;
+        let currentWeekNumber = "";
+        let movementTable = null;
+        let movementByName = {};
+
+        function renderUpdatedNote(value) {
+            if (!value) {
+                rankingsUpdatedNote.hidden = true;
+                rankingsUpdatedNote.textContent = "";
+                return;
+            }
+
+            rankingsUpdatedNote.textContent = `Updated ${value}`;
+            rankingsUpdatedNote.hidden = false;
+        }
+
+        function getMovementMarkup(team) {
+            const movement = movementByName[team];
+            if (!movement) {
+                return "";
+            }
+
+            return `<span class="ranking-movement ${movement.className}">${movement.label}</span>`;
+        }
 
         function createRankingCard([rank, team, powerIndex], details = {}) {
             const card = document.createElement("article");
@@ -332,7 +404,7 @@
                 </div>
                 <div class="ranking-copy">
                     <h3 class="ranking-team">${team || "Unnamed Team"}</h3>
-                    <p class="ranking-notes"><strong>Power Index: ${powerIndex || "N/A"}</strong></p>
+                    <p class="ranking-notes"><strong>Power Index: ${powerIndex || "N/A"}</strong>${getMovementMarkup(team)}</p>
                     <div class="ranking-metrics">${metrics.map((metric) => `<span>${metric}</span>`).join("<span>|</span>")}</div>
                 </div>
             `;
@@ -420,7 +492,7 @@
         function showRankingsError() {
             rankingsStatus.hidden = false;
             rankingsStatus.innerHTML = `
-                <div class="ranking-source">Power rankings are not available yet. The public spreadsheet feed did not load successfully.</div>
+                <div class="ranking-source">Power rankings are not available yet. Please check back in a moment.</div>
             `;
         }
 
@@ -432,17 +504,91 @@
             renderSearchResults(rankingsSearchInput.value);
         }
 
+        function buildMovementMap() {
+            if (!currentWeekNumber || !movementTable || !movementTable.table || !Array.isArray(movementTable.table.rows) || !Array.isArray(movementTable.table.cols)) {
+                movementByName = {};
+                maybeRenderRankings();
+                return;
+            }
+
+            const weekLabel = `Week ${currentWeekNumber}`;
+            const columnLabels = movementTable.table.cols.map((column) => {
+                const rawLabel = column && column.label ? String(column.label) : "";
+                return rawLabel.replace(/^"+|"+$/g, "").trim();
+            });
+            const weekColumnIndex = columnLabels.indexOf(weekLabel);
+
+            if (weekColumnIndex === -1) {
+                movementByName = {};
+                maybeRenderRankings();
+                return;
+            }
+
+            movementByName = movementTable.table.rows.reduce((acc, row) => {
+                const cells = row.c || [];
+                const nameCell = cells[weekColumnIndex];
+                const movementCell = cells[weekColumnIndex + 2];
+                const name = nameCell ? (nameCell.f || String(nameCell.v || "")).trim() : "";
+
+                if (!name || !movementCell || movementCell.v === null || movementCell.v === undefined || movementCell.v === "") {
+                    return acc;
+                }
+
+                const numericMovement = Number(movementCell.v);
+                if (Number.isNaN(numericMovement)) {
+                    return acc;
+                }
+
+                let className = "even";
+                if (numericMovement > 0) {
+                    className = "up";
+                } else if (numericMovement < 0) {
+                    className = "down";
+                }
+
+                const movementText = numericMovement > 0 ? `+${numericMovement}` : String(numericMovement);
+                acc[name] = {
+                    className,
+                    label: `Compared to Last Week: ${movementText}`
+                };
+                return acc;
+            }, {});
+
+            maybeRenderRankings();
+        }
+
         function loadFeed(src) {
             const script = document.createElement("script");
             script.src = src;
             script.async = true;
-            script.onerror = showRankingsError;
+            script.onerror = () => {
+                if (src === RANKINGS_UPDATED_AT_FEED_URL) {
+                    renderUpdatedNote("");
+                    return;
+                }
+
+                if (src === POWER_RANKINGS_CURRENT_WEEK_FEED_URL || src === POWER_RANKINGS_MOVEMENT_FEED_URL) {
+                    if (src === POWER_RANKINGS_CURRENT_WEEK_FEED_URL) {
+                        currentWeekNumber = "";
+                    } else {
+                        movementTable = null;
+                    }
+                    movementByName = {};
+                    maybeRenderRankings();
+                    return;
+                }
+
+                showRankingsError();
+            };
             document.body.appendChild(script);
         }
 
         function loadRankings() {
             loadFeed(POWER_RANKINGS_FEED_URL);
             loadFeed(POWER_RANKINGS_DETAILS_FEED_URL);
+            loadFeed(POWER_RANKINGS_CURRENT_WEEK_FEED_URL);
+            loadFeed(POWER_RANKINGS_MOVEMENT_FEED_URL);
+            loadFeed(RANKINGS_UPDATED_AT_FEED_URL);
         }
 
         window.handlePowerRankingsResponse = (response) => {
@@ -503,6 +649,42 @@
             }, {});
 
             maybeRenderRankings();
+        };
+
+        window.handlePowerRankingsWeekResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows) || !response.table.rows.length) {
+                currentWeekNumber = "";
+                buildMovementMap();
+                return;
+            }
+
+            const firstRow = response.table.rows[0];
+            const weekCell = firstRow && firstRow.c ? firstRow.c[1] : null;
+            currentWeekNumber = weekCell ? (weekCell.f || String(weekCell.v || "")).trim() : "";
+            buildMovementMap();
+        };
+
+        window.handlePowerRankingsMovementResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows) || !Array.isArray(response.table.cols)) {
+                movementTable = null;
+                buildMovementMap();
+                return;
+            }
+
+            movementTable = response;
+            buildMovementMap();
+        };
+
+        window.handleRankingsUpdatedAtResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                renderUpdatedNote("");
+                return;
+            }
+
+            const firstRow = response.table.rows[0];
+            const firstCell = firstRow && firstRow.c ? firstRow.c[0] : null;
+            const value = firstCell ? (firstCell.f || String(firstCell.v || "")).trim() : "";
+            renderUpdatedNote(value);
         };
 
         rankingsSearchInput.addEventListener("input", (event) => {

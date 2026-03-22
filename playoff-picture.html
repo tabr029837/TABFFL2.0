@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#0f2747">
+    <title>Playoff Picture</title>
+    <link rel="stylesheet" href="styles.css?v=20260321d">
+    <style>
+        .site-footer {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0;
+            border-radius: 0;
+            z-index: 999;
+        }
+
+        body {
+            padding-bottom: 84px;
+        }
+
+        .site-footer .footer-nav {
+            justify-content: space-around;
+        }
+
+        .page-intro {
+            margin-bottom: 18px;
+            padding: 20px;
+            border: 1px solid #dbe2ea;
+            border-radius: 16px;
+            background:
+                radial-gradient(circle at top right, rgba(59, 130, 246, 0.16), transparent 32%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(226, 232, 240, 0.92));
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+        }
+
+        .page-intro-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .page-intro h2 {
+            margin: 0;
+        }
+
+        .page-intro p {
+            margin: 0;
+            line-height: 1.55;
+            color: #334155;
+        }
+
+        .standings-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.84);
+            color: #475569;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .standings-link:hover,
+        .standings-link:focus-visible {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #0f3b66;
+        }
+
+        .standings-link:focus-visible {
+            outline: 2px solid rgba(59, 130, 246, 0.22);
+            outline-offset: 2px;
+        }
+
+        .playoff-status {
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid #dbe2ea;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .playoff-shell {
+            display: grid;
+            gap: 14px;
+        }
+
+        .playoff-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .playoff-grid[hidden] {
+            display: none;
+        }
+
+        .playoff-division {
+            display: grid;
+            gap: 14px;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.45);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .playoff-division-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dbe2ea;
+        }
+
+        .playoff-division-heading {
+            display: grid;
+            gap: 4px;
+        }
+
+        .playoff-division-header h3 {
+            margin: 0;
+            color: #0f2747;
+        }
+
+        .playoff-division-meta {
+            color: #64748b;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .playoff-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.84);
+            color: #475569;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .playoff-toggle:hover,
+        .playoff-toggle:focus-visible {
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #0f3b66;
+        }
+
+        .playoff-toggle:focus-visible {
+            outline: 2px solid rgba(59, 130, 246, 0.22);
+            outline-offset: 2px;
+        }
+
+        .playoff-columns {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .playoff-columns[hidden] {
+            display: none;
+        }
+
+        .playoff-panel {
+            padding: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+            border-radius: 14px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+        }
+
+        .playoff-panel h4 {
+            margin: 0 0 10px;
+            font-size: 1rem;
+            color: #0f2747;
+        }
+
+        .seed-list,
+        .round-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .seed-row,
+        .round-card {
+            display: grid;
+            gap: 6px;
+            padding: 10px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #dbe2ea;
+        }
+
+        .seed-row {
+            grid-template-columns: 44px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seed-number {
+            display: grid;
+            place-items: center;
+            min-height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #0f3b66;
+            font-weight: 800;
+            font-size: 0.92rem;
+        }
+
+        .seed-row.bye-seed .seed-number {
+            background: linear-gradient(135deg, #0f2747, #1e3a5f);
+            color: #ffffff;
+        }
+
+        .seed-name {
+            margin: 0;
+            color: #0f172a;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+
+        .seed-note {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 8px;
+            border-radius: 999px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #0f3b66;
+            font-size: 0.7rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .seed-row.eliminated {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .seed-row.eliminated .seed-number {
+            background: linear-gradient(135deg, #e5e7eb, #cbd5e1);
+            color: #475569;
+        }
+
+        .seed-row.eliminated .seed-name {
+            color: #64748b;
+        }
+
+        .seed-note.eliminated {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #64748b;
+        }
+
+        .round-card {
+            gap: 10px;
+        }
+
+        .bye-card {
+            display: grid;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #dbe2ea;
+        }
+
+        .round-title {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .round-team {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .round-team-name {
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .round-divider {
+            color: #94a3b8;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .detailed-bracket {
+            display: grid;
+            gap: 12px;
+            padding: 14px;
+            border: 1px solid #dbe2ea;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #f8fafc, #ffffff);
+        }
+
+        .detailed-bracket[hidden] {
+            display: none;
+        }
+
+        .detailed-bracket-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .detailed-bracket-header h4 {
+            margin: 0;
+            color: #0f2747;
+        }
+
+        .detailed-bracket-copy {
+            color: #64748b;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        .bracket-columns {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            align-items: start;
+        }
+
+        .bracket-round {
+            display: grid;
+            gap: 8px;
+            align-content: start;
+        }
+
+        .bracket-round-title {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .bracket-matchup {
+            display: grid;
+            gap: 6px;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid #dbe2ea;
+            background: #ffffff;
+            align-content: start;
+        }
+
+        .bracket-matchup.empty {
+            border-style: dashed;
+            background: rgba(248, 250, 252, 0.9);
+        }
+
+        .bracket-matchup-title {
+            color: #64748b;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .bracket-entry {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .bracket-entry + .bracket-entry {
+            margin-top: -2px;
+        }
+
+        .bracket-seed {
+            color: #64748b;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .bracket-team {
+            color: #0f172a;
+            font-size: 0.88rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .bracket-score {
+            color: #1d4ed8;
+            font-size: 0.74rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .bracket-result {
+            display: grid;
+            gap: 6px;
+            margin-top: 2px;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .bracket-result-line {
+            color: #475569;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .bracket-result-line strong {
+            color: #0f172a;
+        }
+
+        @media (max-width: 760px) {
+            .playoff-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .seed-row {
+                grid-template-columns: 42px minmax(0, 1fr);
+            }
+
+            .seed-note {
+                grid-column: 2;
+                justify-self: start;
+            }
+
+            .playoff-division-header,
+            .detailed-bracket-header,
+            .page-intro-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .bracket-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer-spacer {
+            width: 100%;
+            height: 160px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a class="header-home" href="/" aria-label="Home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V21h14V9.5"></path></svg><span class="sr-only">Home</span></a>
+            <h1 class="site-title">TAB Fantasy Football</h1>
+            <span class="header-spacer" aria-hidden="true"></span>
+        </header>
+
+        <main>
+            <section class="page-intro">
+                <div class="page-intro-header">
+                    <h2>Playoff Picture</h2>
+                    <a class="standings-link" href="/leagues">Back to League Standings</a>
+                </div>
+                <p>Check in on the race for postseason spots, see who is currently inside the field, and keep an eye on the teams pushing to get in.</p>
+            </section>
+
+            <section class="playoff-shell">
+                <div id="playoff-status" class="playoff-status">Loading playoff picture...</div>
+                <section id="playoff-grid" class="playoff-grid" hidden></section>
+            </section>
+        </main>
+
+        <div class="footer-spacer" aria-hidden="true"></div>
+
+        <footer class="site-footer" role="contentinfo">
+            <div class="footer-group-row" aria-hidden="true">
+                <div class="footer-group-label active-season">Active Season</div>
+                <div class="footer-group-label all-time">All-Time</div>
+            </div>
+            <nav class="footer-nav" role="navigation" aria-label="Main navigation">
+                <a href="/profiles" aria-label="Profiles"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20a7 7 0 0 1 14 0"></path></svg></span><span class="sr-only">Profiles</span></a>
+                <a href="/leagues" aria-label="League Standings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19h16"></path><path d="M7 16V9"></path><path d="M12 16V5"></path><path d="M17 16v-4"></path></svg></span><span class="sr-only">League Standings</span></a>
+                <a href="/power-rankings" aria-label="Power Rankings"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 16l5-5 4 3 7-8"></path><path d="M16 6h4v4"></path></svg></span><span class="sr-only">Power Rankings</span></a>
+                <a href="/awards" aria-label="Awards"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v3a4 4 0 0 1-8 0Z"></path><path d="M6 5H4a3 3 0 0 0 3 3"></path><path d="M18 5h2a3 3 0 0 1-3 3"></path><path d="M12 11v4"></path><path d="M9 21h6"></path><path d="M10 15h4l1 3H9Z"></path></svg></span><span class="sr-only">Awards</span></a>
+                <a href="/top-performers" aria-label="Top Performers"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.8 6.7 19.1l1-5.8L3.5 9.2l5.9-.9Z"></path></svg></span><span class="sr-only">Top Performers</span></a>
+                <a href="/badges" aria-label="Badges"><span class="footer-emblem" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4h10v6a5 5 0 0 1-10 0Z"></path><path d="m9 14-1 7 4-2 4 2-1-7"></path></svg></span><span class="sr-only">Badges</span></a>
+            </nav>
+        </footer>
+    </div>
+
+    <script>
+        const PLAYOFF_PICTURE_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayoffPictureResponse&gid=1097393961&range=A1:I140";
+        const PLAYOFF_STANDINGS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayoffStandingsResponse&gid=1843094305&range=A1:AP14";
+        const DIVISION_NAMES = ["Summit", "Glacier", "Meadow", "Desert", "Trench", "Canyon"];
+        const PLAYOFF_DIVISIONS = [
+            { name: "Summit", baseIndex: 1 },
+            { name: "Glacier", baseIndex: 7 },
+            { name: "Meadow", baseIndex: 13 },
+            { name: "Desert", baseIndex: 19 },
+            { name: "Trench", baseIndex: 25 },
+            { name: "Canyon", baseIndex: 31 }
+        ];
+        const playoffStatus = document.getElementById("playoff-status");
+        const playoffGrid = document.getElementById("playoff-grid");
+        let seededDivisions = null;
+        let standingsByDivision = null;
+
+        function normalizeCell(cell) {
+            return cell ? (cell.f || String(cell.v || "")).trim() : "";
+        }
+
+        function showPlayoffError() {
+            playoffStatus.hidden = false;
+            playoffStatus.textContent = "Playoff picture is not available right now.";
+            playoffGrid.hidden = true;
+        }
+
+        function formatSeedRow(team) {
+            const note = team.status === "eliminated"
+                ? "Eliminated"
+                : team.seed <= 2
+                    ? "Bye"
+                    : `Seed ${team.seed}`;
+            const rowClass = `${team.status === "eliminated" ? " eliminated" : ""}${team.seed <= 2 && team.status !== "eliminated" ? " bye-seed" : ""}`;
+            const noteClass = team.status === "eliminated" ? " eliminated" : "";
+
+            return `
+                <div class="seed-row${rowClass}">
+                    <div class="seed-number">${team.seed}</div>
+                    <p class="seed-name">${team.name}</p>
+                    <span class="seed-note${noteClass}">${note}</span>
+                </div>
+            `;
+        }
+
+        function formatRoundTeam(team) {
+            return `
+                <div class="round-team">
+                    <span class="round-team-name">${team.seed ? `${team.seed}. ` : ""}${team.name}</span>
+                </div>
+            `;
+        }
+
+        function createMatchup(title, topTeam, bottomTeam) {
+            return `
+                <article class="round-card">
+                    <p class="round-title">${title}</p>
+                    ${formatRoundTeam(topTeam)}
+                    <div class="round-divider">vs</div>
+                    ${formatRoundTeam(bottomTeam)}
+                </article>
+            `;
+        }
+
+        function getPlacementMarkup(entry) {
+            if (!entry.top.name || !entry.bottom.name || !entry.top.score || !entry.bottom.score) {
+                return "";
+            }
+
+            const topScore = Number(String(entry.top.score).replace(/,/g, ""));
+            const bottomScore = Number(String(entry.bottom.score).replace(/,/g, ""));
+            if (Number.isNaN(topScore) || Number.isNaN(bottomScore) || topScore === bottomScore) {
+                return "";
+            }
+
+            const champion = topScore > bottomScore ? entry.top.name : entry.bottom.name;
+            const secondPlace = topScore > bottomScore ? entry.bottom.name : entry.top.name;
+
+            return `
+                <div class="bracket-result">
+                    <div class="bracket-result-line"><strong>Champion:</strong> ${champion}</div>
+                    <div class="bracket-result-line"><strong>Second Place:</strong> ${secondPlace}</div>
+                </div>
+            `;
+        }
+
+        function createByeCard(teams) {
+            return `
+                <article class="bye-card">
+                    <p class="round-title">Bye's</p>
+                    ${teams.map((team) => `<div class="round-team"><span class="round-team-name">${team.seed}. ${team.name}</span></div>`).join("")}
+                </article>
+            `;
+        }
+
+        function renderDivision(division) {
+            const bracketRoundTitles = ["First Round", "Semi-Finals", "Championship"];
+
+            return `
+                <section class="playoff-division">
+                    <div class="playoff-division-header">
+                        <div class="playoff-division-heading">
+                            <h3>${division.name}</h3>
+                            <span class="playoff-division-meta">Top 2 earn byes</span>
+                        </div>
+                        <button class="playoff-toggle" type="button" aria-expanded="false">View ${division.name} Playoffs</button>
+                    </div>
+                    <div class="playoff-columns">
+                        <section class="playoff-panel">
+                            <h4>Current Seeds</h4>
+                            <div class="seed-list">
+                                ${division.seeds.map(formatSeedRow).join("")}
+                            </div>
+                        </section>
+                        <section class="playoff-panel">
+                            <h4>Opening Round</h4>
+                            <div class="round-list">
+                                ${createByeCard([division.seeds[0], division.seeds[1]])}
+                                ${createMatchup("Matchup 1", division.seeds[2], division.seeds[5])}
+                                ${createMatchup("Matchup 2", division.seeds[3], division.seeds[4])}
+                            </div>
+                        </section>
+                    </div>
+                    <section class="detailed-bracket" hidden>
+                        <div class="detailed-bracket-header">
+                            <h4>${division.name} League Playoff</h4>
+                            <span class="detailed-bracket-copy">Detailed bracket from the playoff board</span>
+                        </div>
+                        <div class="bracket-columns">
+                            ${division.bracketColumns.map((round, index) => `
+                                <section class="bracket-round">
+                                    <p class="bracket-round-title">${bracketRoundTitles[index] || `Round ${index + 1}`}</p>
+                                    ${round.map((entry, matchupIndex) => {
+                                        if (!entry.top.name && !entry.bottom.name) {
+                                            return `<div class="bracket-matchup empty"></div>`;
+                                        }
+
+                                        return `
+                                            <article class="bracket-matchup">
+                                                <div class="bracket-matchup-title">Matchup ${matchupIndex + 1}</div>
+                                                <div class="bracket-entry">
+                                                    <div>
+                                                        ${entry.top.seed ? `<div class="bracket-seed">Seed ${entry.top.seed}</div>` : ""}
+                                                        <div class="bracket-team">${entry.top.name || ""}</div>
+                                                    </div>
+                                                    ${entry.top.score ? `<div class="bracket-score">${entry.top.score} pts</div>` : ""}
+                                                </div>
+                                                <div class="bracket-entry">
+                                                    <div>
+                                                        ${entry.bottom.seed ? `<div class="bracket-seed">Seed ${entry.bottom.seed}</div>` : ""}
+                                                        <div class="bracket-team">${entry.bottom.name || ""}</div>
+                                                    </div>
+                                                    ${entry.bottom.score ? `<div class="bracket-score">${entry.bottom.score} pts</div>` : ""}
+                                                </div>
+                                                ${index === 2 ? getPlacementMarkup(entry) : ""}
+                                            </article>
+                                        `;
+                                    }).join("")}
+                                </section>
+                            `).join("")}
+                        </div>
+                    </section>
+                </section>
+            `;
+        }
+
+        function parseDivisions(rows) {
+            const createBracketEntry = (row, startIndex) => ({
+                seed: Number(row?.[startIndex]) || "",
+                name: row?.[startIndex + 1] || "",
+                score: row?.[startIndex + 2] || ""
+            });
+
+            const hasBracketEntry = (entry) => Boolean(entry.seed || entry.name || entry.score);
+
+            const buildRoundMatchups = (chunk, startIndex, maxMatchups = Infinity) => {
+                const entries = chunk
+                    .slice(6)
+                    .map((row) => createBracketEntry(row, startIndex))
+                    .filter(hasBracketEntry);
+
+                const matchups = [];
+                for (let index = 0; index < entries.length; index += 2) {
+                    matchups.push({
+                        top: entries[index] || { seed: "", name: "", score: "" },
+                        bottom: entries[index + 1] || { seed: "", name: "", score: "" }
+                    });
+                }
+
+                return matchups.slice(0, maxMatchups);
+            };
+
+            const chunks = [];
+            let currentChunk = [];
+
+            rows.forEach((row) => {
+                const cells = row.c || [];
+                const rowValues = cells.map(normalizeCell);
+                const secondCell = rowValues[1] || "";
+
+                if (secondCell === "Name") {
+                    if (currentChunk.length) {
+                        chunks.push(currentChunk);
+                        currentChunk = [];
+                    }
+                    return;
+                }
+
+                if (rowValues.some((value) => value)) {
+                    currentChunk.push(rowValues);
+                }
+            });
+
+            if (currentChunk.length) {
+                chunks.push(currentChunk);
+            }
+
+            return chunks
+                .map((chunk, index) => {
+                    const seeds = chunk
+                        .slice(0, 6)
+                        .map((row) => ({
+                            seed: Number(row[0]),
+                            name: row[1]
+                        }))
+                        .filter((team) => team.seed && team.name)
+                        .sort((a, b) => a.seed - b.seed);
+
+                    if (seeds.length < 6) {
+                        return null;
+                    }
+
+                    return {
+                        name: DIVISION_NAMES[index] || `Division ${index + 1}`,
+                        seeds,
+                        bracketColumns: [
+                            buildRoundMatchups(chunk, 0),
+                            buildRoundMatchups(chunk, 3),
+                            buildRoundMatchups(chunk, 6, 1)
+                        ]
+                    };
+                })
+                .filter(Boolean);
+        }
+
+        function parseStandings(rows) {
+            return PLAYOFF_DIVISIONS.reduce((acc, division) => {
+                const westRows = rows.slice(0, 5);
+                const eastRows = rows.slice(6, 11);
+                const names = [...westRows, ...eastRows]
+                    .map((row) => {
+                        const cells = row.c || [];
+                        const nameCell = cells[division.baseIndex];
+                        return nameCell ? (nameCell.f || String(nameCell.v || "")).trim() : "";
+                    })
+                    .filter(Boolean);
+
+                acc[division.name] = names;
+                return acc;
+            }, {});
+        }
+
+        function combineDivisions() {
+            if (!seededDivisions || !standingsByDivision) {
+                return null;
+            }
+
+            return seededDivisions.map((division) => {
+                const seededNames = new Set(division.seeds.map((team) => team.name));
+                const remainingTeams = (standingsByDivision[division.name] || [])
+                    .filter((name) => !seededNames.has(name))
+                    .slice(0, 4)
+                    .map((name, index) => ({
+                        seed: division.seeds.length + index + 1,
+                        name,
+                        status: "eliminated"
+                    }));
+
+                return {
+                    ...division,
+                    seeds: [
+                        ...division.seeds.map((team) => ({ ...team, status: team.seed <= 6 ? "alive" : "" })),
+                        ...remainingTeams
+                    ]
+                };
+            });
+        }
+
+        function maybeRenderPlayoffPicture() {
+            const divisions = combineDivisions();
+            if (!divisions) {
+                return;
+            }
+
+            playoffGrid.innerHTML = divisions.map(renderDivision).join("");
+            playoffGrid.hidden = false;
+            playoffStatus.hidden = true;
+        }
+
+        function loadPlayoffPicture() {
+            [PLAYOFF_PICTURE_FEED_URL, PLAYOFF_STANDINGS_FEED_URL].forEach((url) => {
+                const script = document.createElement("script");
+                script.src = url;
+                script.async = true;
+                script.onerror = showPlayoffError;
+                document.body.appendChild(script);
+            });
+        }
+
+        window.handlePlayoffPictureResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                showPlayoffError();
+                return;
+            }
+
+            seededDivisions = parseDivisions(response.table.rows);
+            if (!seededDivisions.length) {
+                showPlayoffError();
+                return;
+            }
+
+            maybeRenderPlayoffPicture();
+        };
+
+        window.handlePlayoffStandingsResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                showPlayoffError();
+                return;
+            }
+
+            standingsByDivision = parseStandings(response.table.rows);
+            maybeRenderPlayoffPicture();
+        };
+
+        playoffGrid.addEventListener("click", (event) => {
+            const button = event.target.closest(".playoff-toggle");
+            if (!button) {
+                return;
+            }
+
+            const division = button.closest(".playoff-division");
+            const columns = division ? division.querySelector(".playoff-columns") : null;
+            const bracket = division ? division.querySelector(".detailed-bracket") : null;
+            if (!bracket) {
+                return;
+            }
+
+            const isHidden = bracket.hasAttribute("hidden");
+            if (isHidden) {
+                bracket.removeAttribute("hidden");
+                if (columns) {
+                    columns.setAttribute("hidden", "");
+                }
+            } else {
+                bracket.setAttribute("hidden", "");
+                if (columns) {
+                    columns.removeAttribute("hidden");
+                }
+            }
+
+            button.setAttribute("aria-expanded", isHidden ? "true" : "false");
+            const divisionName = division ? division.querySelector("h3")?.textContent || "League" : "League";
+            button.textContent = isHidden ? `View ${divisionName} Seedings` : `View ${divisionName} Playoffs`;
+        });
+
+        loadPlayoffPicture();
+    </script>
+</body>
+</html>

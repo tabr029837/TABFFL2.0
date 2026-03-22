@@ -237,6 +237,14 @@
             font-weight: 700;
         }
 
+        .seed-meta {
+            margin: 2px 0 0;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
         .seed-note {
             display: inline-flex;
             align-items: center;
@@ -263,6 +271,10 @@
 
         .seed-row.eliminated .seed-name {
             color: #64748b;
+        }
+
+        .seed-row.eliminated .seed-meta {
+            color: #94a3b8;
         }
 
         .seed-note.eliminated {
@@ -455,6 +467,10 @@
                 justify-self: start;
             }
 
+            .seed-meta {
+                font-size: 0.66rem;
+            }
+
             .playoff-division-header,
             .detailed-bracket-header {
                 flex-direction: column;
@@ -594,11 +610,15 @@
                     : `Seed ${team.seed}`;
             const rowClass = `${team.status === "eliminated" ? " eliminated" : ""}${team.seed <= 2 && team.status !== "eliminated" ? " bye-seed" : ""}`;
             const noteClass = team.status === "eliminated" ? " eliminated" : "";
+            const meta = team.record && team.points ? `${team.record} | ${team.points}` : "";
 
             return `
                 <div class="seed-row${rowClass}">
                     <div class="seed-number">${team.seed}</div>
-                    <p class="seed-name">${team.name}</p>
+                    <div>
+                        <p class="seed-name">${team.name}</p>
+                        ${meta ? `<p class="seed-meta">${meta}</p>` : ""}
+                    </div>
                     <span class="seed-note${noteClass}">${note}</span>
                 </div>
             `;
@@ -808,15 +828,32 @@
             return PLAYOFF_DIVISIONS.reduce((acc, division) => {
                 const westRows = rows.slice(0, 5);
                 const eastRows = rows.slice(6, 11);
-                const names = [...westRows, ...eastRows]
+                const teams = [...westRows, ...eastRows]
                     .map((row) => {
                         const cells = row.c || [];
                         const nameCell = cells[division.baseIndex];
-                        return nameCell ? (nameCell.f || String(nameCell.v || "")).trim() : "";
+                        const winsCell = cells[division.baseIndex + 1];
+                        const lossesCell = cells[division.baseIndex + 2];
+                        const pointsCell = cells[division.baseIndex + 4];
+                        const name = nameCell ? (nameCell.f || String(nameCell.v || "")).trim() : "";
+
+                        if (!name) {
+                            return null;
+                        }
+
+                        const wins = winsCell ? (winsCell.f || String(winsCell.v || "0")).trim() : "0";
+                        const losses = lossesCell ? (lossesCell.f || String(lossesCell.v || "0")).trim() : "0";
+                        const points = pointsCell ? (pointsCell.f || String(pointsCell.v || "0")).trim() : "0";
+
+                        return {
+                            name,
+                            record: `${wins}-${losses}`,
+                            points: `${points} pts`
+                        };
                     })
                     .filter(Boolean);
 
-                acc[division.name] = names;
+                acc[division.name] = teams;
                 return acc;
             }, {});
         }
@@ -827,20 +864,33 @@
             }
 
             return seededDivisions.map((division) => {
+                const divisionTeams = standingsByDivision[division.name] || [];
                 const seededNames = new Set(division.seeds.map((team) => team.name));
-                const remainingTeams = (standingsByDivision[division.name] || [])
-                    .filter((name) => !seededNames.has(name))
+                const standingsByName = divisionTeams.reduce((acc, team) => {
+                    acc[team.name] = team;
+                    return acc;
+                }, {});
+
+                const remainingTeams = divisionTeams
+                    .filter((team) => !seededNames.has(team.name))
                     .slice(0, 4)
-                    .map((name, index) => ({
+                    .map((team, index) => ({
                         seed: division.seeds.length + index + 1,
-                        name,
+                        name: team.name,
+                        record: team.record,
+                        points: team.points,
                         status: "eliminated"
                     }));
 
                 return {
                     ...division,
                     seeds: [
-                        ...division.seeds.map((team) => ({ ...team, status: team.seed <= 6 ? "alive" : "" })),
+                        ...division.seeds.map((team) => ({
+                            ...team,
+                            record: standingsByName[team.name]?.record || "",
+                            points: standingsByName[team.name]?.points || "",
+                            status: team.seed <= 6 ? "alive" : ""
+                        })),
                         ...remainingTeams
                     ]
                 };

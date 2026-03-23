@@ -70,6 +70,16 @@
             border-radius: 4px;
         }
 
+        .edit-panel select {
+            display: inline-block;
+            width: calc(100% - 320px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            font: inherit;
+        }
+
         .edit-panel label {
             font-weight: 600;
             font-size: 0.9rem;
@@ -169,6 +179,13 @@
                 font-size: 16px;
             }
 
+            .edit-panel select {
+                display: block;
+                width: 100%;
+                min-width: 0;
+                font-size: 16px;
+            }
+
             .edit-panel input[type="file"] {
                 width: 100%;
             }
@@ -232,8 +249,12 @@
                             <label for="favorite-fast-food">What is your favorite fast food?</label>
                             <input id="favorite-fast-food" type="text" placeholder="e.g., McDonald's">
 
-                            <label for="team-motto">What is your team motto?</label>
-                            <input id="team-motto" type="text" placeholder="e.g., Win or Lose, We Booze">
+                            <label for="early-bird-night-owl">Are you an Early Bird or Night Owl by nature?</label>
+                            <select id="early-bird-night-owl">
+                                <option value="">Select one</option>
+                                <option value="Early Bird">Early Bird</option>
+                                <option value="Night Owl">Night Owl</option>
+                            </select>
 
                             <label for="profile-pic">Upload your profile picture</label>
                             <input id="profile-pic" type="file" accept="image/*">
@@ -322,7 +343,7 @@
             teamsMascot: document.getElementById("teams-mascot"),
             favoriteMovieTV: document.getElementById("favorite-movie-tv"),
             favoriteFastFood: document.getElementById("favorite-fast-food"),
-            teamMotto: document.getElementById("team-motto"),
+            earlyBirdNightOwl: document.getElementById("early-bird-night-owl"),
             profilePic: document.getElementById("profile-pic"),
             currentPic: document.getElementById("current-pic"),
             cropperContainer: document.getElementById("cropper-container"),
@@ -434,7 +455,7 @@
                 elements.teamsMascot.value = data.teamsMascot || '';
                 elements.favoriteMovieTV.value = data.favoriteMovieTV || '';
                 elements.favoriteFastFood.value = data.favoriteFastFood || '';
-                elements.teamMotto.value = data.teamMotto || '';
+                elements.earlyBirdNightOwl.value = data.earlyBirdNightOwl || '';
                 if (data.profilePic) {
                     elements.currentPic.src = data.profilePic;
                     elements.currentPic.style.display = 'block';
@@ -505,7 +526,7 @@
                     teamsMascot: elements.teamsMascot.value.trim(),
                     favoriteMovieTV: elements.favoriteMovieTV.value.trim(),
                     favoriteFastFood: elements.favoriteFastFood.value.trim(),
-                    teamMotto: elements.teamMotto.value.trim(),
+                    earlyBirdNightOwl: elements.earlyBirdNightOwl.value,
                 }, { merge: true });
                 console.log("Doc saved successfully");
                 showMessage(elements.editMessage, "Profile updated!", "success");

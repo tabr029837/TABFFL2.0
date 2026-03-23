@@ -655,6 +655,28 @@
             return person.badges.filter((badge) => badge.value && badge.value.toLowerCase() !== "none");
         }
 
+        function getTierPriorityCounts(earnedBadges) {
+            return earnedBadges.reduce((counts, badge) => {
+                counts[badge.tier] = (counts[badge.tier] || 0) + 1;
+                return counts;
+            }, { 1: 0, 2: 0, 3: 0, 4: 0 });
+        }
+
+        function compareBadgePriority(aEarnedBadges, bEarnedBadges) {
+            const aCounts = getTierPriorityCounts(aEarnedBadges);
+            const bCounts = getTierPriorityCounts(bEarnedBadges);
+            const tieBreakOrder = [4, 3, 2, 1];
+
+            for (const tier of tieBreakOrder) {
+                const difference = bCounts[tier] - aCounts[tier];
+                if (difference !== 0) {
+                    return difference;
+                }
+            }
+
+            return 0;
+        }
+
         function getTierClass(tier) {
             if (tier === 2) {
                 return "tier-2";
@@ -712,7 +734,7 @@
                     totalBadges: person.earnedBadges.length
                 }))
                 .filter((person) => person.totalBadges > 0)
-                .sort((a, b) => b.totalBadges - a.totalBadges || a.name.localeCompare(b.name))
+                .sort((a, b) => b.totalBadges - a.totalBadges || compareBadgePriority(a.earnedBadges, b.earnedBadges) || a.name.localeCompare(b.name))
                 .slice(0, 10);
 
             if (!rankedPeople.length) {
@@ -761,10 +783,18 @@
             const sortedPeople = filteredPeople
                 .slice()
                 .sort((a, b) => {
-                    const badgeDifference = getEarnedBadges(b).length - getEarnedBadges(a).length;
+                    const aEarnedBadges = getEarnedBadges(a);
+                    const bEarnedBadges = getEarnedBadges(b);
+                    const badgeDifference = bEarnedBadges.length - aEarnedBadges.length;
                     if (badgeDifference !== 0) {
                         return badgeDifference;
                     }
+
+                    const priorityDifference = compareBadgePriority(aEarnedBadges, bEarnedBadges);
+                    if (priorityDifference !== 0) {
+                        return priorityDifference;
+                    }
+
                     return a.name.localeCompare(b.name);
                 });
 

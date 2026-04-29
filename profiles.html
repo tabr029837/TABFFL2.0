@@ -313,6 +313,11 @@
             font-weight: 600;
         }
 
+        .top-answer-sublist {
+            display: grid;
+            gap: 4px;
+        }
+
         @media (max-width: 640px) {
             #profiles-list {
                 padding: 16px;
@@ -490,13 +495,15 @@
                 });
             });
 
-            const topAnswer = Array.from(answerMap.values()).sort((a, b) => {
+            const sortedAnswers = Array.from(answerMap.values()).sort((a, b) => {
                 if (b.count !== a.count) {
                     return b.count - a.count;
                 }
 
                 return a.display.localeCompare(b.display);
-            })[0];
+            });
+
+            const topAnswer = sortedAnswers[0];
 
             if (!topAnswer) {
                 return 'No answers yet';
@@ -509,8 +516,13 @@
                 return `${topAnswer.display} (${percentage}% of answers, ${topAnswer.count} ${peopleLabel})`;
             }
 
-            const peopleLabel = topAnswer.count === 1 ? 'person' : 'people';
-            return `${topAnswer.display} (${topAnswer.count} ${peopleLabel})`;
+            return sortedAnswers
+                .slice(0, 3)
+                .map((answer, index) => {
+                    const peopleLabel = answer.count === 1 ? 'person' : 'people';
+                    return `${index + 1}. ${answer.display} (${answer.count} ${peopleLabel})`;
+                })
+                .join('<br>');
         }
 
         function normalizeLeagueName(leagueName) {
@@ -628,7 +640,7 @@
                     return `
                         <div class="top-answer-row">
                             <div class="top-answer-label">${shortLabel}</div>
-                            <div class="top-answer-value">${topAnswerSummary}</div>
+                            <div class="top-answer-value${type === 'text' ? ' top-answer-sublist' : ''}">${topAnswerSummary}</div>
                         </div>
                     `;
                 }).join('');

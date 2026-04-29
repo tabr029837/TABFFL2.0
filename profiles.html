@@ -357,16 +357,101 @@
         const profilesList = document.getElementById('profiles-list');
         const leagueDisplayOrder = ['Summit', 'Glacier', 'Meadow', 'Desert', 'Trench', 'Canyon', 'Unassigned League'];
         const profileQuestionStats = [
-            { key: 'hometown', label: 'What is your hometown?' },
-            { key: 'relationshipStatus', label: 'What is your relationship status?' },
-            { key: 'kidsPets', label: 'Do you have kids and/or pets?' },
-            { key: 'gameDaySnack', label: 'What is your game day snack?' },
-            { key: 'walkUpSong', label: 'What is your walk-up song?' },
-            { key: 'teamsMascot', label: "What is your team's mascot?" },
-            { key: 'favoriteMovieTV', label: 'What is your favorite movie/TV show?' },
-            { key: 'favoriteFastFood', label: 'What is your favorite fast food?' },
-            { key: 'earlyBirdNightOwl', label: 'Are you an Early Bird or Night Owl by nature?' },
+            { key: 'hometown', label: 'What is your hometown?', type: 'text' },
+            { key: 'relationshipStatus', label: 'What is your relationship status?', type: 'choice' },
+            { key: 'kidsPetsSummary', label: 'I have _ kids and _ pets.', type: 'choice' },
+            { key: 'gameDaySnack', label: 'What is your game day snack?', type: 'text' },
+            { key: 'walkUpSong', label: 'What is your walk-up song?', type: 'text' },
+            { key: 'teamsMascot', label: "What is your team's mascot?", type: 'text' },
+            { key: 'favoriteMovieTV', label: 'What is your favorite movie/TV show?', type: 'text' },
+            { key: 'favoriteFastFood', label: 'What is your favorite fast food?', type: 'text' },
+            { key: 'earlyBirdNightOwl', label: 'Are you an Early Bird or Night Owl by nature?', type: 'choice' },
         ];
+
+        function formatKidsPetsAnswer(userData) {
+            const kidsCount = (userData.kidsCount || '').toString().trim();
+            const petsCount = (userData.petsCount || '').toString().trim();
+
+            if (!kidsCount || !petsCount) {
+                return 'No Answer';
+            }
+
+            return `I have ${kidsCount} kids and ${petsCount} pets.`;
+        }
+
+        function hasAnsweredProfileQuestion(userData, key) {
+            if (key === 'kidsPetsSummary') {
+                const kidsCount = (userData.kidsCount || '').toString().trim();
+                const petsCount = (userData.petsCount || '').toString().trim();
+                return kidsCount !== '' && petsCount !== '';
+            }
+
+            const value = userData[key];
+            return typeof value === 'string' ? value.trim() !== '' : Boolean(value);
+        }
+
+        function getProfileQuestionAnswer(userData, key) {
+            if (key === 'kidsPetsSummary') {
+                return formatKidsPetsAnswer(userData);
+            }
+
+            const value = userData[key];
+            if (typeof value === 'string') {
+                return value.trim();
+            }
+
+            return value ? String(value) : '';
+        }
+
+        function getTopAnswerSummary(profiles, key, type) {
+            const answerMap = new Map();
+
+            profiles.forEach(({ userData }) => {
+                if (!hasAnsweredProfileQuestion(userData, key)) {
+                    return;
+                }
+
+                const answer = getProfileQuestionAnswer(userData, key);
+                if (!answer || answer === 'No Answer') {
+                    return;
+                }
+
+                const normalizedAnswer = type === 'text' ? answer.toLowerCase() : answer;
+                const existing = answerMap.get(normalizedAnswer);
+
+                if (existing) {
+                    existing.count += 1;
+                    return;
+                }
+
+                answerMap.set(normalizedAnswer, {
+                    display: answer,
+                    count: 1,
+                });
+            });
+
+            const topAnswer = Array.from(answerMap.values()).sort((a, b) => {
+                if (b.count !== a.count) {
+                    return b.count - a.count;
+                }
+
+                return a.display.localeCompare(b.display);
+            })[0];
+
+            if (!topAnswer) {
+                return 'Top answer: No answers yet';
+            }
+
+            if (type === 'choice') {
+                const answeredCount = Array.from(answerMap.values()).reduce((sum, entry) => sum + entry.count, 0);
+                const percentage = answeredCount ? Math.round((topAnswer.count / answeredCount) * 100) : 0;
+                const peopleLabel = topAnswer.count === 1 ? 'person' : 'people';
+                return `Top answer: ${topAnswer.display} (${percentage}% of answers, ${topAnswer.count} ${peopleLabel})`;
+            }
+
+            const peopleLabel = topAnswer.count === 1 ? 'person' : 'people';
+            return `Top answer: ${topAnswer.display} (${topAnswer.count} ${peopleLabel})`;
+        }
 
         function normalizeLeagueName(leagueName) {
             const trimmedLeague = (leagueName || '').trim();
@@ -431,10 +516,16 @@
                                 ${imgHtml}
                                 <h4>${fullName}</h4>
                                 <div class="qa-section">
+                                    <h5>Team Statistics</h5>
+                                    <p><strong>What is your current league?</strong><br>${stats.league || 'Waiting on Admin...'}</p>
+                                    <p><strong>How many years have you played?</strong><br>${stats.years || 'Waiting on Admin...'}</p>
+                                    <p><strong>How many championships have you won?</strong><br>${stats.champs || 'Waiting on Admin...'}</p>
+                                    <p><strong>What is your season record?</strong><br>${stats['overall record'] || stats.overallRecord || 'Waiting on Admin...'}</p>
+                                    <p><strong>What is your playoff record?</strong><br>${stats['playoff record'] || stats.playoffRecord || 'Waiting on Admin...'}</p>
                                     <h5>Personal Information</h5>
                                     <p><strong>What is your hometown?</strong><br>${userData.hometown || 'No Answer'}</p>
                                     <p><strong>What is your relationship status?</strong><br>${userData.relationshipStatus || 'No Answer'}</p>
-                                    <p><strong>Do you have kids and/or pets?</strong><br>${userData.kidsPets || 'No Answer'}</p>
+                                    <p><strong>I have _ kids and _ pets.</strong><br>${formatKidsPetsAnswer(userData)}</p>
                                     <h5>Profile Information</h5>
                                     <p><strong>What is your game day snack?</strong><br>${userData.gameDaySnack || 'No Answer'}</p>
                                     <p><strong>What is your walk-up song?</strong><br>${userData.walkUpSong || 'No Answer'}</p>
@@ -442,12 +533,6 @@
                                     <p><strong>What is your favorite movie/TV show?</strong><br>${userData.favoriteMovieTV || 'No Answer'}</p>
                                     <p><strong>What is your favorite fast food?</strong><br>${userData.favoriteFastFood || 'No Answer'}</p>
                                     <p><strong>Are you an Early Bird or Night Owl by nature?</strong><br>${userData.earlyBirdNightOwl || 'No Answer'}</p>
-                                    <h5>Team Statistics</h5>
-                                    <p><strong>What is your current league?</strong><br>${stats.league || 'Waiting on Admin...'}</p>
-                                    <p><strong>How many years have you played?</strong><br>${stats.years || 'Waiting on Admin...'}</p>
-                                    <p><strong>How many championships have you won?</strong><br>${stats.champs || 'Waiting on Admin...'}</p>
-                                    <p><strong>What is your season record?</strong><br>${stats['overall record'] || stats.overallRecord || 'Waiting on Admin...'}</p>
-                                    <p><strong>What is your playoff record?</strong><br>${stats['playoff record'] || stats.playoffRecord || 'Waiting on Admin...'}</p>
                                 </div>
                             </div>
                         `;
@@ -468,15 +553,13 @@
                     `;
                 }).join('');
 
-                const profileStatsHtml = profileQuestionStats.map(({ key, label }) => {
-                    const answeredCount = profiles.filter(({ userData }) => {
-                        const value = userData[key];
-                        return typeof value === 'string' ? value.trim() !== '' : Boolean(value);
-                    }).length;
+                const profileStatsHtml = profileQuestionStats.map(({ key, label, type }) => {
+                    const answeredCount = profiles.filter(({ userData }) => hasAnsweredProfileQuestion(userData, key)).length;
                     const answerRate = profiles.length ? Math.round((answeredCount / profiles.length) * 100) : 0;
+                    const topAnswerSummary = getTopAnswerSummary(profiles, key, type);
 
                     return `
-                        <p><strong>${label}</strong><br>${answerRate}% of people have answered this question (${answeredCount}/${profiles.length || 0})</p>
+                        <p><strong>${label}</strong><br>${answerRate}% of people have answered this question (${answeredCount}/${profiles.length || 0})<br>${topAnswerSummary}</p>
                     `;
                 }).join('');
 
@@ -488,8 +571,11 @@
                     </div>
                     ${sectionsHtml}
                     <section class="league-section">
-                        <h3 class="league-title">Profile Statistics</h3>
-                        <div class="profile-card">
+                        <button class="league-toggle" type="button" aria-expanded="false" aria-controls="profile-statistics-section">
+                            <h3 class="league-title">Profile Statistics</h3>
+                            <span class="league-count">${profileQuestionStats.length} questions</span>
+                        </button>
+                        <div class="profile-card" id="profile-statistics-section" hidden>
                             ${profileStatsHtml}
                         </div>
                     </section>

@@ -246,13 +246,36 @@
                                 <option value="Married">Married</option>
                             </select>
 
-                            <label for="kids-pets">Do you have kids and/or pets?</label>
-                            <select id="kids-pets">
-                                <option value="">Select one</option>
-                                <option value="No Kids or Pets">No Kids or Pets</option>
-                                <option value="Kids Only">Kids Only</option>
-                                <option value="Pets Only">Pets Only</option>
-                                <option value="Kids and Pets">Kids and Pets</option>
+                            <label for="kids-count">I have _ kids and _ pets.</label>
+                            <select id="kids-count">
+                                <option value="">Kids</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10+">10+</option>
+                            </select>
+
+                            <label for="pets-count">Pets count</label>
+                            <select id="pets-count">
+                                <option value="">Pets</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10+">10+</option>
                             </select>
                         </fieldset>
 
@@ -369,7 +392,8 @@
             favoriteMovieTV: document.getElementById("favorite-movie-tv"),
             favoriteFastFood: document.getElementById("favorite-fast-food"),
             relationshipStatus: document.getElementById("relationship-status"),
-            kidsPets: document.getElementById("kids-pets"),
+            kidsCount: document.getElementById("kids-count"),
+            petsCount: document.getElementById("pets-count"),
             earlyBirdNightOwl: document.getElementById("early-bird-night-owl"),
             profilePic: document.getElementById("profile-pic"),
             currentPic: document.getElementById("current-pic"),
@@ -483,7 +507,8 @@
                 elements.favoriteMovieTV.value = data.favoriteMovieTV || '';
                 elements.favoriteFastFood.value = data.favoriteFastFood || '';
                 elements.relationshipStatus.value = data.relationshipStatus || '';
-                elements.kidsPets.value = data.kidsPets || '';
+                elements.kidsCount.value = data.kidsCount || '';
+                elements.petsCount.value = data.petsCount || '';
                 elements.earlyBirdNightOwl.value = data.earlyBirdNightOwl || '';
                 if (data.profilePic) {
                     elements.currentPic.src = data.profilePic;
@@ -556,7 +581,8 @@
                     favoriteMovieTV: elements.favoriteMovieTV.value.trim(),
                     favoriteFastFood: elements.favoriteFastFood.value.trim(),
                     relationshipStatus: elements.relationshipStatus.value,
-                    kidsPets: elements.kidsPets.value,
+                    kidsCount: elements.kidsCount.value,
+                    petsCount: elements.petsCount.value,
                     earlyBirdNightOwl: elements.earlyBirdNightOwl.value,
                 }, { merge: true });
                 console.log("Doc saved successfully");

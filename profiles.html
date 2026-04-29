@@ -257,6 +257,27 @@
             font-size: 0.9em;
         }
 
+        .stats-block + .stats-block {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #cbd5e1;
+        }
+
+        .stats-block h4 {
+            margin: 0 0 10px;
+            color: navy;
+            font-size: 1rem;
+        }
+
+        .stats-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .stats-list li + li {
+            margin-top: 8px;
+        }
+
         @media (max-width: 640px) {
             #profiles-list {
                 padding: 16px;
@@ -357,15 +378,15 @@
         const profilesList = document.getElementById('profiles-list');
         const leagueDisplayOrder = ['Summit', 'Glacier', 'Meadow', 'Desert', 'Trench', 'Canyon', 'Unassigned League'];
         const profileQuestionStats = [
-            { key: 'hometown', label: 'What is your hometown?', type: 'text' },
-            { key: 'relationshipStatus', label: 'What is your relationship status?', type: 'choice' },
-            { key: 'kidsPetsSummary', label: 'I have _ kids and _ pets.', type: 'choice' },
-            { key: 'gameDaySnack', label: 'What is your game day snack?', type: 'text' },
-            { key: 'walkUpSong', label: 'What is your walk-up song?', type: 'text' },
-            { key: 'teamsMascot', label: "What is your team's mascot?", type: 'text' },
-            { key: 'favoriteMovieTV', label: 'What is your favorite movie/TV show?', type: 'text' },
-            { key: 'favoriteFastFood', label: 'What is your favorite fast food?', type: 'text' },
-            { key: 'earlyBirdNightOwl', label: 'Are you an Early Bird or Night Owl by nature?', type: 'choice' },
+            { key: 'hometown', label: 'What is your hometown?', shortLabel: 'Hometown', type: 'text' },
+            { key: 'relationshipStatus', label: 'What is your relationship status?', shortLabel: 'Relationship Status', type: 'choice' },
+            { key: 'kidsPetsSummary', label: 'I have _ kids and _ pets.', shortLabel: 'Kids and Pets', type: 'choice' },
+            { key: 'gameDaySnack', label: 'What is your game day snack?', shortLabel: 'Game Day Snack', type: 'text' },
+            { key: 'walkUpSong', label: 'What is your walk-up song?', shortLabel: 'Walk-Up Song', type: 'text' },
+            { key: 'teamsMascot', label: "What is your team's mascot?", shortLabel: 'Team Mascot', type: 'text' },
+            { key: 'favoriteMovieTV', label: 'What is your favorite movie/TV show?', shortLabel: 'Favorite Movie/TV', type: 'text' },
+            { key: 'favoriteFastFood', label: 'What is your favorite fast food?', shortLabel: 'Favorite Fast Food', type: 'text' },
+            { key: 'earlyBirdNightOwl', label: 'Are you an Early Bird or Night Owl by nature?', shortLabel: 'Early Bird/Night Owl', type: 'choice' },
         ];
 
         function formatKidsPetsAnswer(userData) {
@@ -439,18 +460,18 @@
             })[0];
 
             if (!topAnswer) {
-                return 'Top answer: No answers yet';
+                return 'No answers yet';
             }
 
             if (type === 'choice') {
                 const answeredCount = Array.from(answerMap.values()).reduce((sum, entry) => sum + entry.count, 0);
                 const percentage = answeredCount ? Math.round((topAnswer.count / answeredCount) * 100) : 0;
                 const peopleLabel = topAnswer.count === 1 ? 'person' : 'people';
-                return `Top answer: ${topAnswer.display} (${percentage}% of answers, ${topAnswer.count} ${peopleLabel})`;
+                return `${topAnswer.display} (${percentage}% of answers, ${topAnswer.count} ${peopleLabel})`;
             }
 
             const peopleLabel = topAnswer.count === 1 ? 'person' : 'people';
-            return `Top answer: ${topAnswer.display} (${topAnswer.count} ${peopleLabel})`;
+            return `${topAnswer.display} (${topAnswer.count} ${peopleLabel})`;
         }
 
         function normalizeLeagueName(leagueName) {
@@ -553,13 +574,20 @@
                     `;
                 }).join('');
 
-                const profileStatsHtml = profileQuestionStats.map(({ key, label, type }) => {
+                const answerRateItemsHtml = profileQuestionStats.map(({ key, label }) => {
                     const answeredCount = profiles.filter(({ userData }) => hasAnsweredProfileQuestion(userData, key)).length;
                     const answerRate = profiles.length ? Math.round((answeredCount / profiles.length) * 100) : 0;
+
+                    return `
+                        <li><strong>${label}</strong>: ${answerRate}% answered (${answeredCount}/${profiles.length || 0})</li>
+                    `;
+                }).join('');
+
+                const topAnswerItemsHtml = profileQuestionStats.map(({ key, shortLabel, type }) => {
                     const topAnswerSummary = getTopAnswerSummary(profiles, key, type);
 
                     return `
-                        <p><strong>${label}</strong><br>${answerRate}% of people have answered this question (${answeredCount}/${profiles.length || 0})<br>${topAnswerSummary}</p>
+                        <li><strong>${shortLabel}</strong>: ${topAnswerSummary}</li>
                     `;
                 }).join('');
 
@@ -576,7 +604,18 @@
                             <span class="league-count">${profileQuestionStats.length} questions</span>
                         </button>
                         <div class="profile-card" id="profile-statistics-section" hidden>
-                            ${profileStatsHtml}
+                            <section class="stats-block">
+                                <h4>Answer Rate</h4>
+                                <ul class="stats-list">
+                                    ${answerRateItemsHtml}
+                                </ul>
+                            </section>
+                            <section class="stats-block">
+                                <h4>Top Answers</h4>
+                                <ul class="stats-list">
+                                    ${topAnswerItemsHtml}
+                                </ul>
+                            </section>
                         </div>
                     </section>
                 `;

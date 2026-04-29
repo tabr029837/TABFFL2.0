@@ -224,15 +224,40 @@
                     <h3>Edit Your Profile</h3>
                     <form id="edit-form">
                         <fieldset>
-                            <legend>Personal Information</legend>
+                            <legend>Name</legend>
                             <label for="first-name">What is your first name?</label>
                             <input id="first-name" type="text" placeholder="Your first name" required>
 
                             <label for="last-name">What is your last name?</label>
                             <input id="last-name" type="text" placeholder="Your last name" required>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Personal Information</legend>
 
                             <label for="hometown">What is your hometown?</label>
                             <input id="hometown" type="text" placeholder="Your hometown">
+
+                            <label for="relationship-status">What is your relationship status?</label>
+                            <select id="relationship-status">
+                                <option value="">Select one</option>
+                                <option value="Single">Single</option>
+                                <option value="In A Relationship">In A Relationship</option>
+                                <option value="Married">Married</option>
+                            </select>
+
+                            <label for="kids-pets">Do you have kids and/or pets?</label>
+                            <select id="kids-pets">
+                                <option value="">Select one</option>
+                                <option value="No Kids or Pets">No Kids or Pets</option>
+                                <option value="Kids Only">Kids Only</option>
+                                <option value="Pets Only">Pets Only</option>
+                                <option value="Kids and Pets">Kids and Pets</option>
+                            </select>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Profile Information</legend>
 
                             <label for="game-day-snack">What is your game day snack?</label>
                             <input id="game-day-snack" type="text" placeholder="e.g., Hot Dogs">
@@ -343,6 +368,8 @@
             teamsMascot: document.getElementById("teams-mascot"),
             favoriteMovieTV: document.getElementById("favorite-movie-tv"),
             favoriteFastFood: document.getElementById("favorite-fast-food"),
+            relationshipStatus: document.getElementById("relationship-status"),
+            kidsPets: document.getElementById("kids-pets"),
             earlyBirdNightOwl: document.getElementById("early-bird-night-owl"),
             profilePic: document.getElementById("profile-pic"),
             currentPic: document.getElementById("current-pic"),
@@ -455,6 +482,8 @@
                 elements.teamsMascot.value = data.teamsMascot || '';
                 elements.favoriteMovieTV.value = data.favoriteMovieTV || '';
                 elements.favoriteFastFood.value = data.favoriteFastFood || '';
+                elements.relationshipStatus.value = data.relationshipStatus || '';
+                elements.kidsPets.value = data.kidsPets || '';
                 elements.earlyBirdNightOwl.value = data.earlyBirdNightOwl || '';
                 if (data.profilePic) {
                     elements.currentPic.src = data.profilePic;
@@ -526,6 +555,8 @@
                     teamsMascot: elements.teamsMascot.value.trim(),
                     favoriteMovieTV: elements.favoriteMovieTV.value.trim(),
                     favoriteFastFood: elements.favoriteFastFood.value.trim(),
+                    relationshipStatus: elements.relationshipStatus.value,
+                    kidsPets: elements.kidsPets.value,
                     earlyBirdNightOwl: elements.earlyBirdNightOwl.value,
                 }, { merge: true });
                 console.log("Doc saved successfully");

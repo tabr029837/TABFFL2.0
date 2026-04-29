@@ -356,6 +356,17 @@
 
         const profilesList = document.getElementById('profiles-list');
         const leagueDisplayOrder = ['Summit', 'Glacier', 'Meadow', 'Desert', 'Trench', 'Canyon', 'Unassigned League'];
+        const profileQuestionStats = [
+            { key: 'hometown', label: 'What is your hometown?' },
+            { key: 'relationshipStatus', label: 'What is your relationship status?' },
+            { key: 'kidsPets', label: 'Do you have kids and/or pets?' },
+            { key: 'gameDaySnack', label: 'What is your game day snack?' },
+            { key: 'walkUpSong', label: 'What is your walk-up song?' },
+            { key: 'teamsMascot', label: "What is your team's mascot?" },
+            { key: 'favoriteMovieTV', label: 'What is your favorite movie/TV show?' },
+            { key: 'favoriteFastFood', label: 'What is your favorite fast food?' },
+            { key: 'earlyBirdNightOwl', label: 'Are you an Early Bird or Night Owl by nature?' },
+        ];
 
         function normalizeLeagueName(leagueName) {
             const trimmedLeague = (leagueName || '').trim();
@@ -420,7 +431,11 @@
                                 ${imgHtml}
                                 <h4>${fullName}</h4>
                                 <div class="qa-section">
+                                    <h5>Personal Information</h5>
                                     <p><strong>What is your hometown?</strong><br>${userData.hometown || 'No Answer'}</p>
+                                    <p><strong>What is your relationship status?</strong><br>${userData.relationshipStatus || 'No Answer'}</p>
+                                    <p><strong>Do you have kids and/or pets?</strong><br>${userData.kidsPets || 'No Answer'}</p>
+                                    <h5>Profile Information</h5>
                                     <p><strong>What is your game day snack?</strong><br>${userData.gameDaySnack || 'No Answer'}</p>
                                     <p><strong>What is your walk-up song?</strong><br>${userData.walkUpSong || 'No Answer'}</p>
                                     <p><strong>What is your team's mascot?</strong><br>${userData.teamsMascot || 'No Answer'}</p>
@@ -453,6 +468,18 @@
                     `;
                 }).join('');
 
+                const profileStatsHtml = profileQuestionStats.map(({ key, label }) => {
+                    const answeredCount = profiles.filter(({ userData }) => {
+                        const value = userData[key];
+                        return typeof value === 'string' ? value.trim() !== '' : Boolean(value);
+                    }).length;
+                    const answerRate = profiles.length ? Math.round((answeredCount / profiles.length) * 100) : 0;
+
+                    return `
+                        <p><strong>${label}</strong><br>${answerRate}% of people have answered this question (${answeredCount}/${profiles.length || 0})</p>
+                    `;
+                }).join('');
+
                 profilesList.innerHTML = `
                     <h3>Profiles By League</h3>
                     <p class="profiles-summary">Browse each team owner grouped by their current league.</p>
@@ -460,6 +487,12 @@
                         <button id="toggle-all-leagues" class="toggle-all-btn" type="button">Show All Leagues</button>
                     </div>
                     ${sectionsHtml}
+                    <section class="league-section">
+                        <h3 class="league-title">Profile Statistics</h3>
+                        <div class="profile-card">
+                            ${profileStatsHtml}
+                        </div>
+                    </section>
                 `;
 
                 const toggleAllLeaguesBtn = document.getElementById('toggle-all-leagues');

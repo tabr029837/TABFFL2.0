@@ -278,6 +278,41 @@
             margin-top: 8px;
         }
 
+        .top-answer-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .top-answer-row {
+            display: grid;
+            grid-template-columns: 140px minmax(0, 1fr);
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid rgba(0, 0, 0, 0.35);
+        }
+
+        .top-answer-label {
+            display: grid;
+            place-items: center;
+            min-height: 44px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0f2747, #1d4ed8);
+            color: white;
+            font-weight: 800;
+            font-size: 0.92rem;
+            text-align: center;
+        }
+
+        .top-answer-value {
+            color: #0f172a;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
         @media (max-width: 640px) {
             #profiles-list {
                 padding: 16px;
@@ -302,6 +337,10 @@
             .auth-status button {
                 padding: 6px 10px;
                 font-size: 0.82rem;
+            }
+
+            .top-answer-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -579,7 +618,7 @@
                     const answerRate = profiles.length ? Math.round((answeredCount / profiles.length) * 100) : 0;
 
                     return `
-                        <li><strong>${label}</strong>: ${answerRate}% answered (${answeredCount}/${profiles.length || 0})</li>
+                        <li><strong>${label}</strong>: ${answeredCount}/${profiles.length || 0} answered (${answerRate}%)</li>
                     `;
                 }).join('');
 
@@ -587,7 +626,10 @@
                     const topAnswerSummary = getTopAnswerSummary(profiles, key, type);
 
                     return `
-                        <li><strong>${shortLabel}</strong>: ${topAnswerSummary}</li>
+                        <div class="top-answer-row">
+                            <div class="top-answer-label">${shortLabel}</div>
+                            <div class="top-answer-value">${topAnswerSummary}</div>
+                        </div>
                     `;
                 }).join('');
 
@@ -612,9 +654,9 @@
                             </section>
                             <section class="stats-block">
                                 <h4>Top Answers</h4>
-                                <ul class="stats-list">
+                                <div class="top-answer-list">
                                     ${topAnswerItemsHtml}
-                                </ul>
+                                </div>
                             </section>
                         </div>
                     </section>

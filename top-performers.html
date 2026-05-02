@@ -552,10 +552,15 @@
 
         .matchup-history {
             margin-top: 14px;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .matchup-history-scroller {
+            width: 100%;
+            max-width: 100%;
             overflow-x: auto;
+            overflow-y: hidden;
             -webkit-overflow-scrolling: touch;
             border: 1px solid rgba(15, 23, 42, 0.18);
             border-radius: 16px;
@@ -565,6 +570,7 @@
 
         .matchup-history-table {
             width: 100%;
+            max-width: none;
             border-collapse: collapse;
             min-width: 480px;
         }

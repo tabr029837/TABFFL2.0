@@ -463,6 +463,122 @@
             color: inherit;
         }
 
+        .matchup-summary-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        @media (min-width: 720px) {
+            .matchup-summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .matchup-panel {
+            display: grid;
+            gap: 12px;
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+        }
+
+        .matchup-panel h5 {
+            margin: 0;
+            font-size: 1rem;
+            color: #0f172a;
+        }
+
+        .matchup-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .matchup-item {
+            display: grid;
+            gap: 6px;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: #ffffff;
+        }
+
+        .matchup-item strong {
+            display: block;
+            color: #0f172a;
+            font-size: 0.98rem;
+        }
+
+        .matchup-item div {
+            color: #475569;
+            font-weight: 700;
+        }
+
+        .matchup-item small {
+            display: block;
+            color: #64748b;
+        }
+
+        .matchup-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .matchup-count {
+            color: #475569;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .matchup-history {
+            margin-top: 14px;
+        }
+
+        .matchup-history-scroller {
+            overflow-x: auto;
+            border: 1px solid rgba(15, 23, 42, 0.18);
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .matchup-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .matchup-history-table th,
+        .matchup-history-table td {
+            padding: 12px 14px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .matchup-history-table thead th {
+            background: linear-gradient(180deg, #eff6ff, #dbeafe);
+            color: #0f2747;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .matchup-history-table tbody td {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .matchup-history-table tbody tr:nth-child(even) {
+            background: rgba(248, 250, 252, 0.9);
+        }
+
         .stats-groups {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -799,6 +915,7 @@
         const TOP_PERFORMERS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleTopPerformersResponse&gid=373470926&range=A:E";
         const PLAYER_DATABASE_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerDatabaseResponse&sheet=Database&range=A1:Y";
         const PLAYER_BADGES_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerBadgesResponse&gid=1504575350&range=A1:I";
+        const MATCHUPS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleMatchupsResponse&sheet=Matchups&range=A1:ZZ";
         const performersStatus = document.getElementById("performers-status");
         const performersApp = document.getElementById("performers-app");
         const headlineGrid = document.getElementById("headline-grid");
@@ -821,6 +938,9 @@
             "Average Wins Per Season",
             "Average Points Per Season"
         ];
+        const matchupsByPlayer = new Map();
+        let matchupsLoaded = false;
+        let matchupsFailed = false;
 
         const CATEGORY_CONFIG = [
             {
@@ -1022,6 +1142,196 @@
             }
 
             return numericValue.toFixed(1);
+        }
+
+        function normalizeName(value) {
+            return String(value || "").trim().toLowerCase();
+        }
+
+        function findHeader(headers, patterns) {
+            const normalized = headers.map((header) => String(header || "").toLowerCase());
+            for (const pattern of patterns) {
+                const index = normalized.findIndex((header) => header.includes(pattern));
+                if (index !== -1) {
+                    return headers[index];
+                }
+            }
+            return null;
+        }
+
+        function parseWinsLosses(value) {
+            const text = String(value || "").trim();
+            const match = text.match(/(\d+)\s*[-–]\s*(\d+)/);
+            if (match) {
+                return { wins: Number(match[1]), losses: Number(match[2]) };
+            }
+            const numbers = text.match(/\d+/g);
+            if (numbers && numbers.length >= 2) {
+                return { wins: Number(numbers[0]), losses: Number(numbers[1]) };
+            }
+            return { wins: 0, losses: 0 };
+        }
+
+        function parseWinPercentage(value) {
+            const text = String(value || "").trim().replace("%", "");
+            const numeric = Number(text);
+            if (!Number.isNaN(numeric)) {
+                return numeric / 100;
+            }
+            return NaN;
+        }
+
+        function buildMatchupRecord(matchup) {
+            if (typeof matchup.wins === "number" && typeof matchup.losses === "number") {
+                return `${matchup.wins}-${matchup.losses}`;
+            }
+            return matchup.rawRecord || "";
+        }
+
+        function getMatchupsForPlayer(playerName) {
+            return matchupsByPlayer.get(normalizeName(playerName)) || [];
+        }
+
+        function computeMatchupScore(matchup) {
+            const wins = Number(matchup.wins) || 0;
+            const losses = Number(matchup.losses) || 0;
+            const totalGames = wins + losses;
+            const winPct = Number(matchup.winPct);
+            const percentage = Number.isNaN(winPct)
+                ? (totalGames ? wins / totalGames : 0)
+                : winPct;
+            return percentage * Math.sqrt(totalGames);
+        }
+
+        function compareMatchupsForHistory(left, right) {
+            const leftScore = computeMatchupScore(left);
+            const rightScore = computeMatchupScore(right);
+            if (rightScore !== leftScore) {
+                return rightScore - leftScore;
+            }
+            if (right.wins !== left.wins) {
+                return right.wins - left.wins;
+            }
+            if (left.wins === 0 && right.wins === 0 && left.losses !== right.losses) {
+                return left.losses - right.losses;
+            }
+            return right.totalGames - left.totalGames;
+        }
+
+        function buildMatchupSummary(player) {
+            const matchups = getMatchupsForPlayer(player.name)
+                .filter((matchup) => matchup.opponent && normalizeName(matchup.opponent) !== normalizeName(player.name));
+
+            if (!matchups.length) {
+                return null;
+            }
+
+            const rowsWithScores = matchups.map((matchup) => ({
+                ...matchup,
+                score: computeMatchupScore(matchup)
+            }));
+
+            const sortedRows = rowsWithScores.slice().sort(compareMatchupsForHistory);
+            const best = sortedRows.slice(0, 3);
+            const worst = sortedRows.slice(-3).slice().reverse();
+
+            return {
+                best,
+                worst,
+                total: rowsWithScores.length
+            };
+        }
+
+        function renderMatchupPreview(player) {
+            const summary = buildMatchupSummary(player);
+            if (!summary) {
+                if (!matchupsLoaded && !matchupsFailed) {
+                    return `<p class="player-summary-copy">Loading matchup summary...</p>`;
+                }
+                return `<p class="player-summary-copy">No matchup summary is available for this player yet.</p>`;
+            }
+
+            const renderItems = (items) => items.map((item) => `
+                <article class="matchup-item">
+                    <strong>${escapeHtml(item.opponent)}</strong>
+                    <div>${escapeHtml(buildMatchupRecord(item))}</div>
+                    <small>${Number.isNaN(item.winPct) ? "Win % unavailable" : `${formatOneDecimal(item.winPct * 100)}% win rate`}</small>
+                </article>
+            `).join("");
+
+            return `
+                <div class="matchup-summary-grid">
+                    <div class="matchup-panel">
+                        <h5>Best Opponents</h5>
+                        <div class="matchup-list">${renderItems(summary.best)}</div>
+                    </div>
+                    <div class="matchup-panel">
+                        <h5>Worst Opponents</h5>
+                        <div class="matchup-list">${renderItems(summary.worst)}</div>
+                    </div>
+                </div>
+                <div class="matchup-actions">
+                    <button id="show-matchup-history-btn" class="view-button" type="button">See all matchup history</button>
+                    <span class="matchup-count">${summary.total} matchups available</span>
+                </div>
+                <div id="matchup-history" class="matchup-history" hidden></div>
+            `;
+        }
+
+        function buildMatchupHistoryTable(playerName) {
+            const matchups = getMatchupsForPlayer(playerName)
+                .filter((matchup) => matchup.opponent && normalizeName(matchup.opponent) !== normalizeName(playerName))
+                .slice();
+
+            if (!matchups.length) {
+                return `<div class="player-empty">No matchup history is available for this player.</div>`;
+            }
+
+            const sortedRows = matchups
+                .sort(compareMatchupsForHistory)
+                .map((row) => `
+                    <tr>
+                        <td>${escapeHtml(row.opponent)}</td>
+                        <td>${escapeHtml(buildMatchupRecord(row))}</td>
+                        <td>${Number.isNaN(row.winPct) ? "N/A" : `${formatOneDecimal(row.winPct * 100)}%`}</td>
+                        <td>${typeof row.totalGames === "number" ? row.totalGames : "-"}</td>
+                    </tr>
+                `).join("");
+
+            return `
+                <div class="matchup-history-scroller">
+                    <table class="matchup-history-table">
+                        <thead>
+                            <tr>
+                                <th>Opponent</th>
+                                <th>Record</th>
+                                <th>Win %</th>
+                                <th>Games</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${sortedRows}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function attachMatchupEvents(playerName) {
+            const showHistoryButton = document.getElementById("show-matchup-history-btn");
+            const matchupHistory = document.getElementById("matchup-history");
+            if (!showHistoryButton || !matchupHistory) {
+                return;
+            }
+
+            showHistoryButton.addEventListener("click", () => {
+                const isHidden = matchupHistory.hidden;
+                matchupHistory.hidden = !isHidden;
+                showHistoryButton.textContent = isHidden ? "Hide full matchup history" : "See all matchup history";
+                if (!matchupHistory.hidden && !matchupHistory.innerHTML.trim()) {
+                    matchupHistory.innerHTML = buildMatchupHistoryTable(playerName);
+                }
+            });
         }
 
         function extractBadgeScore(label) {
@@ -1317,7 +1627,12 @@
                         </section>
                     `).join("")}
                 </div>
+                <section class="matchup-panel">
+                    <h4>Key Matchups</h4>
+                    ${renderMatchupPreview(player)}
+                </section>
             `;
+            attachMatchupEvents(player.name);
         }
 
         function selectPlayer(name) {
@@ -1545,6 +1860,73 @@
             }
         };
 
+        window.handleMatchupsResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                matchupsLoaded = true;
+                matchupsFailed = true;
+                return;
+            }
+
+            const rows = response.table.rows;
+            if (rows.length < 2) {
+                matchupsLoaded = true;
+                return;
+            }
+
+            const headerRow = (rows[0].c || []).map((cell) => normalizeCell(cell).text);
+            const opponentNames = headerRow.slice(2).map((name) => String(name || "").trim());
+
+            rows.slice(1).forEach((row) => {
+                const cells = row.c || [];
+                const teamName = normalizeName(normalizeCell(cells[0]).text);
+                if (!teamName) {
+                    return;
+                }
+
+                const playerMatchups = [];
+                for (let columnIndex = 2; columnIndex < cells.length && columnIndex < opponentNames.length + 2; columnIndex++) {
+                    const opponentName = String(opponentNames[columnIndex - 2] || "").trim();
+                    const matchupCell = normalizeCell(cells[columnIndex]).text;
+                    const normalizedRecord = String(matchupCell || "").trim().toLowerCase();
+                    if (!opponentName || !matchupCell || normalizedRecord === "n/a" || normalizedRecord === "0-0") {
+                        continue;
+                    }
+
+                    const parsedRecord = parseWinsLosses(matchupCell);
+                    const winPct = parseWinPercentage(matchupCell);
+                    const totalGames = parsedRecord.wins + parsedRecord.losses;
+
+                    playerMatchups.push({
+                        opponent: opponentName,
+                        wins: parsedRecord.wins,
+                        losses: parsedRecord.losses,
+                        winPct: Number.isNaN(winPct) ? (totalGames ? parsedRecord.wins / totalGames : NaN) : winPct,
+                        totalGames,
+                        rawRecord: matchupCell
+                    });
+                }
+
+                if (!playerMatchups.length) {
+                    return;
+                }
+
+                matchupsByPlayer.set(teamName, playerMatchups);
+            });
+
+            matchupsLoaded = true;
+        };
+
+        function loadMatchups() {
+            const script = document.createElement("script");
+            script.src = MATCHUPS_FEED_URL;
+            script.async = true;
+            script.onerror = () => {
+                matchupsLoaded = true;
+                matchupsFailed = true;
+            };
+            document.body.appendChild(script);
+        }
+
         leadersViewButton.addEventListener("click", () => {
             setActiveView("leaders");
         });
@@ -1569,6 +1951,7 @@
         loadTopPerformers();
         loadPlayerDatabase();
         loadPlayerBadges();
+        loadMatchups();
     </script>
 </body>
 </html>

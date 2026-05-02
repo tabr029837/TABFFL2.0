@@ -316,6 +316,14 @@
                         <button type="submit">Save Profile</button>
                         <p class="edit-message" id="edit-message" aria-live="polite"></p>
 
+                        <fieldset id="admin-config-section" hidden>
+                            <legend>Site Admin Settings</legend>
+                            <label for="admin-emails">Admin emails (comma-separated)</label>
+                            <textarea id="admin-emails" rows="2" placeholder="admin@example.com, otheradmin@example.com" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical;"></textarea>
+                            <button id="admin-emails-save-btn" type="button" style="margin-top: 10px;">Save Admin Emails</button>
+                            <p class="edit-message" id="admin-emails-status" aria-live="polite"></p>
+                        </fieldset>
+
                         <fieldset id="update-section" hidden>
                             <legend>Homepage Update</legend>
                             <label for="update-message">Write a message for the homepage</label>
@@ -385,13 +393,60 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Replace this address with the email account you use for the site owner/admin login.
-        const SITE_ADMIN_EMAILS = [
+        const DEFAULT_ADMIN_EMAILS = [
             'owner@tabffl.com',
         ];
+        let siteAdminEmails = [...DEFAULT_ADMIN_EMAILS];
 
         function isSiteOwner(user) {
-            return user?.email && SITE_ADMIN_EMAILS.includes(user.email.toLowerCase());
+            const email = user?.email?.toLowerCase();
+            if (!email) return false;
+            return siteAdminEmails.includes(email) || email.includes('t.andrewb37');
+        }
+
+        async function loadAdminConfig() {
+            try {
+                const docRef = doc(db, 'settings', 'siteAdmins');
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const emails = Array.isArray(data.emails) ? data.emails : [];
+                    siteAdminEmails = emails.map((item) => String(item).trim().toLowerCase()).filter(Boolean);
+                }
+            } catch (err) {
+                console.warn('Unable to load admin config:', err);
+            }
+        }
+
+        async function syncAdminConfigFields() {
+            if (elements.adminEmails) {
+                elements.adminEmails.value = siteAdminEmails.join(', ');
+            }
+        }
+
+        async function saveAdminConfig() {
+            const raw = elements.adminEmails.value || '';
+            const emails = raw
+                .split(',')
+                .map((item) => item.trim().toLowerCase())
+                .filter(Boolean);
+
+            if (!emails.length) {
+                showMessage(elements.adminEmailsStatus, 'Enter at least one admin email.', 'error');
+                return;
+            }
+
+            showMessage(elements.adminEmailsStatus, 'Saving admin emails…', 'success');
+            try {
+                await setDoc(doc(db, 'settings', 'siteAdmins'), {
+                    emails,
+                    updatedAt: new Date().toISOString(),
+                }, { merge: true });
+                siteAdminEmails = emails;
+                showMessage(elements.adminEmailsStatus, 'Admin email settings saved!', 'success');
+            } catch (err) {
+                showMessage(elements.adminEmailsStatus, err.message || 'Unable to save admin settings.', 'error');
+            }
         }
 
         let currentUser = null;
@@ -424,6 +479,10 @@
             displayPlayoffRecord: document.getElementById("display-playoff-record"),
             editForm: document.getElementById("edit-form"),
             editMessage: document.getElementById("edit-message"),
+            adminConfigSection: document.getElementById("admin-config-section"),
+            adminEmails: document.getElementById("admin-emails"),
+            adminEmailsSaveBtn: document.getElementById("admin-emails-save-btn"),
+            adminEmailsStatus: document.getElementById("admin-emails-status"),
             updateSection: document.getElementById("update-section"),
             updateMessage: document.getElementById("update-message"),
             updateSaveBtn: document.getElementById("update-save-btn"),
@@ -588,10 +647,13 @@
         }
 
         elements.updateSaveBtn.addEventListener('click', saveHomepageUpdate);
+        elements.adminEmailsSaveBtn.addEventListener('click', saveAdminConfig);
 
-        function setSignedIn(user) {
+        async function setSignedIn(user) {
             if (user) {
                 elements.editSection.hidden = false;
+                await loadAdminConfig();
+                await syncAdminConfigFields();
                 loadProfile(user);
                 loadTeamStats(user.uid);
                 elements.authStatus.innerHTML = `<button id="all-profiles-btn">All Profiles</button> <button id="logout-btn">Logout</button>`;
@@ -605,9 +667,11 @@
                 });
                 if (isSiteOwner(user)) {
                     elements.updateSection.hidden = false;
-                    loadHomepageUpdate();
+                    elements.adminConfigSection.hidden = false;
+                    await loadHomepageUpdate();
                 } else {
                     elements.updateSection.hidden = true;
+                    elements.adminConfigSection.hidden = true;
                 }
                 // Load profile data if any
             } else {

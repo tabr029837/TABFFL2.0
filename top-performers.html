@@ -69,6 +69,46 @@
             gap: 20px;
         }
 
+        .control-stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .view-switcher {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid #dbe2ea;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            width: fit-content;
+        }
+
+        .view-button {
+            border: 0;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font: inherit;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: #475569;
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .view-button.active {
+            color: #0f3b66;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.2);
+        }
+
+        .performers-view[hidden] {
+            display: none;
+        }
+
         .hero-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -165,6 +205,282 @@
             gap: 18px;
         }
 
+        .individual-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.28fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .player-search-panel,
+        .player-detail-panel,
+        .stats-group {
+            padding: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.45);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .player-search-panel h3,
+        .player-detail-panel h3,
+        .stats-group h4 {
+            margin: 0 0 10px;
+            color: #0f2747;
+        }
+
+        .player-search-panel p,
+        .player-detail-panel p {
+            margin: 0;
+            color: #475569;
+            line-height: 1.55;
+        }
+
+        .player-search-panel label {
+            display: block;
+            margin: 16px 0 8px;
+            color: #0f2747;
+            font-weight: 700;
+        }
+
+        .player-search-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font: inherit;
+            color: #0f172a;
+            background: #fff;
+        }
+
+        .player-search-input:focus {
+            outline: 2px solid rgba(59, 130, 246, 0.2);
+            outline-offset: 2px;
+            border-color: #60a5fa;
+        }
+
+        .player-search-meta {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .player-search-meta strong {
+            color: #0f172a;
+        }
+
+        .player-results {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .player-result-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.28);
+            border-radius: 14px;
+            background: linear-gradient(180deg, #ffffff, #f8fafc);
+            color: #0f172a;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .player-result-button:hover,
+        .player-result-button:focus-visible {
+            border-color: #93c5fd;
+            background: linear-gradient(180deg, #eff6ff, #dbeafe);
+            transform: translateY(-1px);
+        }
+
+        .player-result-button.active {
+            border-color: #60a5fa;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.18);
+        }
+
+        .player-result-name {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .player-result-meta {
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .player-empty {
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px dashed #cbd5e1;
+            background: #f8fafc;
+            color: #64748b;
+        }
+
+        .player-spotlight {
+            display: grid;
+            gap: 16px;
+        }
+
+        .player-summary {
+            display: grid;
+            gap: 12px;
+            padding: 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.38);
+            background:
+                radial-gradient(circle at top right, rgba(147, 197, 253, 0.35), transparent 32%),
+                linear-gradient(135deg, #ffffff, #eff6ff);
+        }
+
+        .player-summary-top {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .player-summary h3 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 1.35rem;
+        }
+
+        .player-summary-copy {
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .champion-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            border: 1px solid #fcd34d;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #854d0e;
+            font-size: 0.86rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .summary-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .summary-chip {
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.22);
+            background: rgba(255, 255, 255, 0.88);
+        }
+
+        .summary-chip.tier-1 {
+            background: linear-gradient(135deg, #f8fafc, #dbeafe);
+            border-color: #94a3b8;
+            color: #334155;
+        }
+
+        .summary-chip.tier-2 {
+            background: linear-gradient(135deg, #fef3c7, #fed7aa);
+            border-color: #b45309;
+            color: #9a3412;
+        }
+
+        .summary-chip.tier-3 {
+            background: linear-gradient(135deg, #f8fafc, #e5e7eb);
+            border-color: #9ca3af;
+            color: #4b5563;
+        }
+
+        .summary-chip.tier-4 {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-color: #ca8a04;
+            color: #854d0e;
+        }
+
+        .summary-chip-label,
+        .stat-card-label {
+            display: block;
+            color: #64748b;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .summary-chip-value {
+            display: block;
+            margin-top: 5px;
+            color: #0f172a;
+            font-size: 1.08rem;
+            font-weight: 800;
+        }
+
+        .summary-chip.tier-1 .summary-chip-label,
+        .summary-chip.tier-2 .summary-chip-label,
+        .summary-chip.tier-3 .summary-chip-label,
+        .summary-chip.tier-4 .summary-chip-label,
+        .summary-chip.tier-1 .summary-chip-value,
+        .summary-chip.tier-2 .summary-chip-value,
+        .summary-chip.tier-3 .summary-chip-value,
+        .summary-chip.tier-4 .summary-chip-value {
+            color: inherit;
+        }
+
+        .stats-groups {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .stats-group {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stats-group h4 {
+            margin-bottom: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-card {
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.22);
+            background: #f8fafc;
+        }
+
+        .stat-card-value {
+            display: block;
+            margin-top: 6px;
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
         .category-header {
             display: flex;
             align-items: baseline;
@@ -248,11 +564,32 @@
         }
 
         @media (max-width: 700px) {
+            .view-switcher {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .view-button {
+                flex: 1 1 0;
+            }
+
             .hero-panel {
                 padding: 14px;
             }
 
             .category-panel {
+                padding: 14px;
+            }
+
+            .individual-layout,
+            .stats-groups {
+                grid-template-columns: 1fr;
+            }
+
+            .player-search-panel,
+            .player-detail-panel,
+            .player-summary,
+            .stats-group {
                 padding: 14px;
             }
 
@@ -356,6 +693,10 @@
                 line-height: 1.35;
                 word-break: break-word;
             }
+
+            .player-results {
+                max-height: none;
+            }
         }
     </style>
 </head>
@@ -377,15 +718,41 @@
                 <div id="performers-status" class="performers-status">Loading top performers...</div>
 
                 <section id="performers-app" class="performers-app" hidden>
-                    <div class="hero-grid">
-                        <section class="hero-panel" aria-label="Performance leaders">
-                            <h3>League Leaders</h3>
-                            <p>The top line from each leaderboard, so you can scan the biggest names at a glance before diving into the full rankings below.</p>
-                            <div id="headline-grid" class="headline-grid"></div>
-                        </section>
+                    <div class="control-stack">
+                        <div class="view-switcher" role="tablist" aria-label="Top performer views">
+                            <button id="leaders-view-button" class="view-button active" type="button" role="tab" aria-selected="true" aria-controls="leaders-view">League Leaders</button>
+                            <button id="individual-view-button" class="view-button" type="button" role="tab" aria-selected="false" aria-controls="individual-view">Individual Performance</button>
+                        </div>
                     </div>
 
-                    <section id="categories-grid" class="categories-grid" aria-label="Top performer categories"></section>
+                    <section id="leaders-view" class="performers-view">
+                        <div class="hero-grid">
+                            <section class="hero-panel" aria-label="Performance leaders">
+                                <h3>League Leaders</h3>
+                                <p>The top line from each leaderboard, so you can scan the biggest names at a glance before diving into the full rankings below.</p>
+                                <div id="headline-grid" class="headline-grid"></div>
+                            </section>
+                        </div>
+
+                        <section id="categories-grid" class="categories-grid" aria-label="Top performer categories"></section>
+                    </section>
+
+                    <section id="individual-view" class="performers-view" hidden>
+                        <div class="individual-layout">
+                            <section class="player-search-panel" aria-label="Search player performance">
+                                <h3>Search By Name</h3>
+                                <p>Pick a manager from the full database and pull their complete resume from the league stat archive.</p>
+                                <label for="player-search-input">Find a player</label>
+                                <input id="player-search-input" class="player-search-input" type="search" placeholder="Search by name..." autocomplete="off">
+                                <div id="player-search-meta" class="player-search-meta"></div>
+                                <div id="player-results" class="player-results"></div>
+                            </section>
+
+                            <section class="player-detail-panel" aria-label="Individual player performance">
+                                <div id="player-detail" class="player-spotlight"></div>
+                            </section>
+                        </div>
+                    </section>
                 </section>
             </section>
         </main>
@@ -410,10 +777,20 @@
 
     <script>
         const TOP_PERFORMERS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleTopPerformersResponse&gid=373470926&range=A:E";
+        const PLAYER_DATABASE_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerDatabaseResponse&sheet=Database&range=A1:Y";
+        const PLAYER_BADGES_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerBadgesResponse&gid=1504575350&range=A1:I";
         const performersStatus = document.getElementById("performers-status");
         const performersApp = document.getElementById("performers-app");
         const headlineGrid = document.getElementById("headline-grid");
         const categoriesGrid = document.getElementById("categories-grid");
+        const leadersView = document.getElementById("leaders-view");
+        const individualView = document.getElementById("individual-view");
+        const leadersViewButton = document.getElementById("leaders-view-button");
+        const individualViewButton = document.getElementById("individual-view-button");
+        const playerSearchInput = document.getElementById("player-search-input");
+        const playerSearchMeta = document.getElementById("player-search-meta");
+        const playerResults = document.getElementById("player-results");
+        const playerDetail = document.getElementById("player-detail");
         const CATEGORY_DISPLAY_ORDER = [
             "Championships",
             "Season Total Points",
@@ -449,7 +826,7 @@
                     rank,
                     name,
                     primary: formatThreeDecimals(valueA.raw),
-                    secondary: [valueB ? `${valueB} wins` : "", valueC ? `${valueC} pts` : ""].filter(Boolean).join(" • ")
+                    secondary: [valueB ? `${valueB} wins` : "", valueC ? `${valueC} pts` : ""].filter(Boolean).join(" | ")
                 })
             },
             {
@@ -531,6 +908,66 @@
                 })
             }
         ];
+        const PLAYER_STAT_GROUPS = [
+            {
+                title: "Season Resume",
+                stats: [
+                    { index: 1, label: "Years" },
+                    { index: 2, label: "Season Wins" },
+                    { index: 3, label: "Season Losses" },
+                    { index: 4, label: "Season Win %" },
+                    { index: 5, label: "Season Points" }
+                ]
+            },
+            {
+                title: "Playoff Resume",
+                stats: [
+                    { index: 6, label: "Playoff Wins" },
+                    { index: 7, label: "Playoff Losses" },
+                    { index: 8, label: "Playoff Win %" },
+                    { index: 9, label: "Playoff Points" },
+                    { index: 24, label: "Championships" }
+                ]
+            },
+            {
+                title: "Career Pace",
+                stats: [
+                    { index: 10, label: "Total Wins" },
+                    { index: 11, label: "Total Losses" },
+                    { index: 17, label: "Total Points" },
+                    { index: 12, label: "Career Win %" },
+                    { index: 13, label: "Wins Per Season" },
+                    { index: 15, label: "Points Per Season" }
+                ]
+            },
+            {
+                title: "Finishes And Activity",
+                stats: [
+                    { index: 18, label: "Top %" },
+                    { index: 19, label: "Bottom %" },
+                    { index: 20, label: "Acquisitions" },
+                    { index: 21, label: "Trades" }
+                ]
+            }
+        ];
+        const BASE_TIER_LABELS = new Set([
+            "30+ Wins",
+            "5+ Years",
+            "10,000+ Points",
+            "10+ PO Wins",
+            "100+ Acquisitions",
+            "30+ Top %'s",
+            "3+ Champs"
+        ]);
+
+        let leadersLoaded = false;
+        let leadersFailed = false;
+        let playerDatabaseLoaded = false;
+        let playerDatabaseFailed = false;
+        let playerBadgesLoaded = false;
+        let players = [];
+        let selectedPlayerName = "";
+        let badgePeopleByName = new Map();
 
         function normalizeCell(cell) {
             if (!cell) {
@@ -544,6 +981,15 @@
             };
         }
 
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
         function formatThreeDecimals(value) {
             const numericValue = Number(value);
             if (Number.isNaN(numericValue)) {
@@ -552,9 +998,103 @@
             return numericValue.toFixed(3);
         }
 
+        function getDisplayValue(value) {
+            return value || "N/A";
+        }
+
+        function extractBadgeScore(label) {
+            const normalizedLabel = String(label || "").toLowerCase();
+
+            if (normalizedLabel.includes("none")) {
+                return Number.NEGATIVE_INFINITY;
+            }
+
+            const numericMatch = String(label || "").match(/[\d,]+/);
+            const numericValue = numericMatch ? Number(numericMatch[0].replace(/,/g, "")) : 0;
+            const champBonus = normalizedLabel.includes("champ") ? 100000 : 0;
+            const pointBonus = normalizedLabel.includes("point") ? 10000 : 0;
+            const percentBonus = normalizedLabel.includes("top %") ? 1000 : 0;
+            const yearBonus = normalizedLabel.includes("year") ? 100 : 0;
+            const acquisitionBonus = normalizedLabel.includes("acquisition") ? 10 : 0;
+            const poBonus = normalizedLabel.includes("po") ? 1 : 0;
+
+            return numericValue + champBonus + pointBonus + percentBonus + yearBonus + acquisitionBonus + poBonus;
+        }
+
+        function getTierNumber(label, allLabels) {
+            const sortedLabels = [...allLabels].sort((a, b) => extractBadgeScore(a) - extractBadgeScore(b));
+            const index = sortedLabels.indexOf(label);
+
+            if (index === -1) {
+                return BASE_TIER_LABELS.has(label) ? 1 : 4;
+            }
+
+            return Math.min(index + 1, 4);
+        }
+
+        function getTierClass(tier) {
+            if (tier === 2) {
+                return "tier-2";
+            }
+
+            if (tier === 3) {
+                return "tier-3";
+            }
+
+            if (tier === 4) {
+                return "tier-4";
+            }
+
+            return "tier-1";
+        }
+
+        function getBadgeLevelLabel(tier) {
+            if (!tier || Number.isNaN(Number(tier))) {
+                return "";
+            }
+
+            return `Badge Level ${tier}`;
+        }
+
+        function setActiveView(view) {
+            const showLeadersView = view === "leaders";
+            leadersView.hidden = !showLeadersView;
+            individualView.hidden = showLeadersView;
+            leadersViewButton.classList.toggle("active", showLeadersView);
+            individualViewButton.classList.toggle("active", !showLeadersView);
+            leadersViewButton.setAttribute("aria-selected", showLeadersView ? "true" : "false");
+            individualViewButton.setAttribute("aria-selected", showLeadersView ? "false" : "true");
+        }
+
+        function updateAppVisibility() {
+            if (leadersLoaded && (playerDatabaseLoaded || playerDatabaseFailed)) {
+                performersApp.hidden = false;
+                performersStatus.hidden = true;
+                return;
+            }
+
+            if (leadersFailed) {
+                showTopPerformersError();
+            }
+        }
+
         function showTopPerformersError() {
             performersStatus.hidden = false;
             performersStatus.textContent = "Top performers are not available right now.";
+        }
+
+        function showPlayerDatabaseFallback() {
+            playerSearchInput.disabled = true;
+            playerSearchMeta.innerHTML = `<strong>Individual performance is unavailable right now.</strong>`;
+            playerResults.innerHTML = `<div class="player-empty">We couldn't load the player database from the spreadsheet just now.</div>`;
+            playerDetail.innerHTML = `
+                <section class="player-summary">
+                    <div>
+                        <h3>Individual Performance</h3>
+                        <p class="player-summary-copy">The player lookup will reappear once the shared spreadsheet feed is available again.</p>
+                    </div>
+                </section>
+            `;
         }
 
         function formatCategoryRow(categoryIndex, row) {
@@ -580,10 +1120,10 @@
                 const leader = category.entries[0];
                 return `
                     <article class="headline-card">
-                        <p class="headline-label">${category.title}</p>
-                        <p class="headline-name">${leader ? leader.name : "N/A"}</p>
-                        <p class="headline-metric">${leader ? leader.primary : "No data"}</p>
-                        <a class="headline-jump" href="#${category.anchorId}">View Full Rankings</a>
+                        <p class="headline-label">${escapeHtml(category.title)}</p>
+                        <p class="headline-name">${leader ? escapeHtml(leader.name) : "N/A"}</p>
+                        <p class="headline-metric">${leader ? escapeHtml(leader.primary) : "No data"}</p>
+                        <a class="headline-jump" href="#${escapeHtml(category.anchorId)}">View Full Rankings</a>
                     </article>
                 `;
             }).join("");
@@ -591,31 +1131,186 @@
 
         function renderCategories(categories) {
             categoriesGrid.innerHTML = categories.map((category) => `
-                <section id="${category.anchorId}" class="category-panel">
+                <section id="${escapeHtml(category.anchorId)}" class="category-panel">
                     <div class="category-header">
-                        <h3>${category.title}</h3>
-                        <span class="category-subtitle">${category.subtitle}</span>
+                        <h3>${escapeHtml(category.title)}</h3>
+                        <span class="category-subtitle">${escapeHtml(category.subtitle)}</span>
                     </div>
                     <div class="performer-table">
                         ${category.entries.map((entry, index) => `
                             <article class="performer-row${index < 3 ? " top-three" : ""}">
-                                <div class="performer-rank">${entry.rank}</div>
+                                <div class="performer-rank">${escapeHtml(entry.rank)}</div>
                                 <div>
-                                    <p class="performer-name">${entry.name}</p>
+                                    <p class="performer-name">${escapeHtml(entry.name)}</p>
                                 </div>
                                 <div class="performer-stat">
-                                    <span class="performer-stat-label">${category.metricLabel}</span>
-                                    <span class="performer-stat-value">${entry.primary}</span>
+                                    <span class="performer-stat-label">${escapeHtml(category.metricLabel)}</span>
+                                    <span class="performer-stat-value">${escapeHtml(entry.primary)}</span>
                                 </div>
                                 <div class="performer-stat">
-                                    <span class="performer-stat-label">${category.detailLabel}</span>
-                                    <span class="performer-stat-value">${entry.secondary}</span>
+                                    <span class="performer-stat-label">${escapeHtml(category.detailLabel)}</span>
+                                    <span class="performer-stat-value">${escapeHtml(entry.secondary)}</span>
                                 </div>
                             </article>
                         `).join("")}
                     </div>
                 </section>
             `).join("");
+        }
+
+        function createPlayer(record) {
+            const stats = record.cells.map((cell, index) => ({
+                index,
+                label: record.headers[index],
+                text: cell.text,
+                raw: cell.raw
+            }));
+
+            return {
+                name: record.cells[0].text,
+                stats,
+                years: record.cells[1].text || "0",
+                champs: record.cells[24].text || "0",
+                seasonWinPct: record.cells[4].text || "N/A",
+                points: record.cells[5].text || "0.00"
+            };
+        }
+
+        function getPlayerBadgeMap(playerName) {
+            return badgePeopleByName.get(playerName) || new Map();
+        }
+
+        function getFilteredPlayers() {
+            const query = playerSearchInput.value.trim().toLowerCase();
+            const sortedPlayers = players.slice().sort((left, right) => left.name.localeCompare(right.name));
+
+            if (!query) {
+                return sortedPlayers;
+            }
+
+            return sortedPlayers.filter((player) => player.name.toLowerCase().includes(query));
+        }
+
+        function getSelectedPlayer() {
+            return players.find((player) => player.name === selectedPlayerName) || null;
+        }
+
+        function renderPlayerResults() {
+            const filteredPlayers = getFilteredPlayers();
+            const query = playerSearchInput.value.trim();
+            const label = query ? `Matches for <strong>${escapeHtml(query)}</strong>` : "Showing every player in the database";
+
+            playerSearchMeta.innerHTML = `${label} <strong>(${filteredPlayers.length})</strong>`;
+
+            if (!filteredPlayers.length) {
+                playerResults.innerHTML = `<div class="player-empty">No players matched that search. Try another name.</div>`;
+                return;
+            }
+
+            playerResults.innerHTML = filteredPlayers.map((player) => `
+                <button class="player-result-button${player.name === selectedPlayerName ? " active" : ""}" type="button" data-player-name="${escapeHtml(player.name)}">
+                    <div>
+                        <p class="player-result-name">${escapeHtml(player.name)}</p>
+                        <span class="player-result-meta">${escapeHtml(player.years)} year${player.years === "1" ? "" : "s"} | ${escapeHtml(player.champs)} champ${player.champs === "1" ? "" : "s"}</span>
+                    </div>
+                    <span class="player-result-meta">${escapeHtml(player.seasonWinPct)} win %</span>
+                </button>
+            `).join("");
+        }
+
+        function renderPlayerDetail() {
+            const player = getSelectedPlayer();
+
+            if (!player) {
+                playerDetail.innerHTML = `
+                    <section class="player-summary">
+                        <div>
+                            <h3>Select a player</h3>
+                            <p class="player-summary-copy">Choose a name from the list to load their individual performance breakdown.</p>
+                        </div>
+                    </section>
+                `;
+                return;
+            }
+
+            const summaryHighlights = [
+                { label: "Years", badgeCategory: "Years", value: player.years },
+                { label: "Wins", badgeCategory: "Wins", value: player.stats[10] ? player.stats[10].text : "" },
+                { label: "Points", badgeCategory: "Points", value: player.points },
+                { label: "PO Wins", badgeCategory: "PO Wins", value: player.stats[6] ? player.stats[6].text : "" },
+                { label: "Top %'s", badgeCategory: "Top %'s", value: player.stats[18] ? player.stats[18].text : "" },
+                { label: "Acquisitions", badgeCategory: "Acquisitions", value: player.stats[20] ? player.stats[20].text : "" },
+                { label: "Champs", badgeCategory: "Champs", value: player.champs }
+            ];
+            const playerBadgeMap = getPlayerBadgeMap(player.name);
+
+            playerDetail.innerHTML = `
+                <section class="player-summary">
+                    <div class="player-summary-top">
+                        <div>
+                            <h3>${escapeHtml(player.name)}</h3>
+                            <p class="player-summary-copy">Full stat pull from the shared Database sheet.</p>
+                        </div>
+                        <span class="champion-badge">${escapeHtml(player.champs)} championship${player.champs === "1" ? "" : "s"}</span>
+                    </div>
+                    <div class="summary-highlights">
+                        ${summaryHighlights.map((item) => {
+                            const badge = playerBadgeMap.get(item.badgeCategory);
+                            const tierClass = badge && badge.value && badge.value.toLowerCase() !== "none" ? getTierClass(badge.tier) : "";
+                            const badgeLevelLabel = badge && badge.value && badge.value.toLowerCase() !== "none"
+                                ? ` (${getBadgeLevelLabel(badge.tier)})`
+                                : "";
+
+                            return `
+                            <div class="summary-chip${tierClass ? ` ${tierClass}` : ""}">
+                                <span class="summary-chip-label">${escapeHtml(item.label + badgeLevelLabel)}</span>
+                                <span class="summary-chip-value">${escapeHtml(getDisplayValue(item.value))}</span>
+                            </div>
+                        `;
+                        }).join("")}
+                    </div>
+                </section>
+                <div class="stats-groups">
+                    ${PLAYER_STAT_GROUPS.map((group) => `
+                        <section class="stats-group">
+                            <h4>${escapeHtml(group.title)}</h4>
+                            <div class="stats-grid">
+                                ${group.stats.map((stat) => {
+                                    const playerStat = player.stats[stat.index];
+                                    return `
+                                        <article class="stat-card">
+                                            <span class="stat-card-label">${escapeHtml(stat.label)}</span>
+                                            <span class="stat-card-value">${escapeHtml(getDisplayValue(playerStat ? playerStat.text : ""))}</span>
+                                        </article>
+                                    `;
+                                }).join("")}
+                            </div>
+                        </section>
+                    `).join("")}
+                </div>
+            `;
+        }
+
+        function selectPlayer(name) {
+            selectedPlayerName = name;
+            renderPlayerResults();
+            renderPlayerDetail();
+        }
+
+        function renderPlayerDirectory() {
+            if (!players.length) {
+                playerSearchMeta.textContent = "No player records were found in the database.";
+                playerResults.innerHTML = `<div class="player-empty">No player records are available yet.</div>`;
+                renderPlayerDetail();
+                return;
+            }
+
+            if (!selectedPlayerName) {
+                selectedPlayerName = players.slice().sort((left, right) => left.name.localeCompare(right.name))[0].name;
+            }
+
+            renderPlayerResults();
+            renderPlayerDetail();
         }
 
         function parseCategories(rows) {
@@ -657,12 +1352,41 @@
             const script = document.createElement("script");
             script.src = TOP_PERFORMERS_FEED_URL;
             script.async = true;
-            script.onerror = showTopPerformersError;
+            script.onerror = () => {
+                leadersFailed = true;
+                showTopPerformersError();
+            };
+            document.body.appendChild(script);
+        }
+
+        function loadPlayerDatabase() {
+            const script = document.createElement("script");
+            script.src = PLAYER_DATABASE_FEED_URL;
+            script.async = true;
+            script.onerror = () => {
+                playerDatabaseFailed = true;
+                showPlayerDatabaseFallback();
+                updateAppVisibility();
+            };
+            document.body.appendChild(script);
+        }
+
+        function loadPlayerBadges() {
+            const script = document.createElement("script");
+            script.src = PLAYER_BADGES_FEED_URL;
+            script.async = true;
+            script.onerror = () => {
+                playerBadgesLoaded = true;
+                if (selectedPlayerName) {
+                    renderPlayerDetail();
+                }
+            };
             document.body.appendChild(script);
         }
 
         window.handleTopPerformersResponse = (response) => {
             if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows)) {
+                leadersFailed = true;
                 showTopPerformersError();
                 return;
             }
@@ -686,17 +1410,136 @@
                 .sort((left, right) => CATEGORY_DISPLAY_ORDER.indexOf(left.key) - CATEGORY_DISPLAY_ORDER.indexOf(right.key));
 
             if (!categories.length) {
+                leadersFailed = true;
                 showTopPerformersError();
                 return;
             }
 
             renderHeadlineCards(categories);
             renderCategories(categories);
-            performersApp.hidden = false;
-            performersStatus.hidden = true;
+            leadersLoaded = true;
+            updateAppVisibility();
         };
 
+        window.handlePlayerDatabaseResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows) || !Array.isArray(response.table.cols)) {
+                playerDatabaseFailed = true;
+                showPlayerDatabaseFallback();
+                updateAppVisibility();
+                return;
+            }
+
+            const headers = response.table.cols.map((column) => (column.label || "").trim());
+            players = response.table.rows
+                .map((row) => {
+                    const cells = headers.map((_, index) => normalizeCell((row.c || [])[index]));
+                    return {
+                        headers,
+                        cells
+                    };
+                })
+                .filter((record) => record.cells[0].text)
+                .map(createPlayer);
+
+            playerDatabaseLoaded = true;
+            renderPlayerDirectory();
+            updateAppVisibility();
+        };
+
+        window.handlePlayerBadgesResponse = (response) => {
+            if (!response || response.status !== "ok" || !response.table || !Array.isArray(response.table.rows) || !response.table.rows.length) {
+                playerBadgesLoaded = true;
+                if (selectedPlayerName) {
+                    renderPlayerDetail();
+                }
+                return;
+            }
+
+            const rawRows = response.table.rows.map((row) => (row.c || []).map((cell) => normalizeCell(cell).text));
+            const headers = rawRows[0];
+            const badgeHeaders = headers.slice(1, -1);
+            const people = rawRows.slice(1).map((cells) => ({
+                name: cells[0],
+                badges: badgeHeaders.map((header, index) => ({
+                    category: header,
+                    value: cells[index + 1] || ""
+                }))
+            })).filter((person) => person.name);
+
+            const categories = badgeHeaders.map((header, columnIndex) => {
+                const groupMap = new Map();
+
+                people.forEach((person) => {
+                    const badge = person.badges[columnIndex];
+                    if (!badge || !badge.value || badge.value.toLowerCase() === "none") {
+                        return;
+                    }
+
+                    if (!groupMap.has(badge.value)) {
+                        groupMap.set(badge.value, []);
+                    }
+
+                    groupMap.get(badge.value).push(person.name);
+                });
+
+                const groups = Array.from(groupMap.entries()).map(([label, names]) => ({
+                    label,
+                    tier: getTierNumber(label, groupMap.keys()),
+                    people: names
+                }));
+
+                return {
+                    name: header,
+                    groups
+                };
+            });
+
+            badgePeopleByName = new Map(people.map((person) => {
+                const badgeMap = new Map(person.badges.map((badge) => {
+                    const matchingCategory = categories.find((category) => category.name === badge.category);
+                    const matchingGroup = matchingCategory
+                        ? matchingCategory.groups.find((group) => group.label === badge.value)
+                        : null;
+
+                    return [badge.category, {
+                        ...badge,
+                        tier: matchingGroup ? matchingGroup.tier : 1
+                    }];
+                }));
+
+                return [person.name, badgeMap];
+            }));
+
+            playerBadgesLoaded = true;
+            if (selectedPlayerName) {
+                renderPlayerDetail();
+            }
+        };
+
+        leadersViewButton.addEventListener("click", () => {
+            setActiveView("leaders");
+        });
+
+        individualViewButton.addEventListener("click", () => {
+            setActiveView("individual");
+        });
+
+        playerSearchInput.addEventListener("input", () => {
+            renderPlayerResults();
+        });
+
+        playerResults.addEventListener("click", (event) => {
+            const button = event.target.closest("[data-player-name]");
+            if (!button) {
+                return;
+            }
+
+            selectPlayer(button.getAttribute("data-player-name"));
+        });
+
         loadTopPerformers();
+        loadPlayerDatabase();
+        loadPlayerBadges();
     </script>
 </body>
 </html>

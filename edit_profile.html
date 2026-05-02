@@ -316,6 +316,14 @@
                         <button type="submit">Save Profile</button>
                         <p class="edit-message" id="edit-message" aria-live="polite"></p>
 
+                        <fieldset id="update-section" hidden>
+                            <legend>Homepage Update</legend>
+                            <label for="update-message">Write a message for the homepage</label>
+                            <textarea id="update-message" rows="4" placeholder="Enter your site update here" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical;"></textarea>
+                            <button id="update-save-btn" type="button" style="margin-top: 10px;">Save Homepage Message</button>
+                            <p class="edit-message" id="update-status" aria-live="polite"></p>
+                        </fieldset>
+
                         <fieldset class="team-stats">
                             <legend>Team Statistics</legend>
                             <p><strong>What is your current league?</strong><br><span id="display-current-league">Loading...</span></p>
@@ -377,6 +385,15 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Replace this address with the email account you use for the site owner/admin login.
+        const SITE_ADMIN_EMAILS = [
+            'owner@tabffl.com',
+        ];
+
+        function isSiteOwner(user) {
+            return user?.email && SITE_ADMIN_EMAILS.includes(user.email.toLowerCase());
+        }
+
         let currentUser = null;
         let cropper = null;
 
@@ -407,6 +424,10 @@
             displayPlayoffRecord: document.getElementById("display-playoff-record"),
             editForm: document.getElementById("edit-form"),
             editMessage: document.getElementById("edit-message"),
+            updateSection: document.getElementById("update-section"),
+            updateMessage: document.getElementById("update-message"),
+            updateSaveBtn: document.getElementById("update-save-btn"),
+            updateStatus: document.getElementById("update-status"),
         };
 
         function showMessage(el, message, type = "error") {
@@ -540,6 +561,34 @@
             }
         }
 
+        async function loadHomepageUpdate() {
+            try {
+                const docRef = doc(db, 'settings', 'homepageUpdate');
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    elements.updateMessage.value = data.message || '';
+                }
+            } catch (err) {
+                console.warn('Unable to load homepage update:', err);
+            }
+        }
+
+        async function saveHomepageUpdate() {
+            showMessage(elements.updateStatus, 'Saving homepage update…', 'success');
+            try {
+                await setDoc(doc(db, 'settings', 'homepageUpdate'), {
+                    message: elements.updateMessage.value.trim(),
+                    updatedAt: new Date().toISOString(),
+                }, { merge: true });
+                showMessage(elements.updateStatus, 'Homepage update saved!', 'success');
+            } catch (err) {
+                showMessage(elements.updateStatus, err.message || 'Unable to save update.', 'error');
+            }
+        }
+
+        elements.updateSaveBtn.addEventListener('click', saveHomepageUpdate);
+
         function setSignedIn(user) {
             if (user) {
                 elements.editSection.hidden = false;
@@ -554,6 +603,12 @@
                 logoutBtn.addEventListener("click", async () => {
                     await signOut(auth);
                 });
+                if (isSiteOwner(user)) {
+                    elements.updateSection.hidden = false;
+                    loadHomepageUpdate();
+                } else {
+                    elements.updateSection.hidden = true;
+                }
                 // Load profile data if any
             } else {
                 window.location.href = '/profiles';

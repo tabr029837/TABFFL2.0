@@ -43,6 +43,26 @@
             margin-bottom: 0;
         }
 
+        .site-update-banner {
+            margin: 0 0 20px;
+            padding: 18px 20px;
+            border: 1px solid #1d4e89;
+            border-radius: 18px;
+            background: rgba(29, 78, 137, 0.08);
+        }
+
+        .site-update-banner h3 {
+            margin: 0 0 8px;
+            font-size: 1.05rem;
+            color: #0f2747;
+        }
+
+        .site-update-banner p {
+            margin: 0;
+            line-height: 1.6;
+            color: #102a43;
+        }
+
         .nav-guide {
             margin-top: 20px;
         }
@@ -125,6 +145,10 @@
 
         <main>
             <h2>Home</h2>
+            <section id="home-update" class="site-update-banner" hidden aria-label="Home page update">
+                <h3>Site update</h3>
+                <p id="home-update-message"></p>
+            </section>
             <section class="welcome-card">
                 <p>Welcome to the TAB Fantasy Football League website, your home base for the season ahead. This is the place to follow the competition, check in on the league, and keep up with the stories, stats, and personalities that make TABFFL what it is.</p>
                 <p>Use the navigation below to explore everything the site has to offer. <strong>Profiles</strong> lets you browse each manager by league, <strong>League Standings</strong> keeps you up to date on where every division stands, <strong>Power Rankings</strong> tracks the latest movement across the league, <strong>Awards</strong> celebrates league history, <strong>Statistics Hub</strong> highlights the strongest long-term numbers with both league leaders and individual performance lookups, and <strong>Badges</strong> turns those milestones into a live trophy case for every manager.</p>
@@ -186,5 +210,32 @@
             </nav>
         </footer>
     </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirebaseConfig } from "/lib/firebase-config.js";
+
+        async function loadHomepageUpdate() {
+            try {
+                const firebaseConfig = await getFirebaseConfig();
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                const updateDoc = await getDoc(doc(db, 'settings', 'homepageUpdate'));
+                if (updateDoc.exists()) {
+                    const data = updateDoc.data();
+                    if (data?.message?.trim()) {
+                        const updateSection = document.getElementById('home-update');
+                        const updateMessage = document.getElementById('home-update-message');
+                        updateMessage.textContent = data.message.trim();
+                        updateSection.hidden = false;
+                    }
+                }
+            } catch (err) {
+                console.warn('Unable to load homepage update:', err);
+            }
+        }
+
+        loadHomepageUpdate();
+    </script>
 </body>
 </html>

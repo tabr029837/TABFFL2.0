@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#0f2747">
-    <title>Top Performers</title>
+    <title>Performance Hub</title>
     <link rel="stylesheet" href="styles.css?v=20260321d">
     <style>
         .site-footer {
@@ -384,7 +384,7 @@
         }
 
         .summary-chip.champs-highlight {
-            grid-column: auto;
+            grid-column: 1 / -1;
         }
 
         @media (min-width: 701px) {
@@ -730,34 +730,22 @@
 
         <main>
             <section class="page-intro">
-                <h2>Top Performers</h2>
-                <p>Track the strongest long-term resumes in TABFFL through a live performers board. This page groups the league's best seasonal winners, point scorers, playoff performers, and all-around powerhouses into one clean trophy wall.</p>
+                <h2>Performance Hub</h2>
+                <p>Track the strongest long-term resumes in TABFFL through one live performance board. This page combines individual performance lookups with league leaderboards so you can explore both player resumes and all-time category leaders in one place.</p>
             </section>
 
             <section class="performers-shell">
-                <div id="performers-status" class="performers-status">Loading top performers...</div>
+                <div id="performers-status" class="performers-status">Loading performance hub...</div>
 
                 <section id="performers-app" class="performers-app" hidden>
                     <div class="control-stack">
                         <div class="view-switcher" role="tablist" aria-label="Top performer views">
-                            <button id="leaders-view-button" class="view-button active" type="button" role="tab" aria-selected="true" aria-controls="leaders-view">League Leaders</button>
-                            <button id="individual-view-button" class="view-button" type="button" role="tab" aria-selected="false" aria-controls="individual-view">Individual Performance</button>
+                            <button id="individual-view-button" class="view-button active" type="button" role="tab" aria-selected="true" aria-controls="individual-view">Individual Performance</button>
+                            <button id="leaders-view-button" class="view-button" type="button" role="tab" aria-selected="false" aria-controls="leaders-view">League Leaders</button>
                         </div>
                     </div>
 
-                    <section id="leaders-view" class="performers-view">
-                        <div class="hero-grid">
-                            <section class="hero-panel" aria-label="Performance leaders">
-                                <h3>League Leaders</h3>
-                                <p>The top line from each leaderboard, so you can scan the biggest names at a glance before diving into the full rankings below.</p>
-                                <div id="headline-grid" class="headline-grid"></div>
-                            </section>
-                        </div>
-
-                        <section id="categories-grid" class="categories-grid" aria-label="Top performer categories"></section>
-                    </section>
-
-                    <section id="individual-view" class="performers-view" hidden>
+                    <section id="individual-view" class="performers-view">
                         <div class="individual-layout">
                             <section class="player-search-panel" aria-label="Search player performance">
                                 <h3>Search By Name</h3>
@@ -772,6 +760,18 @@
                                 <div id="player-detail" class="player-spotlight"></div>
                             </section>
                         </div>
+                    </section>
+
+                    <section id="leaders-view" class="performers-view" hidden>
+                        <div class="hero-grid">
+                            <section class="hero-panel" aria-label="Performance leaders">
+                                <h3>League Leaders</h3>
+                                <p>The top line from each leaderboard, so you can scan the biggest names at a glance before diving into the full rankings below.</p>
+                                <div id="headline-grid" class="headline-grid"></div>
+                            </section>
+                        </div>
+
+                        <section id="categories-grid" class="categories-grid" aria-label="Top performer categories"></section>
                     </section>
                 </section>
             </section>

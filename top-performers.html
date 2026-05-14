@@ -480,6 +480,9 @@
             flex-direction: column;
             justify-content: center;
             min-width: 0;
+            width: 100%;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
 
         .playing-card-years {
@@ -504,10 +507,15 @@
             white-space: nowrap;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 900px) {
+            .playing-card-mobile-note {
+                display: block;
+            }
+
             .playing-card-header {
                 flex-wrap: wrap;
                 align-items: flex-start;
+                justify-content: flex-start;
             }
 
             .playing-card-identity {
@@ -521,8 +529,9 @@
             }
 
             .playing-card-copy {
-                flex: 1 1 auto;
+                flex: 1 1 0;
                 min-width: 0;
+                overflow-wrap: break-word;
             }
 
             .playing-card-kicker,
@@ -2497,7 +2506,7 @@
                     <div class="playing-card-season-stat">
                         <span class="playing-card-season-stat-value">
                             ${season.championship === "Yes"
-                                ? `<span class="playing-card-season-flag is-champ">Champs</span>`
+                                ? `<span class="playing-card-season-flag is-champ">Yes</span>`
                                 : escapeHtml(season.championship || "No")}
                         </span>
                     </div>
@@ -2616,7 +2625,7 @@
             const tableRows = card.seasons.map(season => `
                 <tr>
                     <td>${escapeHtml(season.year)}</td>
-                    <td>${season.championship === "Yes" ? "Champs" : escapeHtml(season.championship || "No")}</td>
+                    <td>${season.championship === "Yes" ? "Yes" : escapeHtml(season.championship || "No")}</td>
                     <td>${escapeHtml(season.record)}</td>
                     <td>${escapeHtml(season.league)}</td>
                     <td>${escapeHtml(season.tp)}</td>

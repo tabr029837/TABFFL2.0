@@ -543,9 +543,13 @@
                 max-width: 100%;
             }
 
+            .playing-card-kicker {
+                font-size: 0.72rem;
+            }
+
             .playing-card-header h4 {
-                font-size: 1.35rem;
-                line-height: 1.2;
+                font-size: 1.2rem;
+                line-height: 1.15;
             }
         }
 
@@ -2749,6 +2753,12 @@
         tbody tr:hover {
             background: #e0f2fe;
         }
+        .pdf-view-note {
+            margin: 0 20px 20px;
+            color: #64748b;
+            font-size: 0.82rem;
+            text-align: center;
+        }
         @media (max-width: 720px) {
             .card-header {
                 flex-direction: column;
@@ -2758,8 +2768,12 @@
             .summary-grid {
                 grid-template-columns: 1fr;
             }
+            .card-header h1 {
+                font-size: 22px;
+                line-height: 1.1;
+            }
             table {
-                font-size: 11px;
+                font-size: 10.5px;
             }
         }
         @media print {
@@ -2832,6 +2846,7 @@
             </table>
         </div>
     </div>
+    <p class="pdf-view-note">Landscape view provides the best playing card view</p>
     </div>
 </body>
 </html>`;

@@ -379,6 +379,17 @@
             transform: none;
         }
 
+        .card-build-button.secondary {
+            color: #0f3b66;
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+        }
+
+        .card-build-button.secondary:hover,
+        .card-build-button.secondary:focus-visible {
+            box-shadow: 0 14px 26px rgba(15, 23, 42, 0.18);
+        }
+
         .card-selection-meta {
             color: #64748b;
             font-size: 0.92rem;
@@ -1481,6 +1492,7 @@
                                 <p>Pick a name from the list and use the builder to load the first version of the card.</p>
                                 <div class="card-build-actions">
                                     <button id="build-card-button" class="card-build-button" type="button" disabled>Build Playing Card</button>
+                                    <button id="download-card-pdf-button" class="card-build-button secondary" type="button" disabled>Download PDF</button>
                                     <span id="card-selection-meta" class="card-selection-meta">No player selected</span>
                                 </div>
                                 <div id="playing-card-detail" class="player-spotlight"></div>
@@ -1510,14 +1522,20 @@
     </div>
 
     <script>
-        const TOP_PERFORMERS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleTopPerformersResponse&gid=373470926&range=A:E";
-        const PLAYER_DATABASE_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerDatabaseResponse&sheet=Database&range=A1:Y";
-        const PLAYER_BADGES_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerBadgesResponse&gid=1504575350&range=A1:I";
-        const MATCHUPS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleMatchupsResponse&sheet=Matchups&range=A1:ZZ";
-        const PLAYING_CARD_SPREADSHEET_ID = "10B_ufexH175N2Wy6iOjSlI7J4g0Nxgpu4rv0YaRHp3s";
-        const FIREBASE_PROJECT_ID = "tabfflwebsite";
-        const performersStatus = document.getElementById("performers-status");
-        const performersApp = document.getElementById("performers-app");
+        document.addEventListener("DOMContentLoaded", () => {
+            const TOP_PERFORMERS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleTopPerformersResponse&gid=373470926&range=A:E";
+            const PLAYER_DATABASE_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerDatabaseResponse&sheet=Database&range=A1:Y";
+            const PLAYER_BADGES_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handlePlayerBadgesResponse&gid=1504575350&range=A1:I";
+            const MATCHUPS_FEED_URL = "https://docs.google.com/spreadsheets/d/133F4tY-UGVYqXR2H4ihMtPwq8d8LGwD5QZwszLke4_Y/gviz/tq?tqx=responseHandler:handleMatchupsResponse&sheet=Matchups&range=A1:ZZ";
+            const PLAYING_CARD_SPREADSHEET_ID = "10B_ufexH175N2Wy6iOjSlI7J4g0Nxgpu4rv0YaRHp3s";
+            const FIREBASE_PROJECT_ID = "tabfflwebsite";
+            const performersStatus = document.getElementById("performers-status");
+            const performersApp = document.getElementById("performers-app");
+
+            if (window.location.protocol === "file:") {
+                performersStatus.hidden = false;
+                performersStatus.textContent = "This page loads remote spreadsheet data. If it does not initialize correctly, serve it over HTTP instead of file:// and refresh the page.";
+            }
         const headlineGrid = document.getElementById("headline-grid");
         const categoriesGrid = document.getElementById("categories-grid");
         const leadersView = document.getElementById("leaders-view");
@@ -1534,6 +1552,7 @@
         const cardSearchMeta = document.getElementById("card-search-meta");
         const cardResults = document.getElementById("card-results");
         const buildCardButton = document.getElementById("build-card-button");
+        const downloadCardPdfButton = document.getElementById("download-card-pdf-button");
         const cardSelectionMeta = document.getElementById("card-selection-meta");
         const playingCardDetail = document.getElementById("playing-card-detail");
         const CATEGORY_DISPLAY_ORDER = [
@@ -1709,6 +1728,7 @@
         let players = [];
         let selectedPlayerName = "";
         let selectedCardPlayerName = "";
+        let builtPlayingCard = null;
         let badgePeopleByName = new Map();
         const cardPlayerCache = new Map();
         const profilePicsByName = new Map();
@@ -2390,6 +2410,8 @@
         }
 
         function renderPlayingCardPlaceholder() {
+            builtPlayingCard = null;
+            downloadCardPdfButton.disabled = true;
             playingCardDetail.innerHTML = `
                 <section class="player-summary">
                     <div>
@@ -2401,6 +2423,7 @@
         }
 
         function renderPlayingCard(card) {
+            builtPlayingCard = card;
             const photoHtml = card.profilePic
                 ? `<img class="playing-card-photo" src="${escapeHtml(card.profilePic)}" alt="${escapeHtml(card.name)} profile picture">`
                 : "";
@@ -2529,6 +2552,134 @@
                 </article>
                 <p class="playing-card-note">Pulled from the individual player tab in the fantasy database spreadsheet.</p>
             `;
+            downloadCardPdfButton.disabled = false;
+        }
+
+        function createPlayingCardPdfDocument(card) {
+            const cardMarkup = playingCardDetail.innerHTML;
+            const safeName = escapeHtml(card.name || "TABFFL Playing Card");
+            const stylesheetUrl = escapeHtml(new URL("styles.css?v=20260321d", window.location.href).href);
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>${safeName} Playing Card</title>
+    <link rel="stylesheet" href="${stylesheetUrl}">
+    <style>
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #eef4ff;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #0f172a;
+        }
+
+        .pdf-shell {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .player-spotlight {
+            display: grid;
+            gap: 14px;
+        }
+
+        .playing-card {
+            position: relative;
+            overflow: visible;
+        }
+
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0.35in;
+            }
+
+            body {
+                padding: 0;
+                background: #fff;
+            }
+
+            .pdf-shell {
+                max-width: none;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="pdf-shell">
+        ${cardMarkup}
+    </main>
+</body>
+</html>`;
+        }
+
+        function waitForPrintWindowReady(printWindow) {
+            const printDocument = printWindow.document;
+            const windowLoaded = printDocument.readyState === "complete"
+                ? Promise.resolve()
+                : new Promise((resolve) => {
+                    printWindow.addEventListener("load", resolve, { once: true });
+                    printDocument.addEventListener("DOMContentLoaded", resolve, { once: true });
+                });
+            const fontsLoaded = printDocument.fonts && printDocument.fonts.ready
+                ? printDocument.fonts.ready.catch(() => undefined)
+                : Promise.resolve();
+            const imagesLoaded = Promise.all(Array.from(printDocument.images || []).map((image) => {
+                if (image.complete) {
+                    return Promise.resolve();
+                }
+
+                return new Promise((resolve) => {
+                    image.addEventListener("load", resolve, { once: true });
+                    image.addEventListener("error", resolve, { once: true });
+                });
+            }));
+
+            return Promise.all([windowLoaded, fontsLoaded, imagesLoaded]);
+        }
+
+        async function downloadPlayingCardAsPdf(printWindow) {
+            if (!builtPlayingCard || !printWindow) {
+                return;
+            }
+
+            downloadCardPdfButton.disabled = true;
+            cardSelectionMeta.textContent = `Preparing ${builtPlayingCard.name} for PDF export...`;
+
+            const pdfDocument = createPlayingCardPdfDocument(builtPlayingCard);
+            printWindow.document.open();
+            printWindow.document.write(pdfDocument);
+            printWindow.document.close();
+            printWindow.document.title = `${builtPlayingCard.name} Playing Card`;
+
+            const closePrintedWindow = () => {
+                try {
+                    printWindow.close();
+                } catch (error) {
+                    // Some browsers block scripted close on manually opened tabs.
+                }
+            };
+
+            printWindow.addEventListener("afterprint", closePrintedWindow, { once: true });
+
+            try {
+                await waitForPrintWindowReady(printWindow);
+                await new Promise((resolve) => {
+                    window.setTimeout(resolve, 300);
+                });
+                printWindow.focus();
+                printWindow.print();
+                cardSelectionMeta.textContent = `Print dialog opened for ${builtPlayingCard.name}. Choose "Save as PDF" to download it.`;
+            } catch (error) {
+                closePrintedWindow();
+                cardSelectionMeta.textContent = "We couldn't prepare the card for PDF export right now.";
+            } finally {
+                downloadCardPdfButton.disabled = false;
+            }
         }
 
         function setSelectedCardPlayer(name) {
@@ -2759,6 +2910,8 @@
                 renderPlayingCard(card);
                 cardSelectionMeta.textContent = `Built from ${selectedCardPlayerName}`;
             } catch (error) {
+                builtPlayingCard = null;
+                downloadCardPdfButton.disabled = true;
                 playingCardDetail.innerHTML = `
                     <section class="player-summary">
                         <div>
@@ -3113,10 +3266,25 @@
             handleBuildPlayingCard();
         });
 
+        downloadCardPdfButton.addEventListener("click", () => {
+            if (!builtPlayingCard) {
+                return;
+            }
+
+            const printWindow = window.open("", "_blank", "width=1280,height=900");
+            if (!printWindow) {
+                cardSelectionMeta.textContent = "Allow pop-ups to export the card as a PDF.";
+                return;
+            }
+
+            downloadPlayingCardAsPdf(printWindow);
+        });
+
         loadTopPerformers();
         loadPlayerDatabase();
         loadPlayerBadges();
         loadMatchups();
+    });
     </script>
 </body>
 </html>

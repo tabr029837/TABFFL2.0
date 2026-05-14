@@ -490,6 +490,40 @@
             white-space: nowrap;
         }
 
+        @media (max-width: 640px) {
+            .playing-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .playing-card-identity {
+                width: 100%;
+            }
+
+            .playing-card-photo {
+                width: 100px;
+                height: 120px;
+            }
+
+            .playing-card-copy {
+                flex: 1;
+            }
+
+            .playing-card-kicker {
+                font-size: 0.7rem;
+            }
+
+            .playing-card-header h4 {
+                font-size: 1.3rem;
+                line-height: 1.2;
+            }
+
+            .playing-card-chip {
+                align-self: flex-end;
+            }
+        }
+
         .playing-card-stats {
             position: relative;
             z-index: 1;

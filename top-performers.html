@@ -2556,63 +2556,76 @@
         }
 
         function createPlayingCardPdfDocument(card) {
-            const cardMarkup = playingCardDetail.innerHTML;
             const safeName = escapeHtml(card.name || "TABFFL Playing Card");
-            const stylesheetUrl = escapeHtml(new URL("styles.css?v=20260321d", window.location.href).href);
+            const tableRows = card.seasons.map(season => `
+                <tr>
+                    <td>${escapeHtml(season.year)}</td>
+                    <td>${escapeHtml(season.record)}</td>
+                    <td>${escapeHtml(season.league)}</td>
+                    <td>${escapeHtml(season.tp)}</td>
+                    <td>${escapeHtml(season.tpPlace)}</td>
+                    <td>${escapeHtml(season.playoffRecord)}</td>
+                    <td>${escapeHtml(season.highestTotal)}</td>
+                    <td>${escapeHtml(season.topFiveFinishes)}</td>
+                    <td>${escapeHtml(season.activity)}</td>
+                    <td>${escapeHtml(season.championship)}</td>
+                </tr>
+            `).join('');
 
             return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>${safeName} Playing Card</title>
-    <link rel="stylesheet" href="${stylesheetUrl}">
+    <title>${safeName} Playing Card Data</title>
     <style>
         body {
             margin: 0;
             padding: 24px;
-            background: #eef4ff;
-            font-family: "Segoe UI", Arial, sans-serif;
-            color: #0f172a;
+            font-family: Arial, sans-serif;
+            color: #000;
         }
-
-        .pdf-shell {
-            max-width: 1100px;
-            margin: 0 auto;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-
-        .player-spotlight {
-            display: grid;
-            gap: 14px;
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
         }
-
-        .playing-card {
-            position: relative;
-            overflow: visible;
+        th {
+            background-color: #f0f0f0;
         }
-
         @media print {
             @page {
                 size: landscape;
                 margin: 0.35in;
             }
-
-            body {
-                padding: 0;
-                background: #fff;
-            }
-
-            .pdf-shell {
-                max-width: none;
-                margin: 0;
-            }
         }
     </style>
 </head>
 <body>
-    <main class="pdf-shell">
-        ${cardMarkup}
-    </main>
+    <h1>${safeName} - Season Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Record</th>
+                <th>League</th>
+                <th>Total Points</th>
+                <th>Ranking</th>
+                <th>Playoff Record</th>
+                <th>Best Week</th>
+                <th>Top %'s</th>
+                <th>Acq + Trades</th>
+                <th>Championship</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${tableRows}
+        </tbody>
+    </table>
 </body>
 </html>`;
         }
@@ -2648,7 +2661,7 @@
             }
 
             downloadCardPdfButton.disabled = true;
-            cardSelectionMeta.textContent = `Preparing ${builtPlayingCard.name} for PDF export...`;
+            cardSelectionMeta.textContent = `Preparing ${builtPlayingCard.name} data table for PDF export...`;
 
             const pdfDocument = createPlayingCardPdfDocument(builtPlayingCard);
             printWindow.document.open();
@@ -2673,7 +2686,7 @@
                 });
                 printWindow.focus();
                 printWindow.print();
-                cardSelectionMeta.textContent = `Print dialog opened for ${builtPlayingCard.name}. Choose "Save as PDF" to download it.`;
+                cardSelectionMeta.textContent = `Print dialog opened for ${builtPlayingCard.name} data table. Choose "Save as PDF" to download it.`;
             } catch (error) {
                 closePrintedWindow();
                 cardSelectionMeta.textContent = "We couldn't prepare the card for PDF export right now.";
@@ -2912,15 +2925,7 @@
             } catch (error) {
                 builtPlayingCard = null;
                 downloadCardPdfButton.disabled = true;
-                playingCardDetail.innerHTML = `
-                    <section class="player-summary">
-                        <div>
-                            <h3>Card unavailable</h3>
-                            <p class="player-summary-copy">We couldn't load that player tab from the fantasy database right now.</p>
-                        </div>
-                    </section>
-                `;
-                cardSelectionMeta.textContent = `Could not build ${selectedCardPlayerName}`;
+                cardSelectionMeta.textContent = `Failed to load ${selectedCardPlayerName} data. Please try again.`;
             } finally {
                 buildCardButton.disabled = !selectedCardPlayerName;
                 buildCardButton.textContent = "Build Playing Card";

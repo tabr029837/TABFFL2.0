@@ -417,6 +417,20 @@
             pointer-events: none;
         }
 
+        .playing-card-mobile-note {
+            display: none;
+            margin: 0 0 12px;
+            color: #475569;
+            font-size: 0.83rem;
+            letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 720px) {
+            .playing-card-mobile-note {
+                display: block;
+            }
+        }
+
         .playing-card-header {
             position: relative;
             z-index: 1;
@@ -488,6 +502,42 @@
             font-size: 0.8rem;
             font-weight: 700;
             white-space: nowrap;
+        }
+
+        @media (max-width: 640px) {
+            .playing-card-header {
+                flex-wrap: wrap;
+                align-items: flex-start;
+            }
+
+            .playing-card-identity {
+                width: 100%;
+                gap: 12px;
+            }
+
+            .playing-card-photo {
+                width: 96px;
+                height: 112px;
+            }
+
+            .playing-card-copy {
+                flex: 1 1 auto;
+                min-width: 0;
+            }
+
+            .playing-card-kicker,
+            .playing-card-header h4,
+            .playing-card-years {
+                white-space: normal;
+                overflow-wrap: break-word;
+                word-break: normal;
+                max-width: 100%;
+            }
+
+            .playing-card-header h4 {
+                font-size: 1.35rem;
+                line-height: 1.2;
+            }
         }
 
         .playing-card-stats {
@@ -2430,6 +2480,7 @@
             const seasonHeaderHtml = `
                 <div class="playing-card-season-head">
                     <div class="playing-card-season-head-cell is-sticky">Years</div>
+                    <div class="playing-card-season-head-cell">Champs</div>
                     <div class="playing-card-season-head-cell">Record</div>
                     <div class="playing-card-season-head-cell">League</div>
                     <div class="playing-card-season-head-cell">Total Points</div>
@@ -2438,12 +2489,18 @@
                     <div class="playing-card-season-head-cell">Best Week</div>
                     <div class="playing-card-season-head-cell">Top %'s</div>
                     <div class="playing-card-season-head-cell">Acq + Trades</div>
-                    <div class="playing-card-season-head-cell">Championship</div>
                 </div>
             `;
             const seasonsHtml = card.seasons.map((season) => `
                 <article class="playing-card-season-row">
                     <div class="playing-card-season-year">${escapeHtml(season.year)}</div>
+                    <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-value">
+                            ${season.championship === "Yes"
+                                ? `<span class="playing-card-season-flag is-champ">Champs</span>`
+                                : escapeHtml(season.championship || "No")}
+                        </span>
+                    </div>
                     <div class="playing-card-season-stat">
                         <span class="playing-card-season-stat-value">${escapeHtml(season.record)}</span>
                     </div>
@@ -2468,16 +2525,12 @@
                     <div class="playing-card-season-stat">
                         <span class="playing-card-season-stat-value">${escapeHtml(season.activity)}</span>
                     </div>
-                    <div class="playing-card-season-stat">
-                        <span class="playing-card-season-stat-value">
-                            <span class="playing-card-season-flag${season.championship === "Yes" ? " is-champ" : ""}">${escapeHtml(season.championship)}</span>
-                        </span>
-                    </div>
                 </article>
             `).join("");
 
             playingCardDetail.innerHTML = `
                 <article class="playing-card">
+                    <p class="playing-card-mobile-note">Best viewed on landscape viewing</p>
                     <div class="playing-card-header">
                         <div class="playing-card-identity">
                             ${photoHtml}
@@ -2563,6 +2616,7 @@
             const tableRows = card.seasons.map(season => `
                 <tr>
                     <td>${escapeHtml(season.year)}</td>
+                    <td>${season.championship === "Yes" ? "Champs" : escapeHtml(season.championship || "No")}</td>
                     <td>${escapeHtml(season.record)}</td>
                     <td>${escapeHtml(season.league)}</td>
                     <td>${escapeHtml(season.tp)}</td>
@@ -2571,7 +2625,6 @@
                     <td>${escapeHtml(season.highestTotal)}</td>
                     <td>${escapeHtml(season.topFiveFinishes)}</td>
                     <td>${escapeHtml(season.activity)}</td>
-                    <td>${escapeHtml(season.championship)}</td>
                 </tr>
             `).join('');
 
@@ -2633,7 +2686,7 @@
         }
         .overview h2 {
             margin: 0 0 15px 0;
-            color: #1e40af;
+            color: #1e3a8a;
             font-size: 20px;
             font-weight: 600;
         }
@@ -2655,7 +2708,7 @@
             color: #374151;
         }
         .stat span:last-child {
-            color: #1e40af;
+            color: #1e3a8a;
             font-weight: 700;
         }
         .table-wrapper {
@@ -2753,6 +2806,7 @@
                 <thead>
                     <tr>
                         <th>Year</th>
+                        <th>Champs</th>
                         <th>Record</th>
                         <th>League</th>
                         <th>Total Points</th>
@@ -2761,7 +2815,6 @@
                         <th>Best Week</th>
                         <th>Top %'s</th>
                         <th>Acq + Trades</th>
-                        <th>Championship</th>
                     </tr>
                 </thead>
                 <tbody>

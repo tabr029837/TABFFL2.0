@@ -708,11 +708,7 @@
         }
 
         .playing-card-season-stat-label {
-            color: #64748b;
-            font-size: 0.66rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            display: none;
         }
 
         .playing-card-season-stat-value {
@@ -746,6 +742,71 @@
             border-color: #fbbf24;
             background: linear-gradient(135deg, #fef3c7, #fde68a);
             color: #854d0e;
+        }
+
+        @media (max-width: 768px) {
+            .playing-card-season-table {
+                min-width: auto;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .playing-card-season-head {
+                display: none;
+            }
+
+            .playing-card-season-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                padding: 16px;
+                position: relative;
+            }
+
+            .playing-card-season-row::before {
+                content: attr(data-year);
+                position: absolute;
+                top: 8px;
+                right: 8px;
+                background: #1e3a8a;
+                color: white;
+                padding: 4px 8px;
+                border-radius: 6px;
+                font-size: 0.8rem;
+                font-weight: 700;
+            }
+
+            .playing-card-season-year {
+                position: static;
+                display: none;
+            }
+
+            .playing-card-season-stat {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 6px 0;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .playing-card-season-stat:last-child {
+                border-bottom: none;
+            }
+
+            .playing-card-season-stat-label {
+                font-size: 0.7rem;
+                color: #64748b;
+            }
+
+            .playing-card-season-stat-value {
+                font-size: 0.9rem;
+                color: #0f172a;
+                font-weight: 700;
+            }
+
+            .playing-card-season-flag {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
         }
 
         .player-search-panel label {
@@ -2442,33 +2503,42 @@
                 </div>
             `;
             const seasonsHtml = card.seasons.map((season) => `
-                <article class="playing-card-season-row">
+                <article class="playing-card-season-row" data-year="${escapeHtml(season.year)}">
                     <div class="playing-card-season-year">${escapeHtml(season.year)}</div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Record</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.record)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">League</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.league)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Total Points</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.tp)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Ranking</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.tpPlace)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Playoff Record</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.playoffRecord)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Best Week</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.highestTotal)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Top %'s</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.topFiveFinishes)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Acq + Trades</span>
                         <span class="playing-card-season-stat-value">${escapeHtml(season.activity)}</span>
                     </div>
                     <div class="playing-card-season-stat">
+                        <span class="playing-card-season-stat-label">Championship</span>
                         <span class="playing-card-season-stat-value">
                             <span class="playing-card-season-flag${season.championship === "Yes" ? " is-champ" : ""}">${escapeHtml(season.championship)}</span>
                         </span>
@@ -2600,7 +2670,7 @@
             border: 2px solid #3b82f6;
         }
         .card-header {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
             padding: 20px;
             display: flex;
@@ -2670,7 +2740,7 @@
             font-size: 12px;
         }
         th {
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
             font-weight: 600;
             text-transform: uppercase;

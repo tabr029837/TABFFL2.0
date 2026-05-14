@@ -2585,17 +2585,27 @@
         body {
             margin: 0;
             padding: 20px;
-            font-family: Arial, sans-serif;
-            color: #000;
-            background: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #0f172a;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+            min-height: 100vh;
+        }
+        .card-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 2px solid #3b82f6;
         }
         .card-header {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #000;
-            padding-bottom: 10px;
         }
         .card-identity {
             display: flex;
@@ -2604,13 +2614,22 @@
         }
         .card-copy h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 700;
         }
         .card-copy p {
             margin: 5px 0;
+            opacity: 0.9;
         }
         .overview {
-            margin-bottom: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .overview h2 {
+            margin: 0 0 15px 0;
+            color: #1e40af;
+            font-size: 20px;
+            font-weight: 600;
         }
         .summary-grid {
             display: grid;
@@ -2620,30 +2639,60 @@
         .stat {
             display: flex;
             justify-content: space-between;
+            padding: 8px 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        .stat span:first-child {
+            font-weight: 600;
+            color: #374151;
+        }
+        .stat span:last-child {
+            color: #1e40af;
+            font-weight: 700;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0 auto;
+            margin: 20px 0;
         }
         th, td {
-            border: 1px solid #000;
-            padding: 8px;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
             text-align: left;
             font-size: 12px;
         }
         th {
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        tbody tr:hover {
+            background: #e0f2fe;
         }
         @media print {
             @page {
                 size: portrait;
                 margin: 0.5in;
             }
+            body {
+                background: white !important;
+            }
+            .card-container {
+                box-shadow: none;
+                border: none;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="card-container">
     <div class="card-header">
         <div class="card-identity">
             ${photoHtml}
@@ -2672,26 +2721,29 @@
             <div class="stat"><span>Total Points:</span> <span>${escapeHtml(card.currentSeason.tp)}</span></div>
         </div>
     </div>
-    <h2>Season By Season</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>Record</th>
-                <th>League</th>
-                <th>Total Points</th>
-                <th>Ranking</th>
-                <th>Playoff Record</th>
-                <th>Best Week</th>
-                <th>Top %'s</th>
-                <th>Acq + Trades</th>
-                <th>Championship</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${tableRows}
-        </tbody>
-    </table>
+    <div class="overview">
+        <h2>Season By Season</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Record</th>
+                    <th>League</th>
+                    <th>Total Points</th>
+                    <th>Ranking</th>
+                    <th>Playoff Record</th>
+                    <th>Best Week</th>
+                    <th>Top %'s</th>
+                    <th>Acq + Trades</th>
+                    <th>Championship</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableRows}
+            </tbody>
+        </table>
+    </div>
+    </div>
 </body>
 </html>`;
         }
@@ -2727,7 +2779,7 @@
             }
 
             downloadCardPdfButton.disabled = true;
-            cardSelectionMeta.textContent = `Preparing ${builtPlayingCard.name} card for PDF export...`;
+            cardSelectionMeta.textContent = `Preparing ${builtPlayingCard.name} card preview...`;
 
             const pdfDocument = createPlayingCardPdfDocument(builtPlayingCard);
             printWindow.document.open();
@@ -2743,16 +2795,10 @@
                 }
             };
 
-            printWindow.addEventListener("afterprint", closePrintedWindow, { once: true });
-
             try {
                 await waitForPrintWindowReady(printWindow);
-                await new Promise((resolve) => {
-                    window.setTimeout(resolve, 300);
-                });
                 printWindow.focus();
-                printWindow.print();
-                cardSelectionMeta.textContent = `Print dialog opened for ${builtPlayingCard.name} card. Choose "Save as PDF" to download it.`;
+                cardSelectionMeta.textContent = `Preview opened for ${builtPlayingCard.name}. Use your browser's print function to save as PDF.`;
             } catch (error) {
                 closePrintedWindow();
                 cardSelectionMeta.textContent = "We couldn't prepare the card for PDF export right now.";

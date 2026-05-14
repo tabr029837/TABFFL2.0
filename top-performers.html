@@ -2605,7 +2605,13 @@
             padding: 20px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 15px;
+        }
+        .card-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
         }
         .card-identity {
             display: flex;
@@ -2660,7 +2666,7 @@
         th, td {
             border: 1px solid #cbd5e1;
             padding: 10px;
-            text-align: left;
+            text-align: center;
             font-size: 12px;
         }
         th {
@@ -2702,6 +2708,7 @@
                 <p>Total Record: ${escapeHtml(card.totalRecord)}</p>
             </div>
         </div>
+        <img src="./TAB-FFL-Logo.jpg" alt="TABFFL Logo" class="card-logo">
     </div>
     <div class="overview">
         <h2>Overview</h2>
